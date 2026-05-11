@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>程少迪 错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页 */
+        .cover h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .cover p {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+        .cover button {
+            padding: 1rem 3rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .cover button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+        .context-box p {
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        /* 题目 */
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        /* 原文段落（阅读理解） */
+        .original-text {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .original-text h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+        .original-text p {
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .answer-toggle:hover {
+            opacity: 0.9;
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+        .analysis p {
+            margin-bottom: 0.6rem;
+            color: var(--text-primary);
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        /* 空行 */
+        .spacer {
+            height: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active cover">
+        <h1>📚 程少迪 错题复习</h1>
+        <p>竞赢模拟 5～6 套 · 共 7 道错题</p>
+        <button onclick="goToSlide(1)">开始复习</button>
+    </div>
+
+    <!-- 第1题：第22题 完形填空 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 22 题 · 完形填空</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>... Then he returned to the park with the board and put it at the entrance of the park.<br>
+                ___22.___ in the park came over to see what was happening exactly. Yunbo told people about his bad ___23.___ yesterday. ...</p>
+            </div>
+            <div class="options">
+                <div class="option">A. Students</div>
+                <div class="option">B. Members</div>
+                <div class="option">C. Villagers</div>
+                <div class="option">D. Tourists</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词词义辨析 + 语境理解</p>
+                    <p>1. 本题考查名词词义在具体语境中的运用。故事发生在公园（park），根据文章第一段内容可知，这个公园是Yunbo和妈妈散步的地方，是对公众开放的场所。</p>
+                    <p>2. 正确选项D（Tourists 游客）：公园是游客游览观光的地方，放在入口处的告示牌自然会吸引前来公园的游客驻足观看，符合文章语境。</p>
+                    <p>3. 干扰项分析：</p>
+                    <p>&nbsp;&nbsp;- A. Students（学生）：文中没有提到这是学校附近的公园或学生活动场所，范围太窄，不符合普遍语境。</p>
+                    <p>&nbsp;&nbsp;- B. Members（成员）：通常指某个组织或团体的成员，公园对所有人开放，不存在"成员"一说，不符合逻辑。</p>
+                    <p>&nbsp;&nbsp;- C. Villagers（村民）：虽然语法正确，但文章没有暗示这是乡村公园，范围过于局限，不如tourists贴切。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题：第38题 阅读理解 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 38 题 · 阅读理解</div>
+            <div class="original-text">
+                <h4>📖 原文第二段</h4>
+                <p>She first spent a few days in the ancient city of Kashgar. She learnt about tea culture in a century-old teahouse. She also tried making naan bread (馕). Starting from Kashgar, she went on a 15-month cultural journey across China, exploring over 30 cities in 17 provinces and autonomous regions. Her journey ended in Beijing, marking the 750th anniversary of Marco Polo's arrival in China.</p>
+            </div>
+            <p class="question-text">( )38. What does Paragraph 2 mainly talk about?</p>
+            <div class="options">
+                <div class="option">A. What Cammarata did in China.</div>
+                <div class="option">B. Where Cammarata went in China.</div>
+                <div class="option">C. The starting point and plan of Cammarata's trip to China.</div>
+                <div class="option">D. The difficulties that Cammarata faced during her journey.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>段落主旨大意概括</p>
+                    <p>1. 本题考查对文章段落主旨的概括能力。需要准确判断第二段内容：第二段主要描述了Cammarata在中国旅程中的具体活动。</p>
+                    <p>2. 正确选项A：What Cammarata did in China（Cammarata在中国做了什么）。第二段详细描述了：她在喀什古城停留，在百年茶馆学习茶文化，尝试做馕，然后开始15个月的文化旅程，探索了17个省区的30多个城市，最后到北京。这些都是她在中国的具体活动，因此A选项完整概括了段落内容。</p>
+                    <p>3. 学生易错点：学生容易错选B。干扰项B：Where Cammarata went in China（Cammarata去了中国哪里），该选项只强调了地点，而第二段不仅说了去了哪些地方，还具体说了她做了哪些事情（学习茶文化、做馕、探索多座城市），所以B选项片面，不能完整概括全段内容。</p>
+                    <p>4. 其他干扰项分析：</p>
+                    <p>&nbsp;&nbsp;- C. 只提到了起点和计划，但第二段描述的是已经完成的实际行程，并非计划，因此错误。</p>
+                    <p>&nbsp;&nbsp;- D. 第三段才讲到旅程中遇到的困难，第二段没有提到困难，因此错误。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题：第15题 完形填空 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 15 题 · 完形填空</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>At the resort, I followed the coach's tips. I fell many times but didn't ___14.___. With practice, I finally skied down the slopes—wind blowing ___15.___ my face, it felt like flying! My little sister played in the snow with Mom, and their laughter could be ___16.___ far away.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. through</div>
+                <div class="option">B. from</div>
+                <div class="option">C. against</div>
+                <div class="option">D. past</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>介词词义辨析 + 语境理解</p>
+                    <p>1. 本题考查介词在具体语境中的运用，描述滑雪时风吹在脸上的感觉。</p>
+                    <p>2. 正确选项C（against 逆着，顶着）：滑雪时从雪坡上向下滑，风是迎面吹来的，against表示"迎着、逆着"的方向关系，blow against one's face是常见表达，形容风迎面吹拂在脸上，符合滑雪时的真实情景。</p>
+                    <p>3. 干扰项分析：</p>
+                    <p>&nbsp;&nbsp;- A. through（穿过）：通常指风从物体中间穿过，语义上不够准确，不能很好地体现风扑面而来的感觉。</p>
+                    <p>&nbsp;&nbsp;- B. from（来自）：只说明了方向来自哪里，缺少"迎面吹拂"的动态感，不符合语境。</p>
+                    <p>&nbsp;&nbsp;- D. past（经过）：表示风从脸旁边经过，力度和感觉都不如against贴切，作者想表达的是风直接吹在脸上像飞一样的感觉。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题：��19题 完形填空 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 19 题 · 完形填空</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>We also visited Harbin Ice and Snow World. The ice sculptures were amazing, ___19.___ with colorful lights at night. We tried hot pot, which kept us ___20.___ in the cold.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. painted</div>
+                <div class="option">B. decorated</div>
+                <div class="option">C. carved</div>
+                <div class="option">D. built</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词词义辨析 + 固定搭配</p>
+                    <p>1. 本题考查动词词义辨析，描述哈尔滨冰雪大世界冰雕的装饰。</p>
+                    <p>2. 正确选项B（decorated 装饰）：be decorated with是固定搭配，意思是"用...装饰"。冰雕作品在夜间用彩灯进行装饰，符合冰雪大世界的实际场景描述，语义和搭配都正确。</p>
+                    <p>3. 干扰项分析：</p>
+                    <p>&nbsp;&nbsp;- A. painted（绘画）：冰雕是冰雕刻而成的艺术品，不是画出来的，而且彩灯不是画上去的，因此错误。</p>
+                    <p>&nbsp;&nbsp;- C. carved（雕刻）：冰雕本身是雕刻出来的，但题干说的是冰雕做好后用彩灯装饰，不是雕刻彩灯，因此逻辑不符。</p>
+                    <p>&nbsp;&nbsp;- D. built（建造）：通常指建造建筑物，冰雕已经存在，此处说的是添加彩灯装饰，不是建造，因此错误。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题：第27题 阅读理解 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 27 题 · 阅读理解</div>
+            <div class="original-text">
+                <h4>📖 原文相关内容</h4>
+                <p><strong>Eat well</strong><br>
+                Our cookery course will show you how to make the most delicious meals. Get healthier by developing your cooking skills every Thursday and Friday evening in our school dining hall. The course is from 17:00 to 18:30. You can have a chance to taste the food your classmates make.</p>
+            </div>
+            <p class="question-text">( )27. How many times can students take the cookery course every month?</p>
+            <div class="options">
+                <div class="option">A. Over ten times.</div>
+                <div class="option">B. Eight to ten times.</div>
+                <div class="option">C. Seven times in total.</div>
+                <div class="option">D. No more than eight times.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>推理计算题 + 细节理解</p>
+                    <p>1. 本题考查根据文中信息进行简单推理计算。原文说课程在"every Thursday and Friday evening"（每周四和周五晚上）开课。</p>
+                    <p>2. 计算推理：一个月通常有4-5周，每周上课2次（周四+周五）：</p>
+                    <p>&nbsp;&nbsp;- 4周 × 2次 = 8次</p>
+                    <p>&nbsp;&nbsp;- 5周 × 2次 = 10次</p>
+                    <p>&nbsp;&nbsp;因此每个月上课次数是8到10次，对应B选项正确。</p>
+                    <p>3. 学生错选原因分析：学生容易因为计算错误而误选其他选项。需要注意一个月可能有4周到5周，不能只按4周计算得到8次，也不能按超过5周算得到10次以上。</p>
+                    <p>4. 干扰项分析：</p>
+                    <p>&nbsp;&nbsp;- A. Over ten times（超过10次）：一个月最多5周，总共只有10次，不可能超过10次，因此错误。</p>
+                    <p>&nbsp;&nbsp;- C. Seven times in total（总共7次）：计算错误，每周2次，最少也有8次，因此错误。</p>
+                    <p>&nbsp;&nbsp;- D. No more than eight times（不超过8次）：忽略了有的月份有5周，可以达到10次，因此错误。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题：第47题 补全短文 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 47 题 · 补全短文</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>School lunches have come a long way and are getting better in recent years. Now there are more fruits and vegetables for students to choose from. 46. D____ While many kids bring lunch from home, others are turning to food delivery services and ordering restaurant meals during the school day.<br>
+                ___47.___ They say students should be allowed to eat the food they like, as long as it is healthy. But others believe students should not be allowed to order food to school. ...</p>
+            </div>
+            <div class="options">
+                <div class="option">A. It is a matter of choice.</div>
+                <div class="option">B. Some people think this is fine.</div>
+                <div class="option">C. Also, ordering food takes time.</div>
+                <div class="option">D. But not all kids like the food at school.</div>
+                <div class="option">E. They get more customers and more money.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>语篇逻辑理解 + 上下文过渡</p>
+                    <p>1. 本题考查还原句子，需要把握文章段落的逻辑结构。上文第一段介绍了现状：现在有些学生开始点外卖到学校。第二段开头需要引出不同人的观点。</p>
+                    <p>2. 正确选项B（Some people think this is fine. 一些人认为这没问题）：上文说"现在有些学生点外卖"，紧接着说"一部分人赞同这种做法，另一部分人反对"，这符合英文议论文"引出话题→正方观点→反方观点"的常见结构。后半句说"They say ... But others believe ..."正好对应B选项引出的两种不同观点。</p>
+                    <p>3. 干扰项分析：</p>
+                    <p>&nbsp;&nbsp;- A. It is a matter of choice.（这是一个选择问题）：这句话更适合放在具体论证中，不适合放在段首引出两种不同观点，位置不对。</p>
+                    <p>&nbsp;&nbsp;- D. But not all kids like the food at school.（但不是所有孩子都喜欢学校的食物）：这句话已经在第46题位置使用了，而且与下文逻辑不符。</p>
+                    <p>&nbsp;&nbsp;- 其他选项：C和E分别涉及"点餐花时间"和餐馆获得更多��客，与本段开头引出观点的语境不符。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题：第48题 补全短文 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 48 题 · 补全短文</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Minnie: Yes. ___48.___ Kids need to eat a full, healthy meal in order to stay focused and energetic and be able to learn at school. What better way to ensure they get a good lunch than by letting them choose and order what they really want? ...</p>
+            </div>
+            <div class="options">
+                <div class="option">A. It is a matter of choice.</div>
+                <div class="option">B. Some people think this is fine.</div>
+                <div class="option">C. Also, ordering food takes time.</div>
+                <div class="option">D. But not all kids like the food at school.</div>
+                <div class="option">E. They get more customers and more money.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>语篇逻辑理解 + 观点阐述</p>
+                    <p>1. 本题考查还原句子，需要理解Minnie的论证逻辑。Minnie赞同允许学生点餐，她的论点展开需要一个主题句。</p>
+                    <p>2. 正确选项A（It is a matter of choice. 这是一个选择问题）：作为正方论点的主题句，这句话完美统领了下文内容：下文说"让孩子们选择他们真正想吃的，才能保证他们得到健康可口的午餐"，正是围绕"选择权"展开论证。学生错选的B选项已经用在第47题了。</p>
+                    <p>3. 语境逻辑验证：Minnie的观点是"Yes"（赞同允许点餐），然后说这是选择权问题，接着论述孩子们需要饱餐健餐才能保持精力集中，让他们自己选择才能保证吃到合胃口的午餐，逻辑连贯顺畅。</p>
+                    <p>4. 干扰项分析：</p>
+                    <p>&nbsp;&nbsp;- B. Some people think this is fine：这是第二段开头引出观点的句子，已经放在第47题，此处是Minnie个人具体论述，不适合再用这句话。</p>
+                    <p>&nbsp;&nbsp;- D. But not all kids like the food at school：这句话是上文说过的内容，放在这里重复，且不衔接下文。</p>
+                    <p>&nbsp;&nbsp;- E. They get more customers and more money：这是第49题的内容，讲给餐馆带来好处，位置不对。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 7</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <div class="spacer"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 7;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

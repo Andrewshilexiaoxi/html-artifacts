@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>何紫勋 中考1号错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+            --option-bg: rgba(255,255,255,0.05);
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 5rem;
+        }
+
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .slide.active { display: flex; }
+
+        .cover {
+            text-align: center;
+        }
+
+        .cover h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .cover h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .cover p {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .cover button {
+            padding: 1rem 3rem;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .cover button:hover {
+            transform: scale(1.05);
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .question-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .options {
+            margin-bottom: 1.5rem;
+        }
+
+        .option {
+            background: var(--option-bg);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            transition: background 0.2s;
+        }
+
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .answer-toggle:hover {
+            transform: scale(1.02);
+        }
+
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+
+        .analysis p {
+            line-height: 1.8;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .navigation button {
+            padding: 1rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .navigation button:hover {
+            background: var(--accent-light);
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .blank {
+            text-decoration: underline;
+            text-decoration-color: var(--accent);
+            text-underline-offset: 6px;
+            padding: 0 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <div class="cover">
+            <h1>📚 何紫勋</h1>
+            <h2>中考1号 错题复习</h2>
+            <p>共 <span style="color: var(--accent); font-size: 2rem; font-weight: 700;">28</span> 道错题</p>
+            <button onclick="goToSlide(1)">开始复习 ➜</button>
+        </div>
+    </div>
+
+<!-- 第1题 短文填空 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">IV. 短文填空 · 第4题</div>
+        <div class="context-box">
+            <p>When somebody mentions 3. <span class="blank"></span> (music) instruments, he or she may think of the pioneer of invention, Mr. Bell, all of a 4. <span class="blank"></span> When you throw the ball into a basket, you may remember the Canadian hero, James Naismith, a professional teacher.</p>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-1">
+            <div class="correct-answer">✅ 正确答案：sudden</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>固定搭配 all of a sudden</p>
+                <p>1. all of a sudden 是固定习语，意思是"突然"，其中 sudden 是名词，需要用名词形式</p>
+                <p>2. 这个短语在中考英语中是常考的固定搭配，需要牢记：all of a sudden = suddenly</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第2题 短文填空 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">IV. 短文填空 · 第6题</div>
+        <div class="context-box">
+            <p>And when you smell tea, 5. <span class="blank"></span> (with) doubt, it may remind you of a national ruler, Shen Nong. He invented tea by accident when he 6. <span class="blank"></span> (boil) water.</p>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-2">
+            <div class="correct-answer">✅ 正确答案：was boiling</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>过去进行时的用法</p>
+                <p>1. 句子结构：when 引导的时间状语从句，表示"当他正在烧水的时候"，需要用过去进行时</p>
+                <p>2. 过去进行时结构：was/were + 动词-ing，主语是 he，所以用 was boiling</p>
+                <p>3. 语境理解：神农在烧水的时候偶然发明了茶，强调动作正在进行，所以用进行时是正确的</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第3题 短文填空 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">IV. 短文填空 · 第8题</div>
+        <div class="context-box">
+            <p>If 7. <span class="blank"></span> accidental earthquake happened, nearly every project was destroyed, but a low library remained, the library would have great 8. <span class="blank"></span> (popular). And you may look up to the builders 9. <span class="blank"></span> built it.</p>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-3">
+            <div class="correct-answer">✅ 正确答案：popularity</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>词性转换 - 形容词变名词</p>
+                <p>1. 语法结构：great 是形容词，后面需要修饰名词，所以必须把 popular（形容词）变成名词形式 popularity</p>
+                <p>2. 词义：have great popularity 意思是"大受欢迎，享有很高的知名度"</p>
+                <p>3. 拓展：类似的词性变化：different → difference, important → importance</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第4题 选择题 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">选择题 · 第2题</div>
+        <p class="question-text">( )2. Parents should keep their children __ any danger at home.</p>
+        <div class="options">
+            <div class="option">A. from</div>
+            <div class="option">B. with</div>
+            <div class="option">C. about</div>
+            <div class="option">D. through</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-4">
+            <div class="correct-answer">✅ 正确答案：A</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>固定短语搭配 keep sb. from sth.</p>
+                <p>1. keep sb. from sth. 意思是"保护某人免受...伤害"，符合句意"父母应该保护孩子在家远离任何危险"</p>
+                <p>2. 其他选项分析：</p>
+                <p>   - B. keep sb. with：和某人待在一起，不符合语境</p>
+                <p>   - C. keep sb. about：没有这个搭配</p>
+                <p>   - D. keep sb. through：没有这个搭配</p>
+                <p>3. 拓展记忆：相似搭配 keep sb. from doing sth. 阻止某人做某事</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第5题 选择题 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">选择题 · 第3题</div>
+        <p class="question-text">( )3. —Did you talk back to your mother when you were a child?<br>—Yes. But now I realize I was wrong. I really regret __ that silly thing to my mum.</p>
+        <div class="options">
+            <div class="option">A. do</div>
+            <div class="option">B. doing</div>
+            <div class="option">C. did</div>
+            <div class="option">D. to do</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-5">
+            <div class="correct-answer">✅ 正确答案：B</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>regret 的用法辨析</p>
+                <p>1. regret doing sth. 表示"后悔做过某事"（事情已经做了）</p>
+                <p>2. regret to do sth. 表示"很遗憾要做某事"（事情还没做，要去做）</p>
+                <p>3. 根据句意："我真的后悔对妈妈做了那种傻事"，事情已经发生了，所以用 regret doing</p>
+                <p>4. 类似用法：remember/forget doing/to do 也是同样的区别</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第6题 选择题 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">选择题 · 第5题</div>
+        <p class="question-text">( )5. Some people think trees should __ on Tree Planting Day only.</p>
+        <div class="options">
+            <div class="option">A. plant</div>
+            <div class="option">B. be planted</div>
+            <div class="option">C. be plant</div>
+            <div class="option">D. be planting</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-6">
+            <div class="correct-answer">✅ 正确答案：B</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>被动语���</p>
+                <p>1. 主语 trees 和动词 plant 是被动关系，"树被种植"，所以要用被动语态</p>
+                <p>2. 被动语态结构：should + be + 过去分词，所以正确形式是 should be planted</p>
+                <p>3. 其他选项分析：</p>
+                <p>   - A. plant - 主动语态，错误</p>
+                <p>   - C. be plant - 结构错误，过去分词要加-d</p>
+                <p>   - D. be planting - 进行时态，主动，错误</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第7题 选择题 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">选择题 · 第9题</div>
+        <p class="question-text">( )9. —Look! People outside are wearing thick coats.<br>—The weather __ be very cold.</p>
+        <div class="options">
+            <div class="option">A. might</div>
+            <div class="option">B. must</div>
+            <div class="option">C. can't</div>
+            <div class="option">D. may</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-7">
+            <div class="correct-answer">✅ 正确答案：B</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>情态动词表推测的用法</p>
+                <p>1. 根据上文"人们穿着厚厚的外套"，这是很明显的证据，可以做出很有把握的推测</p>
+                <p>2. must 表示"一定，肯定"，用于肯定句中非常有把握的推测，符合语境</p>
+                <p>3. might/may 表示"可能"，把握性较小，不符合本题中证据充分的情况</p>
+                <p>4. can't 表示"不可能"，意思相反</p>
+                <p>5. 总结：有明显线索→用 must 肯定推测；不确定→用 may/might</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第8题 完形填空 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">完形填空 · 第1题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>The December day started like any other. Papa came back with his boat full of fish. Mama made breakfast for the family. Seven-year-old Joonas was doing his homework, while his two little brothers ran around the yard. That day seemed peaceful, but Alejo 1. <span class="blank"></span> better.</p>
+            <p>Alejo felt shaking in his legs, and his ears perked up (竖着), listening for what had already started.</p>
+        </div>
+        <div class="options">
+            <div class="option">A. knew</div>
+            <div class="option">B. grew</div>
+            <div class="option">C. felt</div>
+            <div class="option">D. became</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-8">
+            <div class="correct-answer">✅ 正确答案：A &nbsp;&nbsp; 学生答案：C（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>语境理解与上下文呼应</p>
+                <p>1. 下文紧接着有"But Alejo knew better"，这里是第一次出现，需要和下文保持一致，填 knew</p>
+                <p>2. Alejo是一只狗，它"更清楚"情况不对劲，下文已经暗示了答案</p>
+                <p>3. knew better 是固定表达，表示"更了解，更清楚"</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第9题 完形填空 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">完形填空 · 第3题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>Alejo made a crying sound, and Mama said, "Sh!" Alejo barked(吠), and Joonas complained, "Quiet, I'm trying to 3. <span class="blank"></span>."</p>
+        </div>
+        <div class="options">
+            <div class="option">A. sleep</div>
+            <div class="option">B. speak</div>
+            <div class="option">C. think</div>
+            <div class="option">D. listen</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-9">
+            <div class="correct-answer">✅ 正确答案：C</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>语境理解</p>
+                <p>1. 上文提到Joonas正在做作业，做作业需要思考</p>
+                <p>2. "I'm trying to think" 意思是"别吵，我在思考"，完全符合语境</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第10题 完形填空 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">完形填空 · 第5题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>Suddenly, a strange roaring(轰鸣) sound began. Papa ran to a nearby building's roof(屋顶) to find out what was happening. But Alejo knew better. The shaking of the ground 5. <span class="blank"></span> up his padded paws (肉掌). He wanted to run, but he didn't dare to leave his family.</p>
+        </div>
+        <div class="options">
+            <div class="option">A. held</div>
+            <div class="option">B. pushed</div>
+            <div class="option">C. woke</div>
+            <div class="option">D. traveled</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-10">
+            <div class="correct-answer">✅ 正确答案：D &nbsp;&nbsp; 学生答案：C（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>动词词义辨析与语境理解</p>
+                <p>1. travel 在这里表示"传播，传导"，震动沿着地面传播，顺着狗的肉掌向上传导，让它感觉到了危险</p>
+                <p>2. 句意：地面的震动传到了Alejo的全身，它感觉到了异常</p>
+                <p>3. wake up 表示"唤醒"，语义不通，文章开头已经说明Alejo本来就是醒着的，不是被震动唤醒</p>
+                <p>4. 正确答案是 traveled，学生错选了 woke</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第11题 完形填空 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">完形填空 · 第6题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>"Why were they 6. <span class="blank"></span> ? Didn't they know that a great earthquake had roared under the ocean and would soon bring strong waves onto the land?" Alejo thought.</p>
+        </div>
+        <div class="options">
+            <div class="option">A. cooking</div>
+            <div class="option">B. waiting</div>
+            <div class="option">C. playing</div>
+            <div class="option">D. complaining</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-11">
+            <div class="correct-answer">✅ 正确答案：B &nbsp;&nbsp; 学生答��：C（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>语境理解与逻辑推理</p>
+                <p>1. Alejo作为一只狗，已经感觉到地震要来了，但人们还不知道危险，仍然在原地等待，没有采取行动</p>
+                <p>2. Alejo心里着急："为什么他们还在等着不行动呢？"，所以 waiting 最符合语境</p>
+                <p>3. 学生选了 playing，但从上下文看，孩子们一个在做作业，两个在院子里跑，不是所有人都在玩</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第12题 完形填空 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">完形填空 · 第9题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>Mama cried, "Sons, come on!" She grabbed(抓) a little one under each arm. "Joonas, run! You're fast and strong. Follow me up the hill. Fast!"</p>
+            <p>But the roar had gotten louder, 9. <span class="blank"></span> her words. All that Joonas had heard was, "Run!"</p>
+        </div>
+        <div class="options">
+            <div class="option">A. passing on</div>
+            <div class="option">B. cutting off</div>
+            <div class="option">C. breaking down</div>
+            <div class="option">D. leaving out</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-12">
+            <div class="correct-answer">✅ 正确答案：B &nbsp;&nbsp; 学生答案：C（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>动词短语辨析</p>
+                <p>1. 句意：但是轰鸣声变大了，切断了她的声音</p>
+                <p>2. cut off 意思是"切断，中断"，这里指噪音太大，把Mama的声音阻断了，所以Joonas只听到"Run!"，符合语境</p>
+                <p>3. break down 意思是"出故障，分解，(身体)垮掉"，不用于表示"噪音阻断声音"</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第13题 短文填空 父亲节 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">短文填空（父亲节） · 第8题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>"When my father opened the gift, he asked, "Where did you get it?" "I bought it at the Amy's Store. It cost me $11," I said. 8. <span class="blank"></span> surprised my father looked!</p>
+            <p>Many years later, I learned that the watch was worth several hundred dollars, and I appreciated how wonderful Amy had been to me.</p>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-13')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-13">
+            <div class="correct-answer">✅ 正确答案：How &nbsp;&nbsp; 学生答案：How（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>感叹句</p>
+                <p>1. 这是感叹句，结构是"How + 形容词/副词 + 主语 + 谓语!"</p>
+                <p>2. "How surprised my father looked!" 意思是"我父亲看起来多么惊讶啊！"</p>
+                <p>3. what 引导感叹句修饰名词，how 修饰形容词，这里修饰形容词surprised，用How</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第14题 短文填空 父亲节 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">短文填空（父亲节） · 第9题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>Many years later, I learned that the watch was worth several hundred dollars, and I appreciated how wonderful Amy had been to me. I always 9. <span class="blank"></span> (regret) that I never had a chance to thank her.</p>
+            <p>"What really amazes me to this day... my daughter," my father said.</p>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-14')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-14">
+            <div class="correct-answer">✅ 正确答案：regretted &nbsp;&nbsp; 学生答案：regretted（拼写错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>动词过去式拼写规则</p>
+                <p>1. 文章整体是过去时态，所以用 regret 的过去式</p>
+                <p>2. 拼写规则：regret 是重读闭音节结尾，末尾只有一个辅音字母t，需要双写t再加ed → regretted</p>
+                <p>3. 学生写成了 regretted（三个t），多写了一个t，拼写错误</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第15题 选择题新增 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">选择题（新增） · 第2题</div>
+        <p class="question-text">( )2. —Tom, it smells so terrible here.<br>—Sorry, Mum, I will __ my socks and wash them right away.</p>
+        <div class="options">
+            <div class="option">A. put off</div>
+            <div class="option">B. take off</div>
+            <div class="option">C. turn off</div>
+            <div class="option">D. cut off</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-15')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-15">
+            <div class="correct-answer">✅ 正确答案：B &nbsp;&nbsp; 学生答案：A（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>动词短语辨析</p>
+                <p>1. 句意：这里气味太难闻了，我会脱掉袜子立刻去洗</p>
+                <p>2. 短语辨析：</p>
+                <p>   - A. put off - 推迟，不符合句意</p>
+                <p>   - B. take off - 脱掉（衣服、鞋袜），符合语境，正确</p>
+                <p>   - C. turn off - 关掉（电器），错误</p>
+                <p>   - D. cut off - 切断，中断，错误</p>
+                <p>3. 学生错选了A，正确答案是B</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第16题 选择题新增 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">选择题（新增） · 第4题</div>
+        <p class="question-text">( )4. We will never forget the firemen __ tried their best to put out the fire in September 2025 in Jinzhou.</p>
+        <div class="options">
+            <div class="option">A. that</div>
+            <div class="option">B. whom</div>
+            <div class="option">C. whose</div>
+            <div class="option">D. what</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-16')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-16">
+            <div class="correct-answer">✅ 正确答案：A &nbsp;&nbsp; 学生答案：B（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>定语从句关系词</p>
+                <p>1. 先行词是firemen，指人，在从句中作主语</p>
+                <p>2. 当先行词在定语从句中作主语时，关系词用who或that</p>
+                <p>3. 选项分析：</p>
+                <p>   - A. that - 可以指人，作主语，正确</p>
+                <p>   - B. whom - 只能作宾语，本题需要主语，错误</p>
+                <p>   - C. whose - 表示所属关系"……的"，错误</p>
+                <p>   - D. what - 不能引导定语从句，错误</p>
+                <p>4. 学生错选了whom，这里需要主语，所以用that</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第17题 选择题新增 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">选择题（新增） · 第5题</div>
+        <p class="question-text">( )5. I am sure Cindy will be able to find the hotel—she has a pretty good __ of direction.</p>
+        <div class="options">
+            <div class="option">A. idea</div>
+            <div class="option">B. feeling</div>
+            <div class="option">C. experience</div>
+            <div class="option">D. sense</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-17')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-17">
+            <div class="correct-answer">✅ 正确答案：D &nbsp;&nbsp; 学生答案：A（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>固定搭配</p>
+                <p>1. a sense of direction 是固定搭配，意思是"方向感"</p>
+                <p>2. 词义辨析：</p>
+                <p>   - A. idea - 主意，想法，idea of direction 不是固定搭配</p>
+                <p>   - B. feeling - 感觉，feeling 侧重情感感受</p>
+                <p>   - C. experience - 经验</p>
+                <p>   - D. sense - 感官，辨识力，sense of direction 是固定习语，正确</p>
+                <p>3. 学生错选了A，正确搭配是a sense of direction</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第18题 完形填空 追踪包 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">完形填空（追踪包） · 第4题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>She was on the upper deck! I held up the bag and 4. <span class="blank"></span> it to get her attention. When she noticed the bag, she opened her mouth 5. <span class="blank"></span>. But her face fell—the boat started to pull away from the dock.</p>
+        </div>
+        <div class="options">
+            <div class="option">A. threw</div>
+            <div class="option">B. opened</div>
+            <div class="option">C. dropped</div>
+            <div class="option">D. waved</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-18')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-18">
+            <div class="correct-answer">✅ 正确答案：D &nbsp;&nbsp; 学生答案：C（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>动词词义辨析</p>
+                <p>1. 上文说"to get her attention"（吸引她的注意），所以需要挥动包来打招呼吸引注意</p>
+                <p>2. 词义辨析：</p>
+                <p>   - A. threw - 扔，不符合语境，只是吸引注意不需要扔</p>
+                <p>   - B. opened - 打开，已经held up了不需要打开</p>
+                <p>   - C. dropped - 掉下来，落下，错误</p>
+                <p>   - D. waved - 挥动，挥舞，挥动包吸引注意力，正确</p>
+                <p>3. 学生错选了dropped，正确答案是waved</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第19题 完形填空 追踪包 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">完形填空（追踪包） · 第8题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>We set off. It was a race now: 8. <span class="blank"></span> us against the boat. If the boat beat us to Valence, we might 9. <span class="blank"></span> have the chance to give back the bag.</p>
+        </div>
+        <div class="options">
+            <div class="option">A. her</div>
+            <div class="option">B. it</div>
+            <div class="option">C. them</div>
+            <div class="option">D. us</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-19')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-19">
+            <div class="correct-answer">✅ 正确答案：D &nbsp;&nbsp; 学生答案：C（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>代词指代</p>
+                <p>1. 上文说"We set off. It was a race now"，主语是we，所以这里说"我们对抗船"</p>
+                <p>2. "X against Y" 表示"X对战Y"，所以这里需要填us，完整是"it was us against the boat"</p>
+                <p>3. 代词一致性：主语是we，对应宾格us</p>
+                <p>4. 学生错选了them，正确答案是us</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第20题 短文填空 长城保护 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">短文填空（长城保护 2025·福建） · 第2题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>Thirty-nine protectors work 1. <span class="blank"></span> (careful) in the area to protect the great wonder.</p>
+            <p>With 2. <span class="blank"></span> history of over 2,000 years, the wall in Gansu wasn't in good condition. Nature did great harm to the wall,</p>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-20')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-20">
+            <div class="correct-answer">✅ 正确答案：a &nbsp;&nbsp; 学生答案：the（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>冠词用法</p>
+                <p>1. "a history of + 时间段" 是固定表达，表示"一段……多年的历史"</p>
+                <p>2. 这里泛指"超过2000年的历史"，不是特指某一段特定的历史，所以用不定冠词a</p>
+                <p>3. 如果用the表示特指，需要有特定的语境限定，这里不需要</p>
+                <p>4. 固定搭配：a history of over 2,000 years = 两千多年的历史</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第21题 短文填空 长城保护 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">短文填空（长城保护 2025·福建） · 第6题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>After that, more and more people started to take part 5. <span class="blank"></span> caring for the wall. In recent years, the government of Tianzhu has spent more and more money 6. <span class="blank"></span> (protect) the wall. Modern technology like self-driven sensing technology 7. <span class="blank"></span> drones(无人机) have also been used to watch the wall.</p>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-21')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-21">
+            <div class="correct-answer">✅ 正确答案：to protect &nbsp;&nbsp; 学生答案：protecting（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>固定句型 sb. spend money (in) doing sth. / to do sth. 辨析</p>
+                <p>1. 你可能记得 spend...doing sth. 表示"花费时间/金钱做某事"，这个结构是正确的，但为什么这里用to protect呢？</p>
+                <p>2. 区别在于：</p>
+                <p>   - spend money/time (in) doing sth. 表示"花钱/时间做某事"（直接花费在做这个事情上）</p>
+                <p>   - spend money/time to do sth. 表示"花钱/时间来做某事"（目的是做某事）</p>
+                <p>3. 本题中，政府花更多钱的目的是为了保护长城，强调目的性，所以用不定式to protect更合适</p>
+                <p>4. 这个题目出得比较巧妙，很多同学会因为记住spend...doing而误选protecting，但要根据语境具体分析</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第22题 选择题新 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">选择题（新） · 第4题</div>
+        <p class="question-text">( )4. Not only my sister but also I __ interested in cartoons.</p>
+        <div class="options">
+            <div class="option">A. am</div>
+            <div class="option">B. is</div>
+            <div class="option">C. are</div>
+            <div class="option">D. was</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-22')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-22">
+            <div class="correct-answer">✅ 正确答案：A &nbsp;&nbsp; 学生答案：A（正确）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>主谓一致 - 就近原则</p>
+                <p>1. "Not only... but also..." 连接两个主语时，谓语动词遵循<strong>就近原则</strong>，即与靠近它的主语保持一致</p>
+                <p>2. 本题中，靠近谓语动词的主语是 I，所以 be 动词要用 am</p>
+                <p>3. 拓展记忆：类似就近原则的连词还有：either...or..., neither...nor..., there be 句型等</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第23题 选择题新 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">选择题（新） · 第5题</div>
+        <p class="question-text">( )5. The plane __ on the ground for two more hours because of the bad weather.</p>
+        <div class="options">
+            <div class="option">A. ran</div>
+            <div class="option">B. moved</div>
+            <div class="option">C. shook</div>
+            <div class="option">D. remained</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-23')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-23">
+            <div class="correct-answer">✅ 正确答案：D &nbsp;&nbsp; 学生答案：D（正确）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>动词词义辨析</p>
+                <p>1. 句意：由于糟糕的天气，飞机在地面上又停留了两个小时</p>
+                <p>2. 词义辨析：</p>
+                <p>   - A. ran - 跑，奔跑，不符合语境</p>
+                <p>   - B. moved - 移动，搬动，不符合</p>
+                <p>   - C. shook - 摇晃，震动，不符合</p>
+                <p>   - D. remained - 保持，停留，remained on the ground 表示"停留在地面上"，完全符合句意</p>
+                <p>3. 学生答对了这道题</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第24题 选择题新 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">选择题（新） · 第8题</div>
+        <p class="question-text">( )8. __ great courage Trevor showed when he was in the face of danger!</p>
+        <div class="options">
+            <div class="option">A. What</div>
+            <div class="option">B. What a</div>
+            <div class="option">C. What an</div>
+            <div class="option">D. How</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-24')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-24">
+            <div class="correct-answer">✅ 正确答案：A &nbsp;&nbsp; 学生答案：A（正确）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>感叹句</p>
+                <p>1. 感叹句两种结构：</p>
+                <p>   - What + 名词短语 + 主语 + 谓语!</p>
+                <p>   - How + 形容词/副词 + 主语 + 谓语!</p>
+                <p>2. 本题中，great courage 是名词短语，courage（勇气）是不可数名词，所以用 What 引导</p>
+                <p>3. 不可数名词前面不能加 a/an，所以排除 B 和 C</p>
+                <p>4. 句子核心是 "Trevor showed great courage"，被感叹的部分是宾语 "great courage"（名词），所以用 What，不用 How</p>
+                <p>5. 总结：what 感叹名词，how 感叹形容词/副词，这里被感叹的中心词是名词 courage，所以用 What</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第25题 完形填空 最后一片叶子 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">完形填空（最后一片叶子） · 第10题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>She went to their neighbor, Mr. Smith, who was <span class="blank"></span> an artist.</p>
+            <p>Mr. Smith was shocked by the 10. <span class="blank"></span> of John's poor health. He wanted his friend to get better.</p>
+        </div>
+        <div class="options">
+            <div class="option">A. message</div>
+            <div class="option">B. story</div>
+            <div class="option">C. advice</div>
+            <div class="option">D. news</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-25')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-25">
+            <div class="correct-answer">✅ 正确答案：D</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>名词词义辨析</p>
+                <p>1. 句意：史密斯先生听到约翰身体不好的消息感到很震惊</p>
+                <p>2. 词义辨析：</p>
+                <p>   - A. message - 消息，指口头传递的消息、信息，通常指具体的一条留言</p>
+                <p>   - B. story - 故事，不符合语境</p>
+                <p>   - C. advice - 建议，这里不是建议，错误</p>
+                <p>   - D. news - 新闻，消息，指"听到...的情况/消息"，the news of 表示"...的消息"，是常用搭配，符合语境</p>
+                <p>3. news 是不可数名词，在这里表示"听到约翰健康状况不佳这个消息"，所以选D</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第26题 完形填空 最后一片叶子 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">完形填空（最后一片叶子） · 第11题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>Over the next few days, it rained terribly and the wind blew 11. <span class="blank"></span> , but the last leaf on the tree held on firmly. Every day, John would look out and see the same lone leaf on the tree.</p>
+        </div>
+        <div class="options">
+            <div class="option">A. quietly</div>
+            <div class="option">B. quickly</div>
+            <div class="option">C. hardly</div>
+            <div class="option">D. heavily</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-26')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-26">
+            <div class="correct-answer">✅ 正确答案：D &nbsp;&nbsp; 学生答案：C（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>副词词义辨析</p>
+                <p>1. 根据上文it rained terribly（雨下得很大），并列结构说and the wind blew __</p>
+                <p>2. 词义辨析：</p>
+                <p>   - A. quietly - 安静地，与terribly语义矛盾</p>
+                <p>   - B. quickly - 快速地，可以形容风，但不如其他选项准确</p>
+                <p>   - C. hardly - 几乎不，这里需要表示风大的词，hardly是否定含义，错误</p>
+                <p>   - D. heavily - 猛烈地，heavily可以用来形容风大雨大，wind blew heavily表示风刮得很大，符合语境</p>
+                <p>3. 注意：rain heavily表示雨下得大，wind blow heavily表示风刮得大，都是常用搭配</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第27题 完形填空 最后一片叶子 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">完形填空（最后一片叶子） · 第14题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p>John said to Sue, "I've realized that life is hard, but I shouldn't 13. <span class="blank"></span>. That leaf has stayed on that tree for so long. It has 14. <span class="blank"></span> me to live! "</p>
+            <p>"You know that leaf was painted by Mr. Smith? " said Sue.</p>
+        </div>
+        <div class="options">
+            <div class="option">A. learned</div>
+            <div class="option">B. made</div>
+            <div class="option">C. taught</div>
+            <div class="option">D. given</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-27')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-27">
+            <div class="correct-answer">✅ 正确答案：C &nbsp;&nbsp; 学生答案：B（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>动词词义辨析与语境理解</p>
+                <p>1. 结构：It has __ me to live! 结构是动词+sb.+to do，四个选项中只有taught和given语法都成立</p>
+                <p>2. 选项分析：</p>
+                <p>   - A. learned - 学习，语义不通，逻辑错误</p>
+                <p>   - B. made - 使，让，用法是make sb. do sth.，后面接不带to的不定式，所以语法错误</p>
+                <p>   - D. given - 给，给予，语法上give sb. sth. 或give sth. to sb.，不能说give sb. to do sth.，结构不对</p>
+                <p>   - C. taught - 教，teach sb. to do sth.是正确结构，表示教会某人做某事，完全符合语法</p>
+                <p>3. 语境理解：这片叶子教会了我要活下去。叶子坚持不掉落的精神教会约翰应该坚持活下去，这种精神教育了他，所以taught符合语境和故事寓意</p>
+                <p>4. 总结：正确答案是taught，它既符合语法结构teach sb. to do sth.，又符合文章"叶子教会我坚持活下去"的寓意</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 第28题 阅读理解 三本书介绍 -->
+<div class="slide">
+    <div class="question-card">
+        <div class="question-number">阅读理解（三本书介绍） · 第5题</div>
+        <div class="context-box">
+            <h4>📖 原文语境</h4>
+            <p><strong>Three books to help you learn fun skills</strong></p>
+            <p><strong>1. How-to Cookbook for Young Foodies by Joanna Saltz</strong><br>
+            With this beginner-friendly book, young foodies (美食家) can master a lot of cooking skills like cutting vegetables into pieces and slices. It also includes skills of making Chinese traditional food like mooncakes and zongzi.<br>
+            Ages: 8 and up<br>Price: 8 dollars</p>
+            <p><strong>2. Handbook of Forgotten Skills by Elaine Batiste and Natalie Crowley</strong><br>
+            If you aren't sure how to sew (缝) a button on your clothes, fix your bicycle, or wrap (包，裹) a present, this book can help. In it, there are step-by-step instructions for 30 skills that are becoming "lost arts" because they aren't often used. Some skills can help the environment.<br>
+            Ages: 9 and up<br>Price: 10 dollars</p>
+            <p><strong>3. How to Fool Your Parents by David Kwong</strong><br>
+            This interesting book teaches you how to perform 25 magic tricks. Some tricks include cards, while others use fun ways to give your parents surprises. The instructions include a list of what you'll need to perform each trick and explain the "secret" behind the magic.<br>
+            Ages: 12 and up<br>Price: 15 dollars</p>
+            <p>根据以上内容，选择最佳答案。</p>
+        </div>
+        <p class="question-text">( )5. Which part of a magazine may the text come from?</p>
+        <div class="options">
+            <div class="option">A. Book clubs.</div>
+            <div class="option">B. Animals and environment.</div>
+            <div class="option">C. Science and technology.</div>
+            <div class="option">D. Arts and museums.</div>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer('answer-28')">
+            <span>📖 查看答案与解析</span>
+            <span>▼</span>
+        </button>
+        <div class="answer-section" id="answer-28">
+            <div class="correct-answer">✅ 正确答案：A &nbsp;&nbsp; 学生答案：C（错误）</div>
+            <div class="analysis">
+                <h4>📝 考点分析</h4>
+                <p>推理判断题 - 文章出处</p>
+                <p>1. 全文内容：本文介绍了三本书，每本书都说明了书名、作者、适合年龄、价格和主要内容，是书籍推荐</p>
+                <p>2. 选项分析：</p>
+                <p>   - A. Book clubs - 读书俱乐部，读书俱乐部版块通常会介绍推荐书籍，完全符合本文内容</p>
+                <p>   - B. Animals and environment - 动物与环境，全文没有提到动物和环境保护主题，错误</p>
+                <p>   - C. Science and technology - 科技，这三本书分别是关于烹饪、手工和魔术，不属于科学技术内容，错误</p>
+                <p>   - D. Arts and museums - 艺术与博物馆，本文不是介绍艺术展览或博物馆，错误</p>
+                <p>3. 总结：这种介绍推荐书籍的文章，最可能出现在杂志的"读书俱乐部"版块</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 导航按钮 -->
+<div class="navigation">
+    <button onclick="prevSlide()" id="prevBtn">← 上一题</button>
+    <button onclick="nextSlide()" id="nextBtn">下一题 →</button>
+</div>
+
+<!-- 圆点导航 -->
+<div class="dot-navigation" id="dotNav">
+</div>
+
+<div class="progress">
+    <span id="progressText">封面 / 28</span>
+</div>
+
+<script>
+    let currentSlide = 0;
+    const totalSlides = 28; // 封面 + 28道题
+
+    // 创建圆点导航
+    function createDotNavigation() {
+        const dotNav = document.getElementById('dotNav');
+        // 封面
+        const coverDot = document.createElement('div');
+        coverDot.className = 'dot cover-dot active';
+        coverDot.onclick = () => goToSlide(0);
+        dotNav.appendChild(coverDot);
+        // 题目页
+        for (let i = 1; i <= totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.onclick = () => goToSlide(i);
+            dotNav.appendChild(dot);
+        }
+    }
+
+    function updateDots() {
+        const dots = document.querySelectorAll('.dot');
+        dots.forEach((dot, index) => {
+            if (index === currentSlide) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+
+    createDotNavigation();
+
+    function showSlide(index) {
+        const slides = document.querySelectorAll('.slide');
+        slides.forEach(slide => slide.classList.remove('active'));
+        slides[index].classList.add('active');
+        currentSlide = index;
+
+        // 更新导航按钮状态
+        document.getElementById('prevBtn').disabled = currentSlide === 0;
+        document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+        // 更新进度
+        document.getElementById('progressText').textContent =
+            currentSlide === 0 ? '封面 / 28' : `${currentSlide} / 28`;
+
+        // 更新圆点
+        updateDots();
+    }
+
+    function goToSlide(index) {
+        showSlide(index);
+        // 滚动到顶部确保题目可见
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function prevSlide() {
+        if (currentSlide > 0) {
+            showSlide(currentSlide - 1);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    }
+
+    function nextSlide() {
+        if (currentSlide < totalSlides) {
+            showSlide(currentSlide + 1);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    }
+
+    function toggleAnswer(id) {
+        const section = document.getElementById(id);
+        section.classList.toggle('show');
+        const button = event.target.closest('.answer-toggle');
+        const span = button.querySelector('span:last-child');
+        if (section.classList.contains('show')) {
+            span.textContent = '▲';
+        } else {
+            span.textContent = '▼';
+        }
+    }
+
+    // 键盘导航
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') prevSlide();
+        if (e.key === 'ArrowRight') nextSlide();
+    });
+
+    // 触摸滑动支持
+    let touchStartX = 0;
+    document.addEventListener('touchstart', function(e) {
+        touchStartX = e.touches[0].clientX;
+    });
+    document.addEventListener('touchend', function(e) {
+        const touchEndX = e.changedTouches[0].clientX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) nextSlide();
+            else prevSlide();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李林轩 错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页特殊样式 */
+        .cover-slide {
+            text-align: center;
+        }
+        .cover-slide h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        .cover-slide p {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-secondary);
+        }
+        .cover-slide button {
+            padding: 1rem 3rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .cover-slide button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+        }
+        .context-box p {
+            margin: 0.5rem 0;
+        }
+
+        /* 题目 */
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        /* 空格样式 */
+        .blank {
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
+            border-bottom: 3px solid var(--accent);
+            margin: 0 0.3rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 短文填空 */
+        .blank-text {
+            font-size: 1.15rem;
+            margin-bottom: 1rem;
+        }
+        .answer-blank {
+            display: inline-block;
+            min-width: 120px;
+            border-bottom: 2px solid var(--text-secondary);
+            margin: 0 0.2rem;
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .answer-toggle:hover {
+            opacity: 0.9;
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+        }
+        .analysis p {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active cover-slide">
+        <h1>📚 李林轩 错题复习</h1>
+        <p>八年级上册 Unit 9 ~ 八年级下册 Unit 1<br>共 30 道错题</p>
+        <button onclick="goToSlide(1)">开始复习</button>
+    </div>
+
+    <!-- 1. 单项选择 第3题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">一、单项选择 · 第3题</div>
+            <p class="question-text">
+                ( )3. —I don't know how to use the APP Fun Dubbing.<br>
+                —Ask Jimmy for help. He has a lot of <span class="blank"></span> in doing it.
+            </p>
+            <div class="options">
+                <div class="option">A. experience</div>
+                <div class="option">B. trouble</div>
+                <div class="option">C. courage</div>
+                <div class="option">D. agent</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：名词词义辨析</h4>
+                    <p>1. 题目句意："——我不知道怎么使用Fun Dubbing这个应用程序。——找Jimmy帮忙，他在这方面很有经验。"</p>
+                    <p>2. 选项分析：</p>
+                    <p>- A. experience 经验，<strong>不可数名词</strong>，have a lot of experience in doing sth 表示"在做某事方面有很多经验"，语法正确，语义完全符合语境，是正确答案</p>
+                    <p>- B. trouble 麻烦，have trouble in doing sth 表示"做某事有困难"，既然让对方去找Jimmy帮忙，就不可能说他做这件事有很多麻烦，不符合语境</p>
+                    <p>- C. courage 勇气，虽然语法正确，但语义不通。这句话表达的是"因为Jimmy有经验所以找他帮忙"，而不是"因为他有勇气所以找他帮忙"</p>
+                    <p>- D. agent 代理人，词义完全不相关</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 单项选择 第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">一、单项选择 · 第6题</div>
+            <p class="question-text">
+                ( )6. —Hello, Sunshine Restaurant! What can I do for you?<br>
+                —Do you have a table <span class="blank"></span> for this Sunday?
+            </p>
+            <div class="options">
+                <div class="option">A. available</div>
+                <div class="option">B. useful</div>
+                <div class="option">C. empty</div>
+                <div class="option">D. possible</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：形容词词义辨析（交际用语 - 餐厅预订）</h4>
+                    <p>1. 题目句意："——你好，阳光餐厅！请问需要什么帮助？——你们周日有可预订的空位吗？"</p>
+                    <p>2. 选项分析：</p>
+                    <p>- A. available 可获得的、可预订的，a table available 表示"有空位可供预订"，这是餐厅预订场景中的标准常用表达，<strong>正确答案</strong></p>
+                    <p>- B. useful 有用的，不用于描述餐厅是否有空桌</p>
+                    <p>- C. empty 空的，empty table 指桌子现在没有坐人，但在预订语境中，客人问的是能否预订，不是问桌子现在是不是空着，所以available更准确</p>
+                    <p>- D. possible 可能的，语义不通</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 单项选择 第8题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">一、单项选择 · 第8题</div>
+            <p class="question-text">
+                ( )8. —May I use your computer?<br>
+                —Sorry, I'm halfway to <span class="blank"></span> my online homework.
+            </p>
+            <div class="options">
+                <div class="option">A. do</div>
+                <div class="option">B. doing</div>
+                <div class="option">C. did</div>
+                <div class="option">D. have done</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：非谓语动词 - 固定搭配</h4>
+                    <p>1. 题目句意："——我可以用你的电脑吗？——对不起，我的在线作业才做到一半。"</p>
+                    <p>2. 关键语法点：be halfway to ... 是固定搭配，这里的 <strong>to 是介词</strong>，不是不定式符号，因此介词后必须接名词或动名词（doing）形式</p>
+                    <p>3. 选项分析：</p>
+                    <p>- A. do 动词原形，语法错误，to作为介词后不能接动词原形</p>
+                    <p>- B. doing 动名词，be halfway to doing sth 是英语中<strong>固定正确用法</strong>，表示"某事做了一半"，<strong>正确答案</strong></p>
+                    <p>- C. did 过去式，语法错误</p>
+                    <p>- D. have done 现在完成时，语法错误，这里不需要谓语动词，to是介词不是不定式符号</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. 完形填空 第2题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">二、完形填空 · 第2题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>"Well," said Eliza, "I'd rather go with you and Mom."</p>
+                <p>"We hope you can come with us, too. <span class="blank">___2.___</span> we're going to be so busy that you won't have any fun. Last week, you mentioned a football camp and Cindy would attend it. Will you <span class="blank">___1.___</span>?" Dad asked.</p>
+            </div>
+            <p class="question-text">( )2. 选出正确选项：</p>
+            <div class="options">
+                <div class="option">A. Or</div>
+                <div class="option">B. So</div>
+                <div class="option">C. But</div>
+                <div class="option">D. And</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：连词词义辨析（逻辑关系）</h4>
+                    <p>1. 上下文逻辑：前文说"We hope you can come with us, too."（我们也希望你和我们一起去），后文说"we're going to be so busy that you won't have any fun."（我们会很忙，你不会玩得开心）。</p>
+                    <p>2. 前后文是转折关系：虽然希望你去，但是因为太忙，你可能玩得不开心，所以用but表示转折。</p>
+                    <p>3. 选项分析：</p>
+                    <p>- A. Or 或者，表示选择</p>
+                    <p>- B. So 因此，表示因果</p>
+                    <p>- C. But 但是，表示转折，符合逻辑</p>
+                    <p>- D. And 和，表示并列</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. 完形填空 第8题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">二、完形填空 · 第8题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Eliza thought for a moment. "If I can't go with you, maybe the camp isn't a bad <span class="blank">___8.___</span>. Cindy is also going. At least I know her."</p>
+            </div>
+            <p class="question-text">( )8. 选出正确选项：</p>
+            <div class="options">
+                <div class="option">A. choice</div>
+                <div class="option">B. dream</div>
+                <div class="option">C. excuse</div>
+                <div class="option">D. reason</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：名词词义辨析（语境理解）</h4>
+                    <p>1. 上下文语境：Eliza不能和父母一起去意大利，那去足球夏令营也就不是一个坏的选择了。</p>
+                    <p>2. 选项分析：</p>
+                    <p>- A. choice 选择，a bad choice 表示"一个糟糕的选择"，符合语义</p>
+                    <p>- B. dream 梦想，不符合语境</p>
+                    <p>- C. excuse 借口，语义不通</p>
+                    <p>- D. reason 原因，语义不通</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. 完形填空 第9题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">二、完形填空 · 第9题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Eliza thought for a moment. "If I can't go with you, maybe the camp isn't a bad __8__. Cindy is also going. At least I know her."</p>
+                <p>...</p>
+                <p>When Eliza met Cindy at camp, they hugged and talked <span class="blank">___9.___</span>.</p>
+            </div>
+            <p class="question-text">( )9. 选出正确选项：</p>
+            <div class="options">
+                <div class="option">A. slowly</div>
+                <div class="option">B. happily</div>
+                <div class="option">C. carefully</div>
+                <div class="option">D. simply</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：副词词义辨析（语境理解）</h4>
+                    <p>1. 上下文语境：Eliza决定去足球夏令营，文章前面提到"Cindy is also going. At least I know her."，说明Eliza和Cindy认识。当Eliza在营地见到Cindy时，她们拥抱并且开心地交谈。</p>
+                    <p>2. 选项分析：</p>
+                    <p>- A. slowly 慢慢地，不符合见面时的心情</p>
+                    <p>- B. happily 开心地，符合老朋友见面的情景</p>
+                    <p>- C. carefully 仔细地，不修饰talk在这里</p>
+                    <p>- D. simply 简单地，语义不合适</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. 完形填空 第11题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">二、完形填空 · 第11题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>On the first day, the coach asked the girls to pick teams. To Eliza's <span class="blank">___10.___</span>, her teammates chose her as their leader! That afternoon, they learnt basic skills like running with the ball and <span class="blank">___11.___</span> it to each other. She tried hard, even though her legs felt shaky during the training.</p>
+            </div>
+            <p class="question-text">( )11. 选出正确选项：</p>
+            <div class="options">
+                <div class="option">A. handing</div>
+                <div class="option">B. lending</div>
+                <div class="option">C. passing</div>
+                <div class="option">D. showing</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：动词词义辨析（足球术语）</h4>
+                    <p>1. 上下文语境：这是足球训练营，她们学习带球跑和互相传球的基本技能。</p>
+                    <p>2. 足球术语：pass the ball 是足球中的"传球"，是固定表达。</p>
+                    <p>3. 选项分析：</p>
+                    <p>- A. handing 传递（物品），不用于足球</p>
+                    <p>- B. lending 借出，语义不通</p>
+                    <p>- C. passing 传递（球），pass it to each other 互相传球，正确</p>
+                    <p>- D. showing 展示，不符合语境</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. 完形填空 第12题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">二、完形填空 · 第12题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>She tried hard, even though her legs felt shaky during the training.</p>
+                <p>On the second day, the team <span class="blank">___12.___</span> more difficult skills. Eliza got surprised again by being the first to finish every task.</p>
+            </div>
+            <p class="question-text">( )12. 选出正确选项：</p>
+            <div class="options">
+                <div class="option">A. shared</div>
+                <div class="option">B. reported</div>
+                <div class="option">C. practiced</div>
+                <div class="option">D. compared</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：动词词义辨析（语境理解）</h4>
+                    <p>1. 上下文语境：第一天学习基本技能，第二天团队练习更难的技术。</p>
+                    <p>2. 选项分析：</p>
+                    <p>- A. shared 分享，不合适，训练营是练习技能不是分享技能</p>
+                    <p>- B. reported 报道，报告，完全不相关</p>
+                    <p>- C. practiced 练习，practice more difficult skills 练习更难的技术，符合语境</p>
+                    <p>- D. compared 比较，语义不通</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9. 阅读理解 第3题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">三、阅读理解 · 第3题</div>
+            <div class="context-box">
+                <h4>📖 原文语境（第④段）</h4>
+                <p>... AI can also offer students support outside classrooms. For example, it can help with homework, answer questions, and provide explanations. By analyzing students' advantages, weaknesses and learning needs, AI can make <u>suitable</u> study plans for them. This can help students achieve their learning goals easier.</p>
+            </div>
+            <p class="question-text">( )3. What does the underlined word "suitable" in Paragraph 4 mean?</p>
+            <div class="options">
+                <div class="option">A. New</div>
+                <div class="option">B. Proper</div>
+                <div class="option">C. Simple</div>
+                <div class="option">D. Different</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：词义猜测题</h4>
+                    <p>1. suitable 词意就是"合适的、适当的"，B. Proper 就是它的同义词。</p>
+                    <p>2. 通过分析学生的优劣势和需求来制定"合适的"计划，语义通顺。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 10. 阅读理解 第4题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">三、阅读理解 · 第4题</div>
+            <div class="context-box">
+                <h4>📖 原文语境（文末结尾段）</h4>
+                <p>...</p>
+                <p>AI is changing our lives in many ways. We can find AI everywhere today, from chatbots that talk with us to ride-sharing platforms that depend heavily on AI. AI is shaping and will continue to shape our everyday experiences in the future.</p>
+            </div>
+            <p class="question-text">( )4. What can we probably infer (推断) from the passage?</p>
+            <div class="options">
+                <div class="option">A. It takes a long time for chatbots to reply to users.</div>
+                <div class="option">B. Ride-sharing platforms hardly depend on AI.</div>
+                <div class="option">C. AI can only offer help inside classrooms.</div>
+                <div class="option">D. AI will continue to influence our daily lives.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：推理判断题</h4>
+                    <p>1. A错：原文说chatbots可以"reply to users at once"（立刻回复），和"花费很长时间"矛盾</p>
+                    <p>2. B错：原文说拼车平台"depend heavily on AI"（很依赖AI），和"几乎不依赖"矛盾</p>
+                    <p>3. C错：原文说AI也可以"offer students support outside classrooms"（在教室外提供帮助），和"只能在室内"矛盾</p>
+                    <p>4. D正确：原文结尾说"AI is shaping and will continue to shape our everyday experiences"，和D选项表述一致</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 11. 短文填空 第1题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">四、短文填空 · 第1题</div>
+            <p class="blank-text">
+                ...If you make mistakes, don't be upset or angry. Here's some advice that <span class="answer-blank">1.________</span> (expert) give us.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：experts</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：名词复数 & 主谓一致</h4>
+                    <p>1. 从句谓语是原形give，说明主语要用复数名词</p>
+                    <p>2. expert（专家）变复数为experts，符合语法规则</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 12. 短文填空 第3题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">四、短文填空 · 第3题</div>
+            <p class="blank-text">
+                First... Parents and teachers are understanding and have more experience. We can ask them for help <span class="answer-blank">3.________</span> they are always there to listen.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-12">
+                <div class="correct-answer">✅ 正确答案：because</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：连词 因果关系</h4>
+                    <p>1. 后文"他们总愿意倾听"是前文"我们可以求助"的原因</p>
+                    <p>2. 因果关系用because连接，逻辑通顺语法正确</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 13. 短文填空 第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">四、短文填空 · 第6题</div>
+            <p class="blank-text">
+                First, don't be afraid of making mistakes. Everyone makes mistakes. There is an old saying that failure is the mother of success.<br>
+                <span class="answer-blank">6.________</span>, an important step is to find a way to solve the problem.<br>
+                Third, ...
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-13')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-13">
+                <div class="correct-answer">✅ 正确答案：Second</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：序数词 篇章结构</h4>
+                    <p>1. 前文是First（第一点），后文是Third（第三点），因此这里是第二点</p>
+                    <p>2. 句首大写，所以填Second，符合结构</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 14. 短文填空 第7题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">四、短文填空 · 第7题</div>
+            <p class="blank-text">
+                ...When we have problems, there is always something <span class="answer-blank">7.________</span> we can do by ourselves.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-14')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-14">
+                <div class="correct-answer">✅ 正确答案：that</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：定语从句 关系代词</h4>
+                    <p>1. 先行词是something（不定代词），定语从句中关系代词必须用that</p>
+                    <p>2. that在从句中作宾语，语法完整</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 15. 短文填空 第9题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">四、短文填空 · 第9题</div>
+            <p class="blank-text">
+                Third, don't be <span class="answer-blank">9.________</span> (care) next time. ... Then they will be more and more careful.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-15')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-15">
+                <div class="correct-answer">✅ 正确答案：careless</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：词形转换 语义逻辑</h4>
+                    <p>1. 上文谈论犯错，建议下次不要"粗心"</p>
+                    <p>2. care + less → careless（粗心的），符合语义逻辑；careful（细心的）会使句意不通</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 16. 短文填空 第10题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">四、短文填空 · 第10题</div>
+            <p class="blank-text">
+                Mistakes can make us strong and we're looking forward <span class="answer-blank">10.________</span> our bright future.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-16')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-16">
+                <div class="correct-answer">✅ 正确答案：to</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：固定短语搭配</h4>
+                    <p>1. look forward to 是固定搭配，表示"期待..."，to是介词，不可省略</p>
+                    <p>2. 后接名词短语our bright future，介词to搭配正确</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 17. 补充单项选择 第10题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">五、补充单项选择 · 第10题</div>
+            <p class="question-text">
+                ( )10. —Would you please repeat your telephone number? I missed what you said just now.<br>
+                —________. It's 0351-7773975.
+            </p>
+            <div class="options">
+                <div class="option">A. I'm afraid not</div>
+                <div class="option">B. That's right</div>
+                <div class="option">C. No problem</div>
+                <div class="option">D. No way</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-17')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-17">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：情景交际</h4>
+                    <p>1. 上文请求对方重复电话号码："Would you please repeat..."，对方同意重复应该说"No problem"（没问题）。</p>
+                    <p>2. 选项分析：</p>
+                    <p>- A. I'm afraid not（恐怕不行），表示拒绝，不符合语境</p>
+                    <p>- B. That's right（没错，对的），用于同意对方观点，不用于回答请求</p>
+                    <p>- C. No problem（没问题），欣然同意对方请求，正确</p>
+                    <p>- D. No way（没门），表示拒绝，语气强硬，不正确</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 18. 完形填空 Hume 第3题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">六、完形填空（Hume老师寓言故事） · 第3题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Hume is a great teacher. Each of Hume's students was excellent. In the last year of his life, Hume had already made all his plans. One day, he ___1___ that he would die soon. So he decided to give his ___2___ lesson in the open air.</p>
+                <p>...So he decided to give his last lesson in the open air.</p>
+                <p>"What do you see in this <span class="blank">___3.___</span>?" asked Hume.</p>
+                <p>"Weeds(杂草)," The students answered together.</p>
+            </div>
+            <p class="question-text">( )3. 选出正确选项：</p>
+            <div class="options">
+                <div class="option">A. park</div>
+                <div class="option">B. field</div>
+                <div class="option">C. forest</div>
+                <div class="option">D. lake</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-18')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-18">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：名词词义辨析 语境理解</h4>
+                    <p>1. 上下文线索：后文讨论除草，文章结尾说"planting crops in the fields"（在田里种庄稼），所以Hume是在一块田里上课，问"在这块田地里你看到了什么"，填field。</p>
+                    <p>2. 选项分析：</p>
+                    <p>- A. park 公园，不适合种庄稼除草</p>
+                    <p>- B. field 田野/田地，符合语境，正确</p>
+                    <p>- C. forest 森林，不对</p>
+                    <p>- D. lake 湖，完全不相关</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 19. 完形填空 Hume 第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">六、完形填空（Hume老师寓言故事） · 第6题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>The first to speak was an elder student... The second student immediately added...</p>
+                <p>"The third student shouted, "To get rid of the weeds, <span class="blank">___6.___</span> must dig deep."</p>
+            </div>
+            <p class="question-text">( )6. 选出正确选项：</p>
+            <div class="options">
+                <div class="option">A. it</div>
+                <div class="option">B. that</div>
+                <div class="option">C. one</div>
+                <div class="option">D. none</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-19')">
+                <span>📖 查看���案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-19">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：代词词义辨析</h4>
+                    <p>1. 语境：第三位学生说"要除掉杂草，做这件事就必须深挖"。one指代"除去杂草"这件事。</p>
+                    <p>2. 选项辨析：it指代上文同一个具体事物，one指代前文提到的同类中的一件事，这里one更合适。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 20. 完形填空 Hume 第8题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">六、完形填空（Hume老师寓言故事） · 第8题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>When his students had finished answering, Hume stood up and said, "That's all. You go back and do your own ways to remove a piece of weed. And we'll come back a year later to <span class="blank">___8.___</span> your results."</p>
+            </div>
+            <p class="question-text">( )8. 选出正确选项：</p>
+            <div class="options">
+                <div class="option">A. check</div>
+                <div class="option">B. receive</div>
+                <div class="option">C. refuse</div>
+                <div class="option">D. advise</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-20')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-20">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：动词词义辨析</h4>
+                    <p>1. 语境：Hume让学生们各自用方法除草，一年后再来____结果。根据逻辑，一年后回来"检查"结果，所以填check。</p>
+                    <p>2. 选项分析：</p>
+                    <p>- A. check 检查，符合语境，正确</p>
+                    <p>- B. receive 收到，语义不通，不是"收到结果"</p>
+                    <p>- C. refuse 拒绝，完全错误</p>
+                    <p>- D. advise 建议，不对</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 21. 完形填空 Hume 第14题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">六、完形填空（Hume老师寓言故事） · 第14题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>The year passed... Hume had died. One passage in the book he had left went like this, "All of your methods are far from killing weeds. The best way to get rid of weeds is planting crops in the fields. In a sense, your <span class="blank">___14.___</span> is also a field."</p>
+            </div>
+            <p class="question-text">( )14. 选出正确选项：</p>
+            <div class="options">
+                <div class="option">A. chance</div>
+                <div class="option">B. heart</div>
+                <div class="option">C. pain</div>
+                <div class="option">D. wealth</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-21')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-21">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：名词词义辨析 比喻修辞</h4>
+                    <p>1. 这是寓言的点睛之笔：把人的心灵比作一块田野。下文紧接着说"So sow(播下) hope and happiness in the field of your heart." 明确提到了heart，前后呼应。</p>
+                    <p>2. 寓意：心灵就像田野，你种下好的东西，坏的"杂草"自然就无法生长。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 22. 完形填空 Hume 第15题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">六、完形填空（Hume老师寓言故事） · 第15题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>...In a sense, your heart is also a field. So sow(播下) hope and happiness in the field of your heart. Sow these <span class="blank">___15.___</span> things in the hearts of children and the weeds in their hearts will naturally be removed. Then they will be able to enjoy a beautiful heart and a happy life.</p>
+            </div>
+            <p class="question-text">( )15. 选出正确选项：</p>
+            <div class="options">
+                <div class="option">A. awful</div>
+                <div class="option">B. beautiful</div>
+                <div class="option">C. upset</div>
+                <div class="option">D. convenient</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-22')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-22">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：形容词词义辨析 语境线索</h4>
+                    <p>1. 上文说播种"hope and happiness"（希望和快乐），这些都是美好的事物，所以填beautiful修饰things。</p>
+                    <p>2. 下文结尾说"enjoy a beautiful heart and a happy life"，原词重复呼应，进一步确认选B。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 23. 短文填空 登山 第4题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">七、短文填空（登山事故主题） · 第4题</div>
+            <p class="blank-text">
+                ...She felt really sick and it meant she should get out of the climbing team and take a good rest.<br>
+                Though she was <span class="answer-blank">4.________</span> a dangerous situation, she made a big decision...
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-23')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-23">
+                <div class="correct-answer">✅ 正确答案：in</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：固定搭配</h4>
+                    <p>1. in a dangerous situation 是固定搭配，表示"在危险的处境中"。</p>
+                    <p>2. 题目要求填入一个适当单词，所以填介词in。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 24. 短文填空 登山 第8题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">七、短文填空（登山事故主题） · 第8题</div>
+            <p class="blank-text">
+                After she got back, we sent her to hospital to get <span class="answer-blank">7.________</span> X-ray. A nurse took her <span class="answer-blank">8.________</span>. She was having a high fever.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-24')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-24">
+                <div class="correct-answer">✅ 正确答案：temperature</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：固定搭配</h4>
+                    <p>1. take one's temperature 是固定短语，意思是"量体温"。</p>
+                    <p>2. 后文说"She was having a high fever"（她在发高烧），正好呼应量体温。</p>
+                    <p>3. 注意拼写：temperature，意思是"体温"。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 25. 短文填空 登山 第10题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">七、短文填空（登山事故主题） · 第10题</div>
+            <p class="blank-text">
+                ..."After the accident, I know the importance of never giving up to a climber." Judy said.<br>
+                "No <span class="answer-blank">10.________</span> what happens, we should learn how to control our life."
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-25')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-25">
+                <div class="correct-answer">✅ 正确答案：matter</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：固定搭配</h4>
+                    <p>1. no matter what 是固定连词短语，表示"无论什么"，引导让步状语从句。</p>
+                    <p>2. 句子意思："无论发生什么，我们都应该学会掌控自己的生活。"</p>
+                    <p>3. 固定搭配：No matter +疑问词，所以填matter。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 30</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 30;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

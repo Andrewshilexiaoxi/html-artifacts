@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阚威麟 - 中考英语错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            min-height: 100vh;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .answer-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(74, 222, 128, 0.3);
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+        }
+
+        .correct-answer {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .analysis p {
+            line-height: 1.8;
+            margin-bottom: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .analysis ul {
+            margin-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .analysis li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        /* 封面 */
+        .cover h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .cover p {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        .cover button {
+            padding: 1.2rem 3rem;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .cover button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.4);
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 1rem 2rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .navigation button:hover:not(:disabled) {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <div class="cover">
+            <h1>📚 阚威麟</h1>
+            <p>中考英语错题复习 · 第14-15章</p>
+            <p>共 <strong>14</strong> 道错题</p>
+            <button onclick="goToSlide(1)">开始复习</button>
+        </div>
+    </div>
+
+    <!-- 第1题 - 第5题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 1 题（原第5题）</div>
+            <p class="question-text">
+                (__)5. —Do you know what Robinson Crusoe did just after he got to the island?<br>
+                —Yes. The first thing __ he did was to look for some food.
+            </p>
+            <div class="options">
+                <div class="option">A. who</div>
+                <div class="option">B. which</div>
+                <div class="option">C. that</div>
+                <div class="option">D. what</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>定语从句 - 先行词被序数词修饰</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>本题考查定语从句中关系代词的用法。当先行词被序数词(the first)修饰时，关系代词只能用that，不能用which。</li>
+                        <li>本题中先行词是thing，被序数词the first修饰，因此只能选that。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>A. who：用于指人，先行词thing是物，排除。
+                            <br>B. which：不能用于先行词被序数词修饰的情况，排除。
+                            <br>D. what：不能引导定语从句，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题 - 第10题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 2 题（原第10题）</div>
+            <p class="question-text">
+                (__)10. Making short videos is a good way to record people's lives, especially short moments __ might be forgotten easily.
+            </p>
+            <div class="options">
+                <div class="option">A. who</div>
+                <div class="option">B. what</div>
+                <div class="option">C. that</div>
+                <div class="option">D. when</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>定语从句 - 先行词为物，关系代词作主语</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>先行词是short moments，指物，在定语从句中作主语(might be forgotten)。</li>
+                        <li>指物且作主语，关系代词用which或that，因此C正确。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>A. who：用于指人，先行词是物，排除。
+                            <br>B. what：不能引导定语从句，排除。
+                            <br>D. when：关系副词，在从句中作时间状语，而本题从句缺少主语，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题 - 第12题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 3 题（原第12题）</div>
+            <p class="question-text">
+                (__)12. I think talking to each other is the best way __ we can do to solve the problems.
+            </p>
+            <div class="options">
+                <div class="option">A. that</div>
+                <div class="option">B. which</div>
+                <div class="option">C. who</div>
+                <div class="option">D. whom</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>定语从句 - 先行词被最高级修饰</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>先行词是way，被形容词最高级the best修饰。根据语法规则，当先行词被最高级修饰时，关系代词只能用that。</li>
+                        <li>本题中先行词way在从句中作动词do的宾语，所以用that。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>B. which：不能用于先行词被最高级修饰的情况，排除。
+                            <br>C. who / D. whom：都用于指人，先行词way是物，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题 - 第16题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 4 题（原第16题）</div>
+            <p class="question-text">
+                (__)16. My English teacher __ way of teaching is fun and interesting.
+            </p>
+            <div class="options">
+                <div class="option">A. who</div>
+                <div class="option">B. that</div>
+                <div class="option">C. whose</div>
+                <div class="option">D. which</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>定语从句 - 关系代词作定语</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>先行词是My English teacher（指人），从句中way of teaching需要定语，表示"老师的教学方法"。</li>
+                        <li>关系代词whose在定语从句中作定语，表示所属关系，因此C正确。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>A. who：在从句中作主语或宾语，不能作定语，排除。
+                            <br>B. that：在从句中作主语或宾语，不能作定语，排除。
+                            <br>D. which：用于指物，本题先行词是人，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题 - 第17题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 5 题（原第17题）</div>
+            <p class="question-text">
+                (__)17. We will never forget those __ lost their lives for our countries.
+            </p>
+            <div class="options">
+                <div class="option">A. who</div>
+                <div class="option">B. whom</div>
+                <div class="option">C. which</div>
+                <div class="option">D. whose</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>定语从句 - 先行词those指人，关系代词作主语</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>先行词those在这里指"那些人"，在定语从句中作主语(lost their lives)。</li>
+                        <li>指人且作主语，用关系代词who，因此A正确。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>B. whom：在从句中作宾语，本题从句需要主语，排除。
+                            <br>C. which：用于指物，不用于指人，排除。
+                            <br>D. whose：在从句中作定语，本题需要主语，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题 - 第21题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 6 题（原第21题）</div>
+            <p class="question-text">
+                (__)21. Mary __ is my friend, as well as her sisters, __ Chinese in China.
+            </p>
+            <div class="options">
+                <div class="option">A. that; are studying</div>
+                <div class="option">B. which; have studied</div>
+                <div class="option">C. who; study</div>
+                <div class="option">D. who; studies</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>定语从句 + 主谓一致</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>第一空：先行词Mary指人，在定语从句中作主语，用who或that都可以，四个选项都符合。</li>
+                        <li>第二空考主谓一致：当主语后面接as well as连接的名词时，谓语动词要与主语Mary（单数）保持一致，因此用studies。</li>
+                        <li>所以正确答案是D。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>A. are studying：主语是Mary单数，谓语要用单数形式，排除。
+                            <br>B. which：先行词是人，不能用which，且have studied是复数，排除。
+                            <br>C. study：study是复数形式，与主语Mary不一致，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题 - 第24题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 7 题（原第24题）</div>
+            <p class="question-text">
+                (__)24. The Palace Museum is the best place __ I've ever visited.
+            </p>
+            <div class="options">
+                <div class="option">A. that</div>
+                <div class="option">B. which</div>
+                <div class="option">C. where</div>
+                <div class="option">D. what</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>定语从句 - 先行词被最高级修饰</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>先行词是place，被形容词最高级the best修饰。</li>
+                        <li>根据语法规则，当先行词被最高级修饰时，关系代词只能用that。</li>
+                        <li>先行词place在从句中作visited的宾语，所以用that。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>B. which：不能用于先行词被最高级修饰的情况，排除。
+                            <br>C. where：关系副词，作地点状语，本题需要宾语，排除。
+                            <br>D. what：不能引导定语从句，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第8题 - 第25题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 8 题（原第25题）</div>
+            <p class="question-text">
+                (__)25. I like the city __ the people are really kind and friendly.
+            </p>
+            <div class="options">
+                <div class="option">A. that</div>
+                <div class="option">B. which</div>
+                <div class="option">C. where</div>
+                <div class="option">D. who</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>定语从句 - 关系副词作地点状语</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>先行词是city（地点），从句the people are really kind and friendly是完整的句子，不缺少主语或宾语。</li>
+                        <li>当先行词是地点，且从句不缺主宾时，需要关系副词where在从句中作地点状语。</li>
+                        <li>因此C正确。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>A. that / B. which：关系代词，在从句中要作主语或宾语，但本题从句完整，不需要宾语，排除。
+                            <br>D. who：用于指人，先行词是地点，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题 - 第26题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 9 题（原第26题）</div>
+            <p class="question-text">
+                (__)26. Yesterday Li Ming went to the village __ his family lived ten years ago.
+            </p>
+            <div class="options">
+                <div class="option">A. which</div>
+                <div class="option">B. where</div>
+                <div class="option">C. that</div>
+                <div class="option">D. when</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>定语从句 - 关系副词作地点状语</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>先行词是the village（地点），从句his family lived ten years ago结构完整，live是不及物动词，不需要宾语。</li>
+                        <li>因此需要关系副词where在从句中作地点状语，表示"在那个村子里居住"。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>A. which / C. that：关系代词，需要在从句中作主语或宾语，但本题从句不缺宾语，排除。
+                            <br>D. when：关系副词，作时间状语，本题先行词是地点不是时间，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第10题 - 第28题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 10 题（原第28题）</div>
+            <p class="question-text">
+                (__)28. The book __ cover has a beautiful picture is Lily's.
+            </p>
+            <div class="options">
+                <div class="option">A. which</div>
+                <div class="option">B. whose</div>
+                <div class="option">C. that</div>
+                <div class="option">D. who</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>定语从句 - 关系代词作定语（所属关系）</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>先行词是The book（指物），从句中cover需要定语，表示"书的封面"。</li>
+                        <li>关系代词whose可以指人也可以指物，在定语从句中作定语，表示所属关系，因此B正确。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>A. which / C. that：在从句中作主语或宾语，不能作定语，本题需要"书的封面"的所属关系，排除。
+                            <br>D. who：用于指人，先行词book是物，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第11题 - 感叹句第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 11 题（第十五章第6题）</div>
+            <p class="question-text">
+                (__)6. __ great progress Chinese athletes made in the Summer Olympic Games in 2024!
+            </p>
+            <div class="options">
+                <div class="option">A. How</div>
+                <div class="option">B. How a</div>
+                <div class="option">C. What</div>
+                <div class="option">D. What a</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>感叹句 - 不可数名词的感叹句结构</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>感叹句有两种基本结构：What + (a/an) + 形容词 + 名词 + 主语 + 谓语！；How + 形容词/副词 + 主语 + 谓语！</li>
+                        <li>本题中中心词是great progress（巨大的进步），progress是不可数名词，不能加a/an。</li>
+                        <li>结构应该是：What + 形容词 + 不可数名词 + 主语 + 谓语！因此选What。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>A. How：How修饰形容词或副词，本题中心词是名词progress，应该用What，排除。
+                            <br>B. How a：How后面不能接a，结构错误，排除。
+                            <br>D. What a：progress是不可数名词，不能用a，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第12题 - 感叹句第17题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 12 题（第十五章第17题）</div>
+            <p class="question-text">
+                (__)17. ——__ big success the fashion show is!<br>
+                —Yes, it's really fantastic.
+            </p>
+            <div class="options">
+                <div class="option">A. How</div>
+                <div class="option">B. What</div>
+                <div class="option">C. What a</div>
+                <div class="option">D. What an</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-12">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>感叹句 - 抽象名词具体化</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>本题中心词是success，success原本是不可数名词，但当表示"一件成功的事"时，抽象名词具体化，变成可数名词，可以加a。</li>
+                        <li>结构：What a + 形容词 + 可数名词单数 + 主语 + 谓语！因此选What a。</li>
+                        <li>big是以辅音音素开头，所以用a不用an。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>A. How：How修饰形容词/副词，本题中心词是名词success，应该用What，排除。
+                            <br>B. What：success在这里抽象名词具体化，表示"一场成功的时装秀"，是可数名词单数，需要加a，排除。
+                            <br>D. What an：big是以辅音音素开头，应该用a不是an，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第13题 - 感叹句第19题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 13 题（第十五章第19题）</div>
+            <p class="question-text">
+                (__)19. __ useful advice you give me! I will follow it and try to do everything best.
+            </p>
+            <div class="options">
+                <div class="option">A. What</div>
+                <div class="option">B. What a</div>
+                <div class="option">C. How</div>
+                <div class="option">D. How a</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-13')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-13">
+                <div class="correct-answer">✅ 正确答���：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>感叹句 - 不可数名词advice</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>中心词是useful advice（有用的建议），advice是不可数名词，不能加a/an。</li>
+                        <li>结构：What + 形容词 + 不可数名词 + 主语 + 谓语！因此选What。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>B. What a：advice是不可数名词，不能用a，排除。
+                            <br>C. How：How修饰形容词或副词，本题中心词是名词advice，应该用What，排除。
+                            <br>D. How a：How后面不能接a，结构错误，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第14题 - 感叹句第21题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 14 题（第十五章第21题）</div>
+            <p class="question-text">
+                (__)21. ——__ hard work you have done!<br>
+                —It's very kind of you to say so.
+            </p>
+            <div class="options">
+                <div class="option">A. What</div>
+                <div class="option">B. How</div>
+                <div class="option">C. What a</div>
+                <div class="option">D. How a</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-14')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-14">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>感叹句 - 不可数名词work</p>
+                    <h4>解析：</h4>
+                    <ul>
+                        <li>中心词是hard work（艰苦的工作），work是不可数名词，不能加a/an。</li>
+                        <li>结构：What + 形容词 + 不可数名词 + 主语 + 谓语！因此选What。</li>
+                        <li><strong>干扰项分析：</strong>
+                            <br>B. How：How修饰形容词或副词，本题中心词是名词work，应该用What，排除。
+                            <br>C. What a：work是不可数名词，不能用a，排除。
+                            <br>D. How a：How后面不能接a，结构错误，排除。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 14</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 14;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

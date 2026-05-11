@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>程少迪竞赢12～名校1错题</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页 */
+        .cover h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .cover p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .cover button {
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .cover button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            margin-bottom: 1rem;
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+        }
+
+        /* 题目 */
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 0.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+        }
+
+        /* 填空题型 */
+        .fill-blank {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .analysis p {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <div class="cover">
+            <h1>📚 程少迪<br>竞赢12～名校1错题复习</h1>
+            <p>共 7 道错题</p>
+            <button onclick="goToSlide(1)">开始复习</button>
+        </div>
+    </div>
+
+    <!-- 第1题：第12题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 12 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>One afternoon, a father was sitting in the living room, trying to read a magazine quietly. But his little daughter kept running up to him, asking for stories and playing around, which bothered him a lot. He needed to find something to keep her ___12___ so he could focus on his reading.</p>
+            </div>
+            <div class="options">
+                <div class="option">( )12. A. free &nbsp;&nbsp; B. busy &nbsp;&nbsp; C. happy &nbsp;&nbsp; D. calm</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>形容词词义辨析 + 语境理解</p>
+                    <p><strong>解析：</strong>根据上文，女儿不停地跑到父亲身边，讲故事玩耍，这让父亲很困扰。父亲需要找点事情让女儿忙着，这样他才能专心阅读。keep sb. busy 表示"让某人忙着"，符合逻辑。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>• A. free - 让女儿闲着，她会继续打扰父亲，不符合逻辑</p>
+                    <p>• C. happy - 让女儿开心不是父亲的主要目的，目的是让她不打扰自己</p>
+                    <p>• D. calm - 让女儿镇静，父亲需要通过给她一项任务让她忙碌起来，而不是直接让她镇静</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题：第39题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 39 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>The old woman smiled and said, "I know what he's trying to do. He wants me to eat an orange. So, it's not really like I'm giving him more oranges—his kindness makes up for it."</p>
+            </div>
+            <div class="options">
+                <div class="option">( )39. What does the underlined phrase "makes up for" mean in Chinese in the passage?</div>
+                <div class="option">A. 弥补 &nbsp;&nbsp; B. 组成 &nbsp;&nbsp; C. 编造 &nbsp;&nbsp; D. 占据</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词短语词义辨析</p>
+                    <p><strong>解析：</strong>本题考查固定短语辨析，"make up for" 的意思就是"弥补，补偿"，符合原文语境：老人认为男士的善意（让她品尝橘子）已经弥补了她多给一个橘子的差额。</p>
+                    <p><strong>易混辨析：</strong></p>
+                    <p>• "make up" 可以表示"组成"，但表示"由……组成"需要用固定搭配 be made up of，这是学生最容易混淆的考点</p>
+                    <p>• "make up" 还可表示"编造、化妆"，"make up for" 专门表示弥补损失或差额</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题：第21题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 21 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>The band mixes the tianqin with popular music. They not only play the tianqin along with modern instruments, but also ___21___ traditional Zhuang folk songs into their music.</p>
+            </div>
+            <div class="options">
+                <div class="option">( )21. A. leave &nbsp;&nbsp; B. develop &nbsp;&nbsp; C. discover &nbsp;&nbsp; D. introduce</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词词义辨析 + 固定搭配</p>
+                    <p><strong>解析：</strong>本题考查动词搭配，固定结构 introduce A into B 表示"把A引入B"，完全符合语境：乐队不仅用现代乐器演奏天琴，还把壮族传统民歌引入他们的音乐创作中。</p>
+                    <p><strong>搭配记忆：</strong>introduce ... into ... 是英语中常用的固定搭配，表示"将……引入/引进……"，掌握这个搭配就能直接选出答案</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>• A. leave - 离开，留下，语义不通</p>
+                    <p>• B. develop - 发展，不能与 into 搭配表示引入</p>
+                    <p>• C. discover - 发现，不符合逻辑</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题：第32题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 32 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Like humans, not every dog can donate blood. Dogs must have the correct blood type, weigh at least 55 pounds and be younger than 8 years old. About 150 dogs take part in the program.</p>
+            </div>
+            <div class="options">
+                <div class="option">( )32. Which of the following dogs can probably donate blood?</div>
+                <div class="option">A. Mary, 3 years old, 25 pounds.</div>
+                <div class="option">B. Kate, 6 years old, 60 pounds.</div>
+                <div class="option">C. Tony, 10 years old, 56 pounds.</div>
+                <div class="option">D. Cindy, 8 years old, 50 pounds.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>细节理解题 + 信息筛选</p>
+                    <p><strong>解析：</strong>根据原文，献血狗必须满足三个条件：①血型正确 ②体重至少 55磅 ③年龄小于8岁。只有B选项Kate(6岁，60磅)同时满足这三个条件。</p>
+                    <p><strong>选项排查：</strong></p>
+                    <p>• A. Mary体重只有25磅 < 55磅，不符合</p>
+                    <p>• C. Tony年龄10岁 > 8岁，不符合要求（要求younger than 8）</p>
+                    <p>• D. Cindy年龄正好8岁，且体重50磅 < 55磅，两项都不符合</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题：第42题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 42 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>"The Eye of Binhai" is a good example of fresh thinking. The center of its atrium is a large white ball. The ball is a hall that can hold about 100 people. Around the ball are bookshelves that go from the floor to the ceiling.</p>
+            </div>
+            <div class="fill-blank">
+                <p>( )42. The ball of "The Eye of Binhai" is a hall and inside the ball are lots of bookshelves.<br>判断：T / F</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：F</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>细节理解判断题 + 方位介词辨析</p>
+                    <p><strong>解析：</strong>根据原文：这个大球本身是大厅，而书架是 Around the ball（在球的周围），并不是题目说的 inside the ball（在球里面）。题目对书架位置的描述错误，因此整个句子判断为F。</p>
+                    <p><strong>错因提醒：</strong>本题易错点在于偷换概念，把原文的"around"换成了"inside"，需要仔细核对方位介词。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题：第64题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 64 题</div>
+            <div class="fill-blank">
+                <p>Then he felt very sorry that he had fooled his friends and neighbors, and he also felt very ___64___ (disappoint) about losing his pet sheep.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：disappointed</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>分词形容词辨析 (-ed vs -ing)</p>
+                    <p><strong>解析：</strong>本题考查-ing形容词和-ed形容词的区别：</p>
+                    <p>• disappointed 表示"感到失望的"，用来形容人的感受，主语是人，符合本题语境（he felt...）</p>
+                    <p>• disappointing 表示"令人失望的"，用来形容事物，说明事物给人的感受</p>
+                    <p>这句话主语是he（指John这个人），表达"他感到失望"，所以用disappointed。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题：第65题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 65 题</div>
+            <div class="fill-blank">
+                <p>The truth ___65___ (it) is not believed from one who often has fooled.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：itself</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>反身代词作同位语</p>
+                    <p><strong>解析：</strong>本题考查反身代词的用法。这里需要用反身代词 itself 来强调主语the truth，作主语的同位语，意思是"真相本身"就不会被相信。语法结构完全正确：The truth itself ... ，强调"真相本身"。</p>
+                    <p><strong>用法补充：</strong>反身代词作同位语放在主语后，用来加强语气，这是一个常见考点。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 7</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 7;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

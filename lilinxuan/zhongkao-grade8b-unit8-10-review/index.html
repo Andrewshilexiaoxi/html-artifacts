@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李林轩中考八下8～10</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            padding-bottom: 5rem;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cover-stats {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .start-btn {
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.3);
+        }
+
+        .question-number {
+            font-size: 1.2rem;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .context-box h4 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .context-box p {
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .options {
+            margin-bottom: 0.5rem;
+        }
+
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--accent);
+        }
+
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .answer-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.3);
+        }
+
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+        }
+
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 1rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .analysis p {
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 0.8rem 2rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 2px solid var(--accent);
+            border-radius: 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .navigation button:hover:not(:disabled) {
+            background: var(--accent);
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            border-color: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .question-card {
+                padding: 1.5rem;
+            }
+
+            .question-text {
+                font-size: 1rem;
+            }
+
+            .navigation {
+                bottom: 5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress" id="progressText">封面 / 18</div>
+
+    <div class="slide active">
+        <h1>📚 李林轩中考八下8～10</h1>
+        <p class="cover-stats">共18道错题</p>
+        <button class="start-btn" onclick="goToSlide(1)">开始复习</button>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第1题</div>
+        <div class="question-card">
+            <p class="question-text">( )1. —Mr. Li, I can't understand everything in class.<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;—Don't worry! I'll ( 1 ) the main points at the end.</p>
+            <div class="options">
+                <div class="option">A. record</div>
+                <div class="option">B. receive</div>
+                <div class="option">C. require</div>
+                <div class="option">D. remember</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点：动词词义辨析</h4>
+                    <p>record 意为"记录"，符合句意"别担心！我会在最后把重点记录下来的"。record the main points 是常见搭配，意为"记录要点"。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    - B. receive: 收到，接收<br>
+                    - C. require: 需要，要求<br>
+                    - D. remember: 记得，记住</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第5题</div>
+        <div class="question-card">
+            <p class="question-text">( )5. Bringing in the Wine《将进酒》was one of Li Bai's ( 5 ) poems in the Tang Dynasty.</p>
+            <div class="options">
+                <div class="option">A. more famous</div>
+                <div class="option">B. less famous</div>
+                <div class="option">C. most famous</div>
+                <div class="option">D. the most famous</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点：形容词最高级</h4>
+                    <p>one of + 形容词最高级 + 名词复数 是固定句型，意为"最……之一"。这里已经有了名词所有格 Li Bai's，所以最高级前不需要加 the，直接用 most famous 即可。</p>
+                    <p><strong>常见错因：</strong>学生容易错选 D，记住：当最高级前面有物主代词或名词所有格修饰时，不需要再加定冠词 the。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第15题（完形填空）</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>The king realized this was ( 15 ). He became responsible and worked very hard. Finally, he understood that making his country a great place was like making a wonderland of his own.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. impossible</div>
+                <div class="option">B. crazy</div>
+                <div class="option">C. true</div>
+                <div class="option">D. wrong</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-15')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-15">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点：形容词词义辨析 + 语境理解</h4>
+                    <p>true 意为"正确的，真实的"，符合句意"国王意识到这是对的"。根据后文"He became responsible and worked very hard"可知，国王认同了天鹅说的话，认为这是正确的道理。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    - A. impossible: 不可能的<br>
+                    - B. crazy: 疯狂的<br>
+                    - D. wrong: 错误的</p>
+                    <p><strong>常见错因：</strong>学生容易错选 D，要注意根据后文国王的行为变化来判断，国王是"意识到这是对的"才会改变。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第2题（短文填空）</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 题干</h4>
+                <p>A lady asked me from which store in the airport the fruit ( 2 ) (buy).</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-blank-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-blank-2">
+                <div class="correct-answer">✅ 正确答案：was bought</div>
+                <div class="analysis">
+                    <h4>📝 考点：被动语态 + 动词时态</h4>
+                    <p>这是一个宾语从句，主句谓语动词 asked 是一般过去时，从句也要用过去的时态。the fruit 和 buy 之间是被动关系（水果被买），所以要用一般过去时的被动语态 was bought。</p>
+                    <p><strong>常见错因：</strong>学生容易忽略被动关系，直接写成 bought，要注意分析主语和动词之间的逻辑关系。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第9题（短文填空）</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 题干</h4>
+                <p>Only then did the tiny act make a difference to me. ( 9 ) a famous saying goes, "Giving is receiving."</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-blank-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-blank-9">
+                <div class="correct-answer">✅ 正确答案：As</div>
+                <div class="analysis">
+                    <h4>📝 考点：固定句型 + 定语从句</h4>
+                    <p>As a famous saying goes 是固定句型，意为"正如一句名言所说"。as 在这里引导非限制性定语从句，指代后面引号中的内容。</p>
+                    <p><strong>常见错因：</strong>学生容易写成 Like，记住：like 是介词，后面不能接句子；as 是连词，可以引导从句表示"正如"。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第2题（单项选择）</div>
+        <div class="question-card">
+            <p class="question-text">( )2. Every year, ( 2 ) farmers go to big cities to work.</p>
+            <div class="options">
+                <div class="option">A. thousand</div>
+                <div class="option">B. thousands</div>
+                <div class="option">C. thousand of</div>
+                <div class="option">D. thousands of</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-choice-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-choice-2">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点：数词用法</h4>
+                    <p>thousands of 是固定搭配，意为"成千上万的"，表示不确定的数量。thousand 前面有具体数字时用单数形式，没有具体数字且后面接 of 时，thousand 要加 s。</p>
+                    <p><strong>常见错因：</strong>学生容易混淆 thousand 的两种用法：具体数字 + thousand（单数）和 thousands of（复数+of）。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第4题（单项选择）</div>
+        <div class="question-card">
+            <p class="question-text">( )4. —How long does it take to get to the airport?<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;—For forty minutes. But it's foggy today. I'm not sure ( 4 ) the highway will be closed soon. Let's set off earlier.</p>
+            <div class="options">
+                <div class="option">A. whether</div>
+                <div class="option">B. when</div>
+                <div class="option">C. how</div>
+                <div class="option">D. why</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-choice-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-choice-4">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点：宾语从句引导词</h4>
+                    <p>whether 意为"是否"，符合句意"我不确定高速公路是否很快会关闭"。I'm not sure whether... 是常见句型，表示对某事不确定。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    - B. when: 什么时候（句中已经有 soon 表示时间，不需要再问时间）<br>
+                    - C. how: 如何，怎样<br>
+                    - D. why: 为什么</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第5题（单项选择）</div>
+        <div class="question-card">
+            <p class="question-text">( )5. —Dear, how is your homework going?<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;—Oh, mom, I've just finished ( 5 ) of it.</p>
+            <div class="options">
+                <div class="option">A. second three</div>
+                <div class="option">B. two third</div>
+                <div class="option">C. second threes</div>
+                <div class="option">D. two thirds</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-choice-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-choice-5">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点：分数表达法</h4>
+                    <p>英语中分数的表达规则是：分子用基数词，分母用序数词；当分子大于1时，分母要加 s。所以"三分之二"是 two thirds。</p>
+                    <p><strong>常见错因：</strong>学生容易搞反基数词和序数词的位置，或者忘记分子大于1时分母要加 s。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第6题（单项选择）</div>
+        <div class="question-card">
+            <p class="question-text">( )6. All of us sometimes make mistakes and nobody is ( 6 ).</p>
+            <div class="options">
+                <div class="option">A. perfect</div>
+                <div class="option">B. common</div>
+                <div class="option">C. safe</div>
+                <div class="option">D. shy</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-choice-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-choice-6">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点：形容词词义辨析</h4>
+                    <p>perfect 意为"完美的"，符合句意"我们所有人有时都会犯错，没有人是完美的"。这是一个常见的谚语句型。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    - B. common: 普通的，常见的<br>
+                    - C. safe: 安全的<br>
+                    - D. shy: 害羞的</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第1题（完形填空）</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Almost everyone likes to travel to somewhere interesting when they're free. Traveling is part of our life. Modern life is ( 1 ) without traveling.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. impossible</div>
+                <div class="option">B. possible</div>
+                <div class="option">C. good</div>
+                <div class="option">D. bad</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-cloze-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-cloze-1">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点：形容词词义辨析 + 语境理解</h4>
+                    <p>impossible 意为"不可能的"，符合句意"没有旅行的现代生活是不可能的"。根据前文"Traveling is part of our life"可知，旅行已经成为生活的一部分，所以没有旅行是不可能的。</p>
+                    <p><strong>常见错因：</strong>学生容易错选 C，要注意结合上下文语境，前文强调旅行是生活的一部分，所以用 impossible 更符合逻辑。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第6题（完形填空）</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Some people prefer to travel by sea ( 6 ) it is possible. There are large liners and river boats. You can visit many other countries and different places.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. if</div>
+                <div class="option">B. whether</div>
+                <div class="option">C. unless</div>
+                <div class="option">D. when</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-cloze-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-cloze-6">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点：连词辨析</h4>
+                    <p>if 意为"如果"，引导条件状语从句，符合句意"如果可能的话，有些人喜欢乘船旅行"。if it is possible 是常见表达，意为"如果可能的话"。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    - B. whether: 是否，引导宾语从句时可与if互换，但引导条件状语从句时只能用if<br>
+                    - C. unless: 除非，如果不，相当于if...not<br>
+                    - D. when: 当……时候，引导时间状语从句</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第11题（完形填空）</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>You can travel three or four hundred miles ( 10 ) only fifty or one hundred miles a day, just ( 11 ) you like.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. to</div>
+                <div class="option">B. from</div>
+                <div class="option">C. as</div>
+                <div class="option">D. with</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-cloze-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-cloze-11">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点：固定搭配</h4>
+                    <p>as you like 是固定搭配，意为"随你喜欢，按照你喜欢的方式"，符合句意"你可以一天行驶三四百英里或者只行驶五十到一百英里，随你喜欢"。</p>
+                    <p><strong>常见错因：</strong>学生容易错选 A 其他介词，要牢记 as you like 是固定表达，意为"按照你喜欢的方式"。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第4题（短文填空）</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 题干</h4>
+                <p>Seeing how ( 4 ) (interest) they were in Chinese tea, Ms. Wu started a weekly activity called "Tea Culture Saturdays".</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-blank-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-blank-4">
+                <div class="correct-answer">✅ 正确答案：interested</div>
+                <div class="analysis">
+                    <h4>📝 考点：形容词辨析</h4>
+                    <p>be interested in 是固定搭配，意为"对……感兴趣"。这里修饰人 they，所以用 interested（感到感兴趣的），而不是 interesting（令人感兴趣的）。</p>
+                    <p><strong>常见错因：</strong>学生容易混淆 interesting 和 interested：interesting 修饰事物，表示"有趣的"；interested 修饰人，表示"感到感兴趣的"。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第6题（短文填空）</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 题干</h4>
+                <p>She showed foreigners how to brew tea with traditional methods—from choosing the water temperature to ( 6 ) (follow) tea-making rules.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-blank-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-blank-6">
+                <div class="correct-answer">✅ 正确答案：following</div>
+                <div class="analysis">
+                    <h4>📝 考点：非谓语动词</h4>
+                    <p>from...to... 是固定搭配，意为"从……到……"。to 在这里是介词，后面要接动名词形式，所以 follow 要变成 following。</p>
+                    <p><strong>常见错因：</strong>学生容易把 to 当成不定式符号，直接写动词原形 follow，要注意 from...to... 结构中的 to 是介词。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第2题（单项选择）</div>
+        <div class="question-card">
+            <p class="question-text">( )2. My sweater is very old. I'm considering ( 2 ) a new one tomorrow morning.</p>
+            <div class="options">
+                <div class="option">A. buy</div>
+                <div class="option">B. buying</div>
+                <div class="option">C. to buy</div>
+                <div class="option">D. bought</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-choice-2b')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-choice-2b">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点：非谓语动词</h4>
+                    <p>consider doing sth. 是固定搭配，意为"考虑做某事"。consider 后面要接动名词作宾语，不能接不定式。</p>
+                    <p><strong>常见错因：</strong>学生容易错选 C，要记住常见的接动名词作宾语的动词：consider, enjoy, finish, mind, practice 等。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第3题（单项选择）</div>
+        <div class="question-card">
+            <p class="question-text">( )3. —We've been waiting here ( 3 ) two o'clock.<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;—Sorry, I was about to come but my car broke suddenly.</p>
+            <div class="options">
+                <div class="option">A. since</div>
+                <div class="option">B. before</div>
+                <div class="option">C. as</div>
+                <div class="option">D. though</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-choice-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-choice-3">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点：连词辨析 + 现在完成时</h4>
+                    <p>since 意为"自从"，后面接时间点，常与现在完成时连用。We've been waiting 是现在完成进行时，since two o'clock 表示"从两点开始一直等到现在"。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    - B. before: 在……之前，不符合语境<br>
+                    - C. as: 当……时候，因为<br>
+                    - D. though: 虽然，尽管</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第8题（单项选择）</div>
+        <div class="question-card">
+            <p class="question-text">( )8. —Would you like to have ( 8 ) apples?<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;—No, thanks. I've had enough.</p>
+            <div class="options">
+                <div class="option">A. other two</div>
+                <div class="option">B. another two</div>
+                <div class="option">C. more two</div>
+                <div class="option">D. two others</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-choice-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-choice-8">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点：代词用法</h4>
+                    <p>another + 数词 + 名词复数 是固定结构，意为"再……，又……"，相当于"数词 + more + 名词复数"。another two apples 意为"再来两个苹果"。</p>
+                    <p><strong>常见错因：</strong>学生容易搞混顺序，正确的两种表达是：another two apples 或者 two more apples，不能说 other two 或 more two。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="question-number">第10题（单项选择）</div>
+        <div class="question-card">
+            <p class="question-text">( )10. My hometown is the place ( 10 ) holds all my sweet memories.</p>
+            <div class="options">
+                <div class="option">A. which</div>
+                <div class="option">B. who</div>
+                <div class="option">C. what</div>
+                <div class="option">D. /</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-choice-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-choice-10">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点：定语从句</h4>
+                    <p>这是一个定语从句，先行词是 the place（地点），关系词在从句中作主语，所以要用 which 或 that。关系代词在定语从句中作主语时不能省略，所以不能选 D。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    - B. who: 指代人，不能指代地点<br>
+                    - C. what: 不能引导定语从句<br>
+                    - D. /: 关系代词作主语时不能省略</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 18;
+
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

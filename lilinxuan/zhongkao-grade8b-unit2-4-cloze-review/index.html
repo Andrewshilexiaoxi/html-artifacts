@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李林轩 中考八下Unit 2-Unit 4 完形错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页 */
+        .cover h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .cover p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+        }
+        .cover button {
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.1rem;
+            color: var(--accent-light);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+
+        /* 题目文本 */
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 1.2rem;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* 空格 */
+        .blank {
+            display: inline-block;
+            min-width: 80px;
+            border-bottom: 2px solid var(--text-secondary);
+            margin: 0 0.3rem;
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .analysis p {
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <div class="cover">
+            <h1>📚 李林轩</h1>
+            <h2>中考八下 Unit 2-Unit 4<br>完形错题复习</h2>
+            <p>共 24 道错题</p>
+            <button onclick="goToSlide(1)">开始复习</button>
+        </div>
+    </div>
+
+    <!-- 第1题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第1题</div>
+            <p class="question-text">
+                ( )8. ________ a writer for her school newspaper is a dream ________ for Jenny.
+            </p>
+            <div class="options">
+                <div class="option">A. Be; comes true</div>
+                <div class="option">B. Being; came true</div>
+                <div class="option">C. Be; coming true</div>
+                <div class="option">D. Being; come true</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>非谓语动词 + 固定搭配</p>
+                    <p>第一空需要动名词作主语，因此用Being，排除A和C选项。</p>
+                    <p>第二空<strong>a dream come true</strong>是固定搭配，译为"梦想成真"，come true是过去分词短语作后置定语修饰dream，结构正确。</p>
+                    <p>B选项的错误在于"came true"是谓语形式，不能作后置定语修饰dream，一个简单句只能有一个谓语动词（这里is已经是谓语）。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第2题</div>
+            <p class="question-text">
+                ( )9. He ________ his parents. Especially, he is like his mother.
+            </p>
+            <div class="options">
+                <div class="option">A. takes after</div>
+                <div class="option">B. looks after</div>
+                <div class="option">C. runs after</div>
+                <div class="option">D. comes after</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词短语辨析</p>
+                    <p>根据后文"he is like his mother"可知，题目表达的是"他长得像他父母"。</p>
+                    <p><strong>takes after</strong> 意为"(外貌或性格)像"，符合语境。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    B. looks after 意为"照顾"，不符合句意<br>
+                    C. runs after 意为"追逐"，不符合句意<br>
+                    D. comes after 意为"跟随"，不是正确表达</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第3题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>When I was a young boy, our whole family lived in my grandma's old house right beside a set of railroad tracks. The whole house would shake each time the train rolled by. That made me kind of uncomfortable, but living there was something <span class="blank"></span>2<span class="blank"></span>, too. There were few trains, so I often spent my summer afternoons walking down the tracks.</p>
+            </div>
+            <p class="question-text">
+                ( )2. A. tiring  B. moving  C. surprising  D. interesting
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>语境理解 + 形容词辨析</p>
+                    <p>前文说"那让我有点不舒服"，用but转折，后半句应该表示"但是也有有趣的地方"。</p>
+                    <p><strong>interesting</strong> 表示"有趣的"，符合转折后的语境。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    A. tiring 累的，与转折逻辑不符<br>
+                    B. moving 感人的，不符合语境<br>
+                    C. surprising 令人惊讶的，语义不恰当</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第4题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>That made me kind of uncomfortable, but living there was something interesting, too. <span class="blank"></span>3<span class="blank"></span> trains, so I often spent my summer afternoons walking down the tracks. It was a nice way to kill time because I didn't have any toys.</p>
+            </div>
+            <p class="question-text">
+                ( )3. A. many  B. few  C. no  D. lots of
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>语境理解 + 形容词辨析</p>
+                    <p>根据后文"所以我经常花夏日午后沿着铁轨散步"可以推断，因为火车少，作者才可以这么做。</p>
+                    <p><strong>few</strong> 表示"很少，不多"，符合语境逻辑。学生错选A是没有理解上下文因果关系。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第5题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>I can remember the first time I tried to walk on a single(单个的) rail. The steel rails were very narrow so I didn't have many <span class="blank"></span>6<span class="blank"></span> to succeed. First I held my arms out and watched my feet as I walked.</p>
+            </div>
+            <p class="question-text">
+                ( )6. A. decisions  B. chances  C. choices  D. wishes
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词词义辨析 + 固定搭配</p>
+                    <p>句子意思是"钢轨很窄，所以我成功的机会不多"。</p>
+                    <p><strong>have chances to do sth.</strong> 是固定搭配，表示"有机会做某事"，符合语义。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    A. decisions 决定，make decisions是固定搭配，不与have搭配<br>
+                    C. choices 选择，不符合语境<br>
+                    D. wishes 愿望，语义不符</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第6题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>The steel rails were very narrow so I didn't have many chances to succeed. First I held my arms out and <span class="blank"></span>7<span class="blank"></span> my feet as I walked. This only led to me falling off after a few steps.</p>
+            </div>
+            <p class="question-text">
+                ( )7. A. packed  B. threw  C. kicked  D. watched
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词词义辨析 + 语境理解</p>
+                    <p>根据下文描述，作者一开始走铁轨时，伸开双臂，边走边看着脚来保持平衡。</p>
+                    <p><strong>watched</strong> 表示"注视，看着"，符合练习走铁轨时保持平衡的动作逻辑。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    A. packed 打包，语义完全不符<br>
+                    B. threw 扔，不符合动作描述<br>
+                    C. kicked 踢，不符合正常走路动作</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第7题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>First I held my arms out and watched my feet as I walked. This only led to me falling off after a few <span class="blank"></span>8<span class="blank"></span>. I decided to walk backwards once but quickly fell and hurt my ankle.</p>
+            </div>
+            <p class="question-text">
+                ( )8. A. steps  B. cries  C. trips  D. tasks
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词词义辨析</p>
+                    <p>走了几步之后就掉下去了。</p>
+                    <p><strong>after a few steps</strong> 表示"几步之后"，符合走路场景。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    B. cries 哭，不符合语境<br>
+                    C. trips 旅行/绊倒，语义不符<br>
+                    D. tasks 任务，与句意无关</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第8题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第8题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Many years has passed. I now realize that it gave me a valuable lesson about living. You can't <span class="blank"></span>12<span class="blank"></span> life watching every step you take or every choice you make. Looking behind you is even worse.</p>
+            </div>
+            <p class="question-text">
+                ( )12. A. come out  B. depend on  C. make up  D. go through
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词短语辨析</p>
+                    <p>本句是哲理总结：你不能总是盯着每一步/每个选择来过日子。</p>
+                    <p><strong>go through</strong> 表示"经历，过（日子）"，符合语义。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    A. come out 出来/出版，语义不符<br>
+                    B. depend on 依靠，不符合句意<br>
+                    C. make up 编造/化妆，语义不符</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第9题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>"I always get a strong feeling of satisfaction when I help others. The signs of joy on their faces make me excited. I believe I can make a <span class="blank"></span>8<span class="blank"></span> (different) to this world," she often says.</p>
+            </div>
+            <p class="question-text">
+                8. ________ (different)
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：difference</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>词性转换 + 固定搭配</p>
+                    <p>固定短语 <strong>make a difference</strong> 表示"起作用，有影响"，这里需要名词形式。</p>
+                    <p>different 是形容词，不能作 make 的宾语。</p>
+                    <p><strong>make a difference</strong> 是八年级重点短语，必须牢记。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第10题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第10题</div>
+            <p class="question-text">
+                ( )3. —Would you like to go shopping with me, Mum?<br>
+                —If Dad doesn't go, ________
+            </p>
+            <div class="options">
+                <div class="option">A. neither do I</div>
+                <div class="option">B. so do I</div>
+                <div class="option">C. neither will I</div>
+                <div class="option">D. so will I</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>倒装句</strong> + <strong>条件状语从句的时态</strong></p>
+                    <p>1. 否定意义的附和用 <strong>neither</strong>，肯定用so。前文说"爸爸不去"，是否定，所以用neither，排除B和D。</p>
+                    <p>2. 这是 <strong>if引导的条件状语从句</strong>，遵循"主将从现"原则：从句用一般现在时(doesn't go)，主句要用一般将来时，所以助动词用 <strong>will</strong>。</p>
+                    <p>学生错选A是只记住了neither的用法，忽略了时态规则。</p>
+                    <p><strong>总结：</strong> Neither + 助动词 + 主语，表示"……也不"；助动词时态要和主句一致。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第11题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第11题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>One normal day after 20 years, the company received a letter from an old woman over 70 years old. She also sent 100 white marigold seeds along with the __4__. On that day, the amazing news <span class="blank"></span>5<span class="blank"></span> like wildfire. As a result, the old woman became a new focus.</p>
+            </div>
+            <p class="question-text">
+                ( )5. A. disappeared  B. spread  C. reported  D. broke
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词词义辨析 + 固定搭配</p>
+                    <p><strong>spread like wildfire</strong> 是固定表达，表示"像野火一样迅速传播"，形容消息传播得很快，符合语境。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    A. disappeared 消失，与后文"成为焦点"矛盾<br>
+                    C. reported 报道，主语是news，不能说news reported like wildfire<br>
+                    D. broke 打破，语义不符</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第12题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第12题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>The woman was a flower lover. When she first heard the company's announcement 20 years <span class="blank"></span>7<span class="blank"></span>, she got very excited. She thought she could grow her own white marigolds.</p>
+            </div>
+            <p class="question-text">
+                ( )7. A. later  B. instead  C. forward  D. ago
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-12">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>副词词义辨析 + 时态</p>
+                    <p>这里说的是"20年前她第一次听到这个消息"，发生在过去，所以用 <strong>... years ago</strong> 表示"...年前"。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    A. later "...年以后"，用于过去将来，不符合语境<br>
+                    B. instead 代替，语义不符<br>
+                    C. forward 向前，语义不符</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第13题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第13题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>When she first heard the company's announcement 20 years ago, she got very excited. She thought she could grow her own white marigolds. But her children <span class="blank"></span>8<span class="blank"></span> her. After all, she knew nothing about seed genetics(遗传学).</p>
+            </div>
+            <p class="question-text">
+                ( )8. A. believed  B. supported  C. accepted  D. doubted
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-13')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-13">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词词义辨析 + 语境理解</p>
+                    <p>老太太想种出白色金盏花，但孩子们不相信她能做到，因为她不懂遗传学。<strong>doubted</strong> 表示"怀疑，不相信"，符合语境。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    A. believed 相信，与转折but逻辑不符<br>
+                    B. supported 支持，同样与转折逻辑不符<br>
+                    C. accepted 接受，语义不符</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第14题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第14题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>She thought she could grow her own white marigolds. But her children doubted her. After all, she knew <span class="blank"></span>9<span class="blank"></span> about seed genetics(遗传学). So her dream of growing white marigolds was just that—a dream.</p>
+            </div>
+            <p class="question-text">
+                ( )9. A. something  B. everything  C. nothing  D. anything
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-14')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-14">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>不定代词辨析 + 语境理解</p>
+                    <p>孩子们怀疑她，原因是她对种子遗传学<strong>一无所知</strong>。<strong>knew nothing about</strong> 表示"对……一无所知"，符合因果逻辑。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    A. something 一些东西，语义不通<br>
+                    B. everything 一切，与句意相反<br>
+                    D. anything 任何东西，用于否定句但语义不对</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第15题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第15题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>A year later, when the marigolds bloomed(开花), she chose one of the most suitable flowers and took <span class="blank"></span>12<span class="blank"></span> seeds. She planted these seeds and waited another year for them to bloom.</p>
+            </div>
+            <p class="question-text">
+                ( )12. A. their  B. her  C. its  D. his
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-15')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-15">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>物主代词辨析</p>
+                    <p>这里指代上文的 <strong>one of the most suitable flowers</strong>（单数），所以用 <strong>its</strong> 表示"它的（种子）"。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    A. their 它们的，复数，指代错误<br>
+                    B. her 她的，指代人老太太，不是花<br>
+                    D. his 他的，性别不对</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第16题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第16题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Such a difficult problem was solved by an old woman who didn't understand genetics. Was it a <span class="blank"></span>15<span class="blank"></span>? Be patient and hold on. Thus, even the most common seed can grow into a miracle.</p>
+            </div>
+            <p class="question-text">
+                ( )15. A. wonder  B. change  C. treat  D. question
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-16')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-16">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词词义辨析 + 语境理解</p>
+                    <p>一个不懂遗传学的老太太解决了这么难的问题，这难道不是<strong>奇迹</strong>吗？<strong>wonder</strong> 表示"奇迹，奇事"，与后文的miracle呼应。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    A. change 改变，语义不符<br>
+                    C. treat 款待/治疗，语义不符<br>
+                    D. question 问题，前文说问题已经解决了，不可能还是问题</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第17题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第17题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p><strong>Teddy Bear Picnic</strong><br>
+                ★We have lots of interesting stories.<br>
+                ★We also have many activities including making your own teddy bear.<br>
+                ★We will prepare some fresh fruit, milk and bread for you.</p>
+            </div>
+            <p class="question-text">
+                ( )4. You can't ________ at the teddy bear picnic.
+            </p>
+            <div class="options">
+                <div class="option">A. listen to some interesting stories</div>
+                <div class="option">B. make a teddy bear with your parents</div>
+                <div class="option">C. drink some milk</div>
+                <div class="option">D. take part in some activities</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-17')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-17">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>细节理解题</p>
+                    <p>原文说"including making your own teddy bear"，意思是"制作你自己的泰迪熊"，并没有说可以和父母一起制作。B选项多了"with your parents"，原文未提及，因此这是你不能做的事情。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    A. 原文明确说"We have lots of interesting stories"，可以听故事，正确<br>
+                    C. 原文说"We will prepare some fresh fruit, milk and bread"，可以喝牛奶，正确<br>
+                    D. 原文说"We also have many activities"，可以参加活动，正确</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第18题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第18题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p><strong>Teddy Bear Picnic</strong><br>
+                ★The picnic is suitable for children under 5.<br>
+                Time: 1:00 p.m.-2:30 p.m.<br>
+                ★We will prepare some fresh fruit, milk and bread for you.<br>
+                For more information: You can call 554-8874 or visit our website: www. teddybearfamily.com</p>
+            </div>
+            <p class="question-text">
+                ( )5. Which of the following is TRUE according to the passage?
+            </p>
+            <div class="options">
+                <div class="option">A. An 8-year-old kid can take part in the picnic</div>
+                <div class="option">B. Tom can go to the picnic at 10 a.m.</div>
+                <div class="option">C. They will only provide some fruit and water</div>
+                <div class="option">D. We can know the website of the picnic</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-18')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-18">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>细节判断题</p>
+                    <p>原文最后说"You can call 554-8874 or visit our website: www. teddybearfamily.com"，因此我们可以知道这次野餐的网址，D选项正确。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    A. 原文说"suitable for children under 5"，只适合5岁以下儿童，8岁孩子不能参加，错误<br>
+                    B. 时间是"1:00 p.m.-2:30 p.m."，下午1点开始，上午10点不能去，错误<br>
+                    C. 提供"fresh fruit, milk and bread"，不止提供水果，也不是water，错误</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第19题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第19题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>In our life, there are many chores we can do, such as taking out the rubbish, 1. folding clothes and sweeping the floor. By doing chores, we can understand the meaning of independence and 2. ________ (fair). We can also learn to take care of ourselves.</p>
+            </div>
+            <p class="question-text">
+                2. ________ (fair)
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-19')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-19">
+                <div class="correct-answer">✅ 正确答案：fairness</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>词性转换</p>
+                    <p>这里和independence并列，需要名词形式。fair是形容词，转化为名词 <strong>fairness</strong>（公平）。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第20题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第20题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>I did my best to provide help, but he still threw a helpless look at me. Under much 8. ________ (press) he fell ill.</p>
+            </div>
+            <p class="question-text">
+                8. ________ (press)
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-20')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-20">
+                <div class="correct-answer">✅ 正确答案：pressure</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>词性转换</p>
+                    <p>这里需要名词形式，press是动词，表示"按压"，转化为名词 <strong>pressure</strong>（压力）。</p>
+                    <p><strong>under much pressure</strong> 是固定搭配，表示"在很大压力下"。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第21题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第21题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>The young musician, Mr. Hughes, was rolled onto the stage in his wheelchair and began to play the piano. His fingers danced across the keys as he made beautiful music. He then began to sing as he played, and it was even more <span class="blank"></span>4<span class="blank"></span>. It brought me a kind of special feeling that I really couldn't explain. And his smile was magic.</p>
+            </div>
+            <p class="question-text">
+                ( )4. A. terrible  B. healthy  C. attractive  D. popular
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-21')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-21">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>形容词词义辨析 + 语境理解</p>
+                    <p>前文描述他弹奏音乐很美妙，边弹边唱，音乐"更加吸引人"。<strong>attractive</strong> 表示"吸引人的"，符合语境。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    A. terrible 糟糕的，与前文描述的美好音乐矛盾<br>
+                    B. healthy 健康的，形容音乐不合适<br>
+                    D. popular 受欢迎的，文中没说是否受欢迎，只是说音乐本身吸引人</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第22题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第22题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>I thought of a saying, "Life is about learning to <span class="blank"></span>11<span class="blank"></span> in the rain!" That is, whenever we meet difficulty, we needn't run away from it.</p>
+            </div>
+            <p class="question-text">
+                ( )11. A. dance  B. jump  C. walk  D. talk
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-22')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-22">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词词义辨析 + 文章主旨理解</p>
+                    <p>这是一句富有哲理的谚语"Life is about learning to dance in the rain"，意思是"生活要学会在雨中起舞"，比喻坦然面对困难，符合文章主旨。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    B. jump 跳跃，不符合这个谚语的固定表达<br>
+                    C. walk 走路，与语境不符<br>
+                    D. talk 说话，语义完全不符</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第23题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第23题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>"He said, 'God made me blind and unable to walk. However, he gave me the ability—the music talent. So I have the great opportunity to meet new people.' I thought of a saying, ... We all face difficult situations in our life. ... During hard times, do we spend too much time feeling sorry for ourselves, or can we, with <span class="blank"></span>15<span class="blank"></span> learn how to cheer up?</p>
+            </div>
+            <p class="question-text">
+                ( )15. A. thanks  B. understanding  C. gift  D. care
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-23')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-23">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词词义辨析 + 语境理解</p>
+                    <p>根据上文，男孩虽然残疾，但他说上帝还是给了他音乐天赋，让他有机会认识新朋友，这体现了他的<strong>感恩心态</strong>。因此这里问"我们能否怀着感恩之心学会振作？"，<strong>thanks</strong> 符合上下文语境。</p>
+                    <p><strong>干扰项分析：</strong><br>
+                    B. understanding 理解，语义不如thanks贴切，没有呼应上文男孩的感恩态度<br>
+                    C. gift 礼物，语义不符<br>
+                    D. care 关心，搭配不对</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 24</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 24;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>李佳衡必修一welcome unit p6~11错题</title>
+<style>
+:root {
+  --paper:#f8f2e7; --paper-2:#fffdf7; --ink:#283647; --muted:#6f7782;
+  --blue:#2f66a3; --blue-soft:#e6f0fb; --green:#347b62; --orange:#b36b38;
+  --line:#dccfbc; --shadow:0 18px 50px rgba(72,55,28,.13);
+}
+* { box-sizing:border-box; }
+body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","Microsoft YaHei",Arial,sans-serif; color:var(--ink); background:var(--paper); overflow:hidden; }
+.slide { display:none; width:100vw; height:100vh; height:100dvh; padding:34px 44px 86px; background:radial-gradient(circle at 12% 10%, #fffaf0 0, var(--paper) 45%, #f3ead9 100%); }
+.slide.active { display:block; }
+.slide-inner { height:100%; max-width:1280px; margin:0 auto; }
+.cover { display:flex; align-items:center; justify-content:center; text-align:left; }
+.cover-card { width:min(1050px,92vw); background:var(--paper-2); border:1.5px solid var(--line); border-radius:30px; padding:58px 66px; box-shadow:var(--shadow); }
+.kicker,.eyebrow { color:var(--blue); font-weight:800; letter-spacing:.08em; font-size:15px; text-transform:uppercase; }
+h1 { margin:18px 0 16px; font-size:54px; line-height:1.12; }
+h2 { margin:8px 0 0; font-size:34px; }
+h3 { margin:0 0 18px; color:var(--blue); font-size:22px; }
+.subtitle { color:var(--orange); font-size:24px; font-weight:700; }
+.start-btn,.answer-toggle,.nav-btn { border:0; border-radius:18px; cursor:pointer; font-weight:800; transition:.18s ease; }
+.start-btn { margin-top:32px; padding:17px 28px; background:var(--blue); color:white; font-size:20px; }
+.start-btn:hover,.nav-btn:hover,.answer-toggle:hover { transform:translateY(-2px); filter:brightness(1.03); }
+.slide-header { height:78px; display:flex; align-items:flex-start; justify-content:space-between; }
+.page-num { color:var(--muted); font-weight:700; padding-top:15px; }
+.two-col { display:grid; grid-template-columns:1.05fr .95fr; gap:28px; height:calc(100% - 84px); }
+.card { background:rgba(255,253,247,.96); border:1.5px solid var(--line); border-radius:28px; box-shadow:var(--shadow); padding:28px; overflow:auto; }
+.question-text { font-size:27px; line-height:1.62; margin:0 0 18px; }
+.question-text.small-gap { margin-top:10px; font-size:22px; color:var(--blue); }
+.options { display:grid; gap:12px; margin-top:16px; }
+.option { padding:14px 16px; border-radius:16px; background:var(--blue-soft); color:#244b77; font-size:22px; line-height:1.35; font-weight:650; }
+.answer-card { display:flex; flex-direction:column; }
+.answer-toggle { width:100%; display:flex; justify-content:space-between; align-items:center; padding:18px 22px; background:linear-gradient(135deg,var(--green),#55a281); color:white; font-size:22px; margin-bottom:18px; }
+.answer-section { max-height:0; opacity:0; overflow:hidden; transition:max-height .45s ease, opacity .35s ease; }
+.answer-section.show { max-height:1200px; opacity:1; }
+.correct-answer { font-size:26px; color:var(--green); font-weight:900; padding:16px 18px; background:#e9f5ef; border-radius:18px; margin-bottom:16px; }
+.point { font-size:21px; color:var(--blue); font-weight:850; margin-bottom:16px; }
+.analysis,.extra { font-size:19px; line-height:1.58; color:var(--ink); }
+.analysis h4,.extra h4 { margin:14px 0 6px; color:var(--orange); font-size:20px; }
+.extra { border-top:1px dashed var(--line); margin-top:14px; padding-top:8px; }
+.progress { position:fixed; top:18px; right:24px; z-index:20; background:rgba(255,253,247,.88); border:1px solid var(--line); border-radius:999px; padding:8px 14px; color:var(--muted); font-weight:800; backdrop-filter:blur(8px); }
+.navigation { position:fixed; left:50%; bottom:34px; transform:translateX(-50%); display:flex; gap:14px; z-index:20; }
+.nav-btn { padding:12px 19px; background:var(--ink); color:white; font-size:16px; }
+.nav-btn:disabled { opacity:.35; cursor:not-allowed; transform:none; }
+.dot-navigation { position:fixed; left:0; right:0; bottom:0; min-height:28px; padding:7px 120px; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; background:rgba(248,242,231,.9); border-top:1px solid var(--line); z-index:19; }
+.dot { width:12px; height:12px; border-radius:999px; border:1px solid var(--blue); background:transparent; cursor:pointer; transition:.18s ease; }
+.dot:hover { transform:scale(1.35); background:var(--blue-soft); }
+.dot.active { width:26px; background:var(--blue); }
+.dot.cover-dot { border-color:var(--green); }
+.dot.cover-dot.active { background:var(--green); }
+.help { position:fixed; left:24px; bottom:38px; color:var(--muted); font-size:13px; z-index:20; }
+@media (max-width:900px) { body { overflow:auto; } .slide { height:auto; min-height:100vh; overflow:auto; padding:22px 16px 105px; } .two-col { grid-template-columns:1fr; height:auto; } h1 { font-size:36px; } .question-text { font-size:22px; } .progress,.help { display:none; } }
+
+
+/* 修复翻页显示：必须让非 active 页面彻底隐藏，避免 .cover 的 display:flex 覆盖 .slide display:none */
+.slide:not(.active) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.slide.active {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+.slide.cover.active {
+  display: flex !important;
+}
+
+</style>
+</head>
+<body>
+  <section class="slide cover active">
+    <div class="cover-card">
+      <div class="kicker">Interactive HTML PPT · 错题复习</div>
+      <h1>李佳衡必修一welcome unit p6~11错题</h1>
+      <div class="subtitle">共 17 道错题｜点击圆点可跳转｜点击按钮显示答案解析</div>
+      <button class="start-btn" onclick="goToSlide(1)">开始复习 →</button>
+    </div>
+  </section>
+  
+    <section class="slide" data-title="第3题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 01</span><h2>第3题</h2></div>
+          <div class="page-num">1 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">Either you or one of your students ( 3 ) (be) to attend the meeting that is due tomorrow.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-1')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+              <div class="correct-answer">✅ 正确答案：is</div>
+              <div class="point">🎯 考点：主谓一致；be to do 结构</div>
+              <div class="analysis"><h4>📝 解析</h4><p>either...or... 连接两个主语时，谓语动词遵循“就近原则”，要和离谓语最近的主语保持一致。这里离空格最近的是 one of your students，中心词是 one，为第三人称单数，所以用 is。同时，be to do 表示“按计划、安排将要做某事”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>常见错因：学生容易只看到 you，误以为谓语用 are；但 either...or... 要看离谓语最近的主语。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第8题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 02</span><h2>第8题</h2></div>
+          <div class="page-num">2 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">I carefully take notes in class and do experiments ( 8 ) company with my partners after class.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-2')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+              <div class="correct-answer">✅ 正确答案：in</div>
+              <div class="point">🎯 考点：固定搭配</div>
+              <div class="analysis"><h4>📝 解析</h4><p>in company with sb. 是固定短语，意为“和某人一起；与某人一道”。句意为“我在课堂上认真记笔记，课后和我的伙伴们一起做实验”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>补充说明: in company with 与 together with / along with 意思接近，但本题考查固定搭配中的介词 in。<br>常见错因：学生容易按中文“和……一起”直接想到 with，但完整搭配是 in company with sb.。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第2题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 03</span><h2>第2题</h2></div>
+          <div class="page-num">3 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">Ms Moore tried her best to make a connection with each student in her classroom. She knew what we liked and used that information to bring our interests into the classroom. She brought various types of books to our classroom and allowed us to take them home. It was she that helped my love for reading grow.</p><p class="question-text small-gap">( )2. What can we learn about Ms Moore from paragraph 3?  </p><div class="options"><div class="option">A. She was good at writing books.</div><div class="option">B. She inspired the writer’s love for reading.</div><div class="option">C. She donated many books to poor students.</div><div class="option">D. She was the favorite teacher of the whole class.</div></div>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-3')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+              <div class="correct-answer">✅ 正确答案：B</div>
+              <div class="point">🎯 考点：阅读理解之细节理解题</div>
+              <div class="analysis"><h4>📝 解析</h4><p>题目问“从第 3 段我们可以了解到 Ms Moore 什么？”。原文关键句是 It was she that helped my love for reading grow.，意思是“正是她帮助我对阅读的热爱逐渐增长”。这与 B 项 She inspired the writer’s love for reading. “她激发了作者对阅读的热爱”一致。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>干扰项分析：<br>- A. She was good at writing books. 原文只说她带来各种书，并没有说她擅长写书。<br>- C. She donated many books to poor students. 原文说她把书带到教室并允许学生带回家，没有提到“捐给贫困学生”。<br>- D. She was the favorite teacher of the whole class. 原文说她是作者最喜欢的老师，不是全班最喜欢的老师。<br>常见错因：学生容易看到文章中出现 favorite teacher 就误选 D，但 D 把“作者个人喜欢”扩大成了“全班都喜欢”，属于范围扩大。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第3题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 04</span><h2>第3题</h2></div>
+          <div class="page-num">4 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">Thomas Edison had done thousands of ( 3 ) (实验) before he invented the electric light bulb.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-4')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+              <div class="correct-answer">✅ 正确答案：experiments</div>
+              <div class="point">🎯 考点：可数名词复数</div>
+              <div class="analysis"><h4>📝 解析</h4><p>experiment 意为“实验”，是可数名词。空前有 thousands of，表示“成千上万的”，后面要接可数名词复数，所以填 experiments。句意为“托马斯·爱迪生在发明电灯泡之前做过成千上万次实验”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>常见错因：学生容易只根据中文“实验”写单数 experiment，但看到 thousands of 时必须想到后面用复数名词。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第5题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 05</span><h2>第5题</h2></div>
+          <div class="page-num">5 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">The government should set up a special ( 5 ) (组织) to protect the earth.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-5')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+              <div class="correct-answer">✅ 正确答案：organization</div>
+              <div class="point">🎯 考点：名词拼写；冠词后的可数名词单数</div>
+              <div class="analysis"><h4>📝 解析</h4><p>organization 意为“组织，机构”。空前有 a special，说明这里需要填一个可数名词单数，所以用 organization。句意为“政府应该建立一个专门的组织来保护地球”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>补充说明: 英式拼写也可写作 organisation，但中学考试中通常采用美式拼写 organization，要注意 -zation 的拼写。<br>常见错因：学生容易把单词拼写成 organisation 或漏写中间字母，平时要重点记住 organize → organization 的词形变化。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第6题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 06</span><h2>第6题</h2></div>
+          <div class="page-num">6 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">The children all have very different ( 6 ), but they still make friends with each other.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-6')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+              <div class="correct-answer">✅ 正确答案：personalities</div>
+              <div class="point">🎯 考点：可数名词复数</div>
+              <div class="analysis"><h4>📝 解析</h4><p>personality 意为“性格，个性”。句中主语是 The children，并且有 very different 修饰，表示“非常不同的性格”，所以要用复数形式 personalities。句意为“这些孩子性格各不相同，但他们仍然彼此成为朋友”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>常见错因：学生容易写成单数 personality，但这里强调多个孩子各自不同的性格，要用复数；还要注意 personality 变复数时把 y 变 i 再加 -es。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第7题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 07</span><h2>第7题</h2></div>
+          <div class="page-num">7 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">The ( 7 ) look on her face told us that the girl was scared to death.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-7')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+              <div class="correct-answer">✅ 正确答案：frightened</div>
+              <div class="point">🎯 考点：-ed 形容词与 -ing 形容词辨析</div>
+              <div class="analysis"><h4>📝 解析</h4><p>frightened 意为“害怕的，受惊的”，通常用来描述人的感受或人的表情。句中说“她脸上的表情告诉我们这个女孩吓得要死”，所以应填 frightened look，表示“害怕的表情”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>补充说明: frightening 意为“令人害怕的”，通常描述事物本身具有让人害怕的特点，如 a frightening story。本题描述的是女孩脸上的表情，体现她感到害怕，因此用 frightened。<br>常见错因：学生容易混淆 -ed 和 -ing 形容词：-ed 多表示“人感到……的”，-ing 多表示“令人……的”。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第1题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 08</span><h2>第1题</h2></div>
+          <div class="page-num">8 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">The letter they were looking forward to ( 1 ) (arrive) finally.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-8')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+              <div class="correct-answer">✅ 正确答案：arrived</div>
+              <div class="point">🎯 考点：句子结构分析；一般过去时</div>
+              <div class="analysis"><h4>📝 解析</h4><p>本句主语是 The letter，后面的 they were looking forward to 是省略关系代词的定语从句，修饰 the letter，意思是“他们一直期待的那封信”。真正的谓语动词是空格处的 arrive。根据句意和语境，动作发生在过去，所以用一般过去时 arrived。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>补充说明: look forward to 中的 to 是介词，后面省略的关系代词作 to 的宾语，即 the letter that/which they were looking forward to。<br>常见错因：学生容易被 looking forward to 误导，以为 to 后面要接动名词；但这里空格不是接在 to 后，而是句子的主句谓语。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第2题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 09</span><h2>第2题</h2></div>
+          <div class="page-num">9 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">( 2 ) annoyed me was that my laptop kept shutting itself down.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-9')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+              <div class="correct-answer">✅ 正确答案：What</div>
+              <div class="point">🎯 考点：主语从句；what 引导名词性从句</div>
+              <div class="analysis"><h4>📝 解析</h4><p>空格到 was 之前是主语从句，整个结构是 What annoyed me was that...，意思是“让我恼火的是……”。这里 what 在从句中作主语，表示“……的事情”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>补充说明: that 也可以引导名词性从句，但 that 在从句中不作成分；本题空格后面直接是谓语 annoyed，缺少主语，所以要用 What。<br>常见错因：学生容易看到后面的 was that... 就误以为前面也填 That，但要先判断从句是否缺成分。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第6题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 10</span><h2>第6题</h2></div>
+          <div class="page-num">10 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">We were deeply impressed ( 6 ) the painting that day.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-10')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+              <div class="correct-answer">✅ 正确答案：by / with</div>
+              <div class="point">🎯 考点：固定搭配</div>
+              <div class="analysis"><h4>📝 解析</h4><p>be impressed by / with sth. 都可以表示“对某物印象深刻；被某物打动”。句意为“那天我们对那幅画印象非常深刻”。因此这里填 by 或 with 都符合语法和语义。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>补充说明: impressed by 更强调“被……打动/影响”，impressed with 更强调“对……有好印象”。在中学题中二者常可互换，若试卷给单一答案，应以标准答案为准。<br>常见错因：学生容易只记住中文“对……印象深刻”，但英语中不能直接用 to，要记住固定搭配 be impressed by/with。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第10题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 11</span><h2>第10题</h2></div>
+          <div class="page-num">11 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">More hot water, more rest and less ( 10 ) (anxious) will help you recover soon.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-11')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+              <div class="correct-answer">✅ 正确答案：anxiety</div>
+              <div class="point">🎯 考点：词性转换；形容词变名词</div>
+              <div class="analysis"><h4>📝 解析</h4><p>anxious 是形容词，意为“焦虑的”；空前有 less，这里需要名词，表示“更少的焦虑”，所以应填名词 anxiety。句意为“多喝热水、多休息、少焦虑会帮助你很快恢复”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>补充说明: anxiety 是抽象名词，通常作不可数名词使用，所以用 less anxiety，不能写成 fewer anxiety。<br>常见错因：学生容易直接填形容词 anxious，但并列结构中 More hot water, more rest and less anxiety 都是名词短语，词性要保持一致。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第1题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 12</span><h2>第1题</h2></div>
+          <div class="page-num">12 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">In order to ( 1 ) (给……留下好印象) his colleagues, he bought some fruit for them.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-12')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-12">
+              <div class="correct-answer">✅ 正确答案：make a good impression on</div>
+              <div class="point">🎯 考点：固定搭配</div>
+              <div class="analysis"><h4>📝 解析</h4><p>make a good impression on sb. 是固定短语，意为“给某人留下好印象”。句中 In order to 后接动词原形，所以用 make。句意为“为了给同事们留下好印象，他给他们买了一些水果”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>常见错因：学生容易漏掉介词 on。注意“给某人留下印象”英文搭配是 make an impression on sb.，不是 make an impression to sb.。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第2题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 13</span><h2>第2题</h2></div>
+          <div class="page-num">13 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">They prefer to be ( 2 ) (不打扰), living a quiet and peaceful life in the countryside.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-13')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-13">
+              <div class="correct-answer">✅ 正确答案：left alone</div>
+              <div class="point">🎯 考点：固定表达；被动语态</div>
+              <div class="analysis"><h4>📝 解析</h4><p>leave sb. alone 意为“不打扰某人；让某人独自待着”。本句主语 They 和 leave alone 之间是被动关系，且空前已有 to be，所以填过去分词短语 left alone。句意为“他们更愿意不被打扰，在乡下过安静祥和的生活”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>常见错因：学生容易只写 alone，但中文提示是“不打扰”，对应固定表达应为 be left alone。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第4题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 14</span><h2>第4题</h2></div>
+          <div class="page-num">14 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">Many foreigners are ( 4 ) (盼望着) coming to China to admire our amazing culture.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-14')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-14">
+              <div class="correct-answer">✅ 正确答案：looking forward to</div>
+              <div class="point">🎯 考点：固定搭配；现在进行时</div>
+              <div class="analysis"><h4>📝 解析</h4><p>look forward to doing sth. 意为“盼望做某事”。空前有 are，表示现在进行时，所以 look 要变成 looking。同时 to 是介词，后面接动名词 coming。句意为“许多外国人正盼望着来到中国欣赏我们令人惊叹的文化”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>常见错因：学生容易把 to 当成不定式符号，误写成 look forward to come；要牢记 look forward to + doing。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第6题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 15</span><h2>第6题</h2></div>
+          <div class="page-num">15 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">Anne will ( 6 ) a book ( 6 ) Mary (和……交换……) tomorrow morning.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-15')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-15">
+              <div class="correct-answer">✅ 正确答案：exchange; with</div>
+              <div class="point">🎯 考点：固定搭配</div>
+              <div class="analysis"><h4>📝 解析</h4><p>exchange sth. with sb. 意为“和某人交换某物”。空前有 will，后面接动词原形，所以第一空填 exchange；表示“和 Mary 交换”用介词 with。句意为“Anne 明天早上将和 Mary 交换一本书”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>补充说明: 若表达“用 A 换 B”，常用 exchange A for B；本题强调“和某人交换某物”，所以用 exchange sth. with sb.。<br>常见错因：学生容易把介词写成 for。本题后面接的是人 Mary，所以应填 with。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第9题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 16</span><h2>第9题</h2></div>
+          <div class="page-num">16 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">There are a lot of activities for us to choose from ( 9 ) (在校园里).</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-16')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-16">
+              <div class="correct-answer">✅ 正确答案：on campus</div>
+              <div class="point">🎯 考点：固定表达；地点介词</div>
+              <div class="analysis"><h4>📝 解析</h4><p>on campus 是固定表达，意为“在校园里”。句意为“校园里有很多活动供我们选择”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>常见错因：学生容易按中文直译写成 in campus，但英语中“在校园里”通常说 on campus。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+    <section class="slide" data-title="第10题">
+      <div class="slide-inner">
+        <header class="slide-header">
+          <div><span class="eyebrow">错题 17</span><h2>第10题</h2></div>
+          <div class="page-num">17 / 17</div>
+        </header>
+        <main class="two-col">
+          <article class="card question-card">
+            <h3>📌 题干</h3>
+            <p class="question-text">He measured his feet with a ruler and then ( 10 ) (写下) his size on a piece of paper.</p>
+          </article>
+          <article class="card answer-card">
+            <button class="answer-toggle" onclick="toggleAnswer(event, 'answer-17')">
+              <span>📖 查看答案与解析</span><span class="arrow">▼</span>
+            </button>
+            <div class="answer-section" id="answer-17">
+              <div class="correct-answer">✅ 正确答案：wrote down</div>
+              <div class="point">🎯 考点：动词短语；一般过去时</div>
+              <div class="analysis"><h4>📝 解析</h4><p>write down 意为“写下，记下”。句中前面的动词是 measured，说明动作发生在过去；and 连接并列谓语，所以 write 也要用过去式 wrote。句意为“他用尺子量了脚，然后把尺码写在一张纸上”。</p></div>
+              <div class="extra"><h4>💡 补充 / 常见错因</h4><p>常见错因：学生容易只写动词原形 write down，但要注意与前面的 measured 保持时态一致，用一般过去时 wrote down。</p></div>
+            </div>
+          </article>
+        </main>
+      </div>
+    </section>
+  <div class="progress" id="progressText">封面 / 17</div>
+  <div class="help">← → 键翻页 · 鼠标点击底部圆点跳转 · 答案按钮展开解析</div>
+  <div class="navigation">
+    <button class="nav-btn" id="prevBtn" onclick="prevSlide()">← 上一页</button>
+    <button class="nav-btn" id="nextBtn" onclick="nextSlide()">下一页 →</button>
+  </div>
+  <div class="dot-navigation" id="dotNav"></div>
+<script>
+let currentSlide = 0;
+const slides = Array.from(document.querySelectorAll('.slide'));
+const totalSlides = slides.length;          // 包含封面
+const totalQuestions = totalSlides - 1;     // 不含封面
+
+function createDotNavigation() {
+  const dotNav = document.getElementById('dotNav');
+  dotNav.innerHTML = '';
+  slides.forEach((slide, index) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = index === 0 ? 'dot cover-dot' : 'dot';
+    dot.title = index === 0 ? '封面' : `第 ${index} 题`;
+    dot.addEventListener('click', () => goToSlide(index));
+    dotNav.appendChild(dot);
+  });
+}
+
+function updateDots() {
+  document.querySelectorAll('.dot').forEach((dot, index) => {
+    dot.classList.toggle('active', index === currentSlide);
+  });
+}
+
+function showSlide(index) {
+  const target = Number(index);
+  if (!Number.isInteger(target) || target < 0 || target >= totalSlides) return;
+
+  slides.forEach((slide, i) => {
+    slide.classList.toggle('active', i === target);
+    // 双保险：直接写入 inline display，避免旧 CSS 规则导致页面不切换
+    slide.style.display = i === target ? (slide.classList.contains('cover') ? 'flex' : 'block') : 'none';
+    slide.style.visibility = i === target ? 'visible' : 'hidden';
+  });
+  currentSlide = target;
+
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  if (prevBtn) prevBtn.disabled = currentSlide === 0;
+  if (nextBtn) nextBtn.disabled = currentSlide === totalSlides - 1;
+
+  const progress = document.getElementById('progressText');
+  if (progress) {
+    progress.textContent = currentSlide === 0
+      ? `封面 / ${totalQuestions}`
+      : `${currentSlide} / ${totalQuestions}`;
+  }
+
+  updateDots();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goToSlide(index) { showSlide(index); }
+function prevSlide() { showSlide(currentSlide - 1); }
+function nextSlide() { showSlide(currentSlide + 1); }
+
+function toggleAnswer(event, id) {
+  event.stopPropagation();
+  const section = document.getElementById(id);
+  if (!section) return;
+  section.classList.toggle('show');
+  const arrow = event.currentTarget.querySelector('.arrow');
+  if (arrow) arrow.textContent = section.classList.contains('show') ? '▲' : '▼';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') prevSlide();
+  if (e.key === 'ArrowRight') nextSlide();
+});
+
+let touchStartX = 0;
+document.addEventListener('touchstart', e => {
+  if (e.touches && e.touches.length) touchStartX = e.touches[0].clientX;
+});
+document.addEventListener('touchend', e => {
+  if (!e.changedTouches || !e.changedTouches.length) return;
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
+});
+
+createDotNavigation();
+showSlide(0);
+</script>
+</body>
+</html>

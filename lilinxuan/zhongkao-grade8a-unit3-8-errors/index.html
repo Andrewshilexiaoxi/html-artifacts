@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李林轩 八上Unit3~8 错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            overflow-y: auto;
+        }
+        .slide.active { display: flex; }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        /* 题目文本 */
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        /* 选项 */
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            transition: background 0.3s;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 空格外貌 */
+        .blank {
+            display: inline-block;
+            min-width: 80px;
+            border-bottom: 3px solid var(--accent);
+            text-align: center;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .answer-toggle:hover {
+            transform: scale(1.02);
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .analysis p {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .navigation button:hover:not(:disabled) {
+            background: var(--accent-light);
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        /* 封面 */
+        .cover h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .cover p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+        .cover button {
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            background: var(--success);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .cover button:hover {
+            background: var(--success);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <div class="cover">
+            <h1>📚 李林轩</h1>
+            <h1>中考英语八上错题复习</h1>
+            <p>Unit 3 ~ Unit 8 • 共 22 道错题</p>
+            <button onclick="goToSlide(1)">开始复习</button>
+        </div>
+    </div>
+
+    <!-- 1. 选择题 第7题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 3-Unit 4 | 选择题 第7题</div>
+            <p class="question-text">
+                ( )7. The more ________ you drive, the ________ you are.
+            </p>
+            <div class="options">
+                <div class="option">A. careful; safer</div>
+                <div class="option">B. carefully; safer</div>
+                <div class="option">C. carefully; safely</div>
+                <div class="option">D. careful; safely</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>形容词和副词的用法辨析 + 固定句型 "the + 比较级, the + 比较级"</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 第一个空修饰动词drive，需要用副词carefully，不能用形容词careful，因此排除A和D选项。</p>
+                    <p>2. 第二个空放在系动词are之后作表语，需要用形容词比较级safer。safely是副词，不能作表语，因此排除C选项。</p>
+                    <p>3. 句型 "the + 比较级, the + 比较级" 表示"越……，就越……"，所以正确答案是B。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 完形填空 第1题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 3-Unit 4 | 完形填空 第1题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>There are purple clothes, purple handbags, purple bicycles, purple furniture, even purple computers! So purple is one of the most <span class="blank">1. </span> colors today. But in the past, purple was a very expensive and unusual color. Let's take a look at the rich <span class="blank">2. </span> of the color purple.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. peaceful</div>
+                <div class="option">B. popular</div>
+                <div class="option">C. exciting</div>
+                <div class="option">D. serious</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>形容词词义辨析 + 上下文语境理解</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 根据前文列举了各种各样紫色的物品，说明紫色现在很"流行"，popular符合语境。</p>
+                    <p>2. 其他选项分析：peaceful和平的，exciting令人兴奋的，serious严肃的，都不符合上文列举多种紫色用品所表达的语境。</p>
+                    <p>3. "one of the most popular colors" 是常见搭配，表示"最流行的颜色之一"。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 完形填空 第2题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 3-Unit 4 | 完形填空 第2题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>There are purple clothes, purple handbags, purple bicycles, purple furniture, even purple computers! So purple is one of the most popular <span class="blank">1. </span> colors today. But in the past, purple was a very expensive and unusual color. Let's take a look at the rich <span class="blank">2. </span> of the color purple.</p>
+                <p>Some scientists believe that the first plants to appear on Earth over 500 million years ago <span class="blank">3. </span> looked purple, not green.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. history</div>
+                <div class="option">B. style</div>
+                <div class="option">C. research</div>
+                <div class="option">D. product</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词词义辨析 + 篇章逻辑理解</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 下文从5亿年前一直讲到16世纪再到现代，讲述的是紫色的历史发展过程，因此history"历史"最符合语境。</p>
+                    <p>2. 其他选项分析：style风格，research研究，product产品，都不能概括下文从古代到现代的内容跨度。</p>
+                    <p>3. "take a look at the rich history" 表示"让我们来看看紫色丰富的历史"，语义通顺。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. 完形填空 第5题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 3-Unit 4 | 完形填空 第5题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Plants today are green <span class="blank">4. </span> they use green chlorophyll (叶绿素) to produce energy. But these <span class="blank">5. </span> plants probably used something called retinal, which is a dark purple color.</p>
+                <p>During the time of the Roman Empire (37 BC—476 AD), it was very <span class="blank">6. </span> to make purple dye(染料).</p>
+            </div>
+            <div class="options">
+                <div class="option">A. ugly</div>
+                <div class="option">B. huge</div>
+                <div class="option">C. early</div>
+                <div class="option">D. tall</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>形容词词义辨析 + 时间线索推理</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 上文提到"over 500 million years ago"（5亿多年前），这是地球很早的时期，因此说"这些早期的植物"，early符合时间线索。</p>
+                    <p>2. 其他选项分析：ugly丑陋的，huge巨大的，tall高的，都与上文提到的时间语境无关。</p>
+                    <p>3. 逻辑连贯：5亿年前最早出现的植物 → 这些早期植物 → 下文接着讲不同时期紫色染料的发展，时间线索清晰。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. 完形填空 第10题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 3-Unit 4 | 完��填空 第10题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>In 16th century England, purple was <span class="blank">10. </span> for the kings' family members. Queen Elizabeth I's clothes were purple, but ordinary people were not allowed to <span class="blank">11. </span> the color.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. even</div>
+                <div class="option">B. never</div>
+                <div class="option">C. seldom</div>
+                <div class="option">D. only</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>副词词义辨析 + 上下文逻辑</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 根据后半句"but ordinary people were not allowed to..."（普通人不允许……），说明紫色只供王室成员使用，only"仅仅，只"符合逻辑。</p>
+                    <p>2. 其他选项分析：even甚至，never从不，seldom很少，都无法构成转折对比关系。</p>
+                    <p>3. "be only for sb."表示"只供某人使用"，正好对应下文普通人不允许使用，形成对比，逻辑正确。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. 完形填空 第11题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 3-Unit 4 | 完形填空 第11题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>In 16th century England, purple was only <span class="blank">10. </span> for the kings' family members. Queen Elizabeth I's clothes were purple, but ordinary people were not allowed to <span class="blank">11. </span> the color.</p>
+                <p>In 1856, William Perkin, an 18-year-old <span class="blank">12. </span> student, noticed something strange while doing an experiment(实验).</p>
+            </div>
+            <div class="options">
+                <div class="option">A. wear</div>
+                <div class="option">B. sell</div>
+                <div class="option">C. change</div>
+                <div class="option">D. make</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词词义辨析 + 语境理解</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 上文说王室衣服是紫色的，按照逻辑，普通人不允许"穿"这种颜色，wear符合服装穿着的语境。</p>
+                    <p>2. 其他选项分析：sell卖，change改变，make制作，都不符合"王室专用，普通人不能穿"的社会习俗语境。</p>
+                    <p>3. 搭配正确："wear the color"表示"穿这种颜色（的衣服）"，表达自然准确。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. 完形填空 第13题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 3-Unit 4 | 完形填空 第13题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>In 1856, William Perkin, an 18-year-old <span class="blank">12. </span> student, noticed something strange while doing an experiment(实验). The chemicals(化学药品) he used to clean his instruments <span class="blank">13. </span> with the chemicals he used in his experiment and produced a bright purple color. This <span class="blank">14. </span> led Perkin to start a company...</p>
+            </div>
+            <div class="options">
+                <div class="option">A. compared</div>
+                <div class="option">B. mixed</div>
+                <div class="option">C. collected</div>
+                <div class="option">D. kept</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词词义辨析 + 化学实验语境</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 根据语境 "clean his instruments ... with the chemicals he used in his experiment" 以及 "produced a bright purple color"，两种化学品混合产生了新的颜色，因此mixed"混合"正确。</p>
+                    <p>2. 其他选项分析：compared比较，collected收集，kept保持，都不能解释两种化学品产生新颜色的原因。</p>
+                    <p>3. 科学常识：在实验中不同化学药品混合发生反应产生新物质，是常见的实验现象，符合语境。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. 短文填空 第5题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 3-Unit 4 | 短文填空 第5题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>As long as we are free, 3. ____ of us like reading books and doing sports, we think it is necessary for us to enrich our lives.</p>
+                <p>4. ____ we have the same hobby, we have some differences. For example, she is more outgoing and likes making friends. She is talented <span class="blank">5. </span> acting. She acts in our school play many times.</p>
+            </div>
+            <p style="margin: 1rem 0; color: var(--text-secondary);">提示：纯空格题</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：in</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>固定搭配</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 本题考查固定短语 "be talented in..."，意思是"在……方面有天赋"。</p>
+                    <p>2. 这个短语是固定搭配，介词必须用in，不能用其他介词。</p>
+                    <p>3. 句子意思：她在表演方面有天赋，符合上下文语境，表达正确。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9. 短文填空 第10题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 3-Unit 4 | 短文填空 第10题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>She is serious about photography(摄影) in 9. ____ (she) free time. She takes lots of wonderful photos. Last year, she won the first prize in our city photo competition. I am lucky that I have <span class="blank">10. </span> a good friend.</p>
+            </div>
+            <p style="margin: 1rem 0; color: var(--text-secondary);">提示：纯空格题</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：such</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>形容词用法 + 固定句式</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. "such + a/an + 形容词 + 名词" 是固定结构，表示"如此……的一个……"。"such a good friend"表示"这么好的一个朋友"，符合句意。</p>
+                    <p>2. 也可以理解为so/such的区别：such修饰名词短语，so修饰形容词，此处中心词是friend，因此用such。</p>
+                    <p>3. 句子意思：我很幸运我有这样一个好朋友，表达了作者对朋友的赞美，语义通顺自然。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 10. 选择题 第4题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 5-Unit 6 | 选择题 第4题</div>
+            <p class="question-text">
+                ( )4. —It's too hot. Would you mind my ________ the window?<br>
+                —________. Do it as you like, please.
+            </p>
+            <div class="options">
+                <div class="option">A. to open; OK</div>
+                <div class="option">B. opening; Certainly not</div>
+                <div class="option">C. opening; Of course</div>
+                <div class="option">D. open; Good idea</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>非谓语动词 + 情景交际</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 第一空考查固定结构 "Would you mind one's doing sth?"，表示"你介意某人做某事吗？"，mind后面需要接动名词(-ing)形式，因此排除A和D选项。</p>
+                    <p>2. 第二空根据答语"Do it as you like, please."（请随意，你想怎么做就怎么做），说明对方"不介意"，Certainly not表示"当然不介意"，符合语境。</p>
+                    <p>3. Of course表示"当然介意"，与下文语境矛盾，因此排除C选项。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 11. 完形填空 第1题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 5-Unit 6 | 完形填空 第1题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Teddy was one of Mrs. Green's students. He didn't play with others and wore <span class="blank">1. </span> clothes. Mrs. Green didn't like Teddy very much. However, when she <span class="blank">2. </span> Teddy's past record, she was very surprised.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. beautiful</div>
+                <div class="option">B. dirty</div>
+                <div class="option">C. new</div>
+                <div class="option">D. funny</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>形容词词义辨析 + 上下文推理</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 根据前文 "He didn't play with others"（他不与别人一起玩）以及后文 "Mrs. Green didn't like Teddy very much"（格林老师不太喜欢泰迪），可以推断Teddy穿着"脏"衣服，dirty符合这种负面描述。</p>
+                    <p>2. 其他选项分析：beautiful漂亮的，new新的，都是褒义词，不会导致老师不喜欢；funny有趣的，也不符合语境。</p>
+                    <p>3. 逻辑连贯：不爱交朋友 + 衣着脏 → 老师不喜欢，因果关系合理。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 12. 完形填空 第8题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 5-Unit 6 | 完形填空 第8题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Mrs. Green <span class="blank">8. </span> to help him. Then, she paid more attention to Teddy. As Teddy studied with Mrs. Green, his mind seemed to get <span class="blank">9. </span>. With Mrs. Green's encouragement, Teddy overcame the <span class="blank">10. </span> in his study and life.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. decided</div>
+                <div class="option">B. controlled</div>
+                <div class="option">C. continued</div>
+                <div class="option">D. kept</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-12">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词词义辨析 + 动作顺序推理</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 前文提到Green老师看完Teddy过去的记录感到惊讶，了解到他的家庭情况，接下来自然是"决定"帮助他，decided符合动作发展顺序。</p>
+                    <p>2. 其他选项分析：controlled控制，continued继续（之前没有帮助过，谈不上继续），kept保持，都不符合语境逻辑。</p>
+                    <p>3. "decide to do sth."表示"决定做某事"，搭配正确，语义通顺：格林老师决定帮助他。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 13. 完形填空 第10题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 5-Unit 6 | 完形填空 第10题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Mrs. Green decided <span class="blank">8. </span> to help him. Then, she paid more attention to Teddy. As Teddy studied with Mrs. Green, his mind seemed to get <span class="blank">9. </span>. With Mrs. Green's encouragement, Teddy overcame the <span class="blank">10. </span> in his study and life. By the end of the year, he became one of the best students in the class.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. different</div>
+                <div class="option">B. differences</div>
+                <div class="option">C. difficult</div>
+                <div class="option">D. difficulties</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-13')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-13">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>词义辨析 + 词形变化</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 这里需要名词作overcome（克服）的宾语，排除A（形容词）和C（形容词）。</p>
+                    <p>2. differences表示"差异，不同"，difficulties表示"困难"。根据语境，克服学习和生活中的困难，因此difficulties正确。</p>
+                    <p>3. 学生学习生活中遇到的困难不止一个，所以用复数difficulties。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 14. 短文填空 第1题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 5-Unit 6 | 短文填空 第1题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>My uncle Jason is a fireman. Today I visited him at the fire station. It was a nice day full <span class="blank">1. </span> new things to see and learn!</p>
+                <p>The fire station looks like a house.</p>
+            </div>
+            <p style="margin: 1rem 0; color: var(--text-secondary);">提示：纯空格题</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-14')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-14">
+                <div class="correct-answer">✅ 正确答案：of</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>固定搭配</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 本题考查固定短语 "be full of..."，意思是"充满……"。</p>
+                    <p>2. 这是固定搭配，介词必须用of，不能用其他词。</p>
+                    <p>3. 句子意思：这是美好的一天，充满了可以看和学习的新事物，符合文章开头作者去消防站拜访的语境。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 15. 短文填空 第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 5-Unit 6 | 短文填空 第6题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>When Uncle Jason showed me his bedroom, an emergency call 5. ____ (sudden) came in—a fire in a house! He and some other firemen rushed out as soon as possible. When they <span class="blank">6. </span> (return), Uncle Jason told me they saved a family's pet and put out the fire.</p>
+                <p>Firemen work in shifts(轮班) and each shift lasts twenty-four 7. ____ (hour).</p>
+            </div>
+            <p style="margin: 1rem 0; color: var(--text-secondary);">提示词：return</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-15')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-15">
+                <div class="correct-answer">✅ 正确答案：returned</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词时态（一般过去时）</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 全文叙述的是过去发生的事（Today I visited...），整体用一般过去时。</p>
+                    <p>2. 这句话描述过去一连串动作：电话进来 → 冲出去 → 回来，因此return也要用过去式returned。</p>
+                    <p>3. 时态一致原则：上下文动词都是过去式，此处保持一致。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 16. 短文填空 第8题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 5-Unit 6 | 短文填空 第8题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Firemen work in shifts(轮班) and each shift lasts twenty-four 7. ____ (hour). On busy days, they may spend all night fighting fires. They also help people in many other ways. Last night, an old couple found a snake in their house and Uncle Jason <span class="blank">8. </span> (send) to offer help.</p>
+                <p>Uncle Jason says the hardest part for him is being away from 9. ____ (he) family.</p>
+            </div>
+            <p style="margin: 1rem 0; color: var(--text-secondary);">提示词：send</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-16')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-16">
+                <div class="correct-answer">✅ 正确答案：was sent</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>被动语态（一般过去时）</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 根据语境，Uncle Jason是"被派去"提供帮助，主语Uncle Jason和动词send之间是被动关系，需要用被动语态。</p>
+                    <p>2. 事件发生在last night（昨晚），是过去时间，所以用一般过去时的被动语态：was sent。</p>
+                    <p>3. 主动语态send在这里逻辑不通，必须使用被动语态才符合语义。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 17. 完形填空 第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 7-Unit 8 | 完形填空 第6题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Sitting in a small hutong in Dongcheng district, Beijing, the library is just seven square meters in size. It <span class="blank">6. </span> thousands of books about different subjects.</p>
+                <p>The library was moved because of money problems. The <span class="blank">7. </span> of the library has changed three times.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. coats</div>
+                <div class="option">B. grades</div>
+                <div class="option">C. tapes</div>
+                <div class="option">D. houses</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-17')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-17">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词词义辨析 + 语境理解（熟词生义）</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 前文说图书馆占地面积只有7平方米，it在这里指代图书馆，图书馆容纳存放书籍，houses在此处用作动词，表示"容纳，贮藏"，符合语境。</p>
+                    <p>2. 其他选项分析：coats（名词）外套，grades分数/分级，tapes磁带，都不符合"图书馆存放书籍"的语义。</p>
+                    <p>3. 容易错选C，但tapes与书籍无关。这里考查熟词生义，house作动词表示"容纳"。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 18. 完形填空 第12题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 7-Unit 8 | 完形填空 第12题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Xu recalled the <span class="blank">11. </span> of one reader who borrowed an English book on Chinese garden history. Later, the reader <span class="blank">12. </span> passed it to a neighbor, who took it to Germany. "Just imagine it: that book started out from a small hutong, and <span class="blank">13. </span> all the way to Europe. The <span class="blank">14. </span> cannot be seen, yet powerful, " Xu said.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. naturally</div>
+                <div class="option">B. suddenly</div>
+                <div class="option">C. nervously</div>
+                <div class="option">D. coldly</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-18')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-18">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>副词词义辨析 + 逻辑推理</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 根据故事线：一个读者借了书 → 自然而然地传给邻居 → 邻居带到德国，这个传递过程是自然发生的，因此naturally"自然地"符合逻辑。</p>
+                    <p>2. 其他选项分析：suddenly突然地，nervously紧张地，coldly冷淡地，都不符合书籍在读者之间自然传递的语境。</p>
+                    <p>3. 这个故事体现了流动图书馆书籍传递的理念，自然传递符合主旨。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 19. 完形填空 第14题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 7-Unit 8 | 完形填空 第14题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Xu recalled the <span class="blank">11. </span> of one reader who borrowed an English book on Chinese garden history. Later, the reader <span class="blank">12. </span> passed it to a neighbor, who took it to Germany. "Just imagine it: that book started out from a small hutong, and <span class="blank">13. </span> all the way to Europe. The <span class="blank">14. </span> cannot be seen, yet powerful, " Xu said.</p>
+                <p>It's the most <span class="blank">15. </span> thing Xu has done for the society.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. language</div>
+                <div class="option">B. prize</div>
+                <div class="option">C. reason</div>
+                <div class="option">D. journey</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-19')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-19">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词词义辨析 + 比喻修辞理解</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 前文说这本书从小胡同出发，一路到欧洲，这是书籍的"旅程"，journey符合这个比喻描述。</p>
+                    <p>2. 其他选项分析：language语言，prize奖品，reason原因，都不能概括这本书从北京到德国的传递过程。</p>
+                    <p>3. 这句话意思：这段旅程看不见，但力量强大，表达了知识传播的影响力，符合文章主旨。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 20. 短文填空 第3题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 7-Unit 8 | 短文填空 第3题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>In the future, we won't use paper to write on. And there will be fewer cars and 1. ____ (little) pollution. Everyone will play a part in 2. ____ (save) the earth.</p>
+                <p>People will have more free time <span class="blank">3. </span> the robots help with the housework, for example, on Thanksgiving, they will prepare a big turkey meal for us and we will celebrate the day with our family members...</p>
+            </div>
+            <p style="margin: 1rem 0; color: var(--text-secondary);">提示：纯空格题</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-20')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-20">
+                <div class="correct-answer">✅ 正确答案：because</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>状语从句连接词</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 前文"People will have more free time"（人们会有更多空闲时间），后文"the robots help with the housework"（机器人帮忙做家务），后文是前文的原因，因此用because引导原因状语从句。</p>
+                    <p>2. 逻辑关系：因为机器人帮做家务，所以人们有更多空闲时间，因果关系清晰，because正确。</p>
+                    <p>3. 其他连接词如when/if虽然语法可行，但联系上下文，这里强调未来生活变化的原因，because最恰当。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 21. 短文填空 第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 7-Unit 8 | 短文填空 第6题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>What's more, when spring is coming, they can help us to dig <span class="blank">6. </span> (hole) to plant trees. If our neighborhood <span class="blank">7. </span> (cover) with ice in winter, they can help us clean up the neighborhood.</p>
+            </div>
+            <p style="margin: 1rem 0; color: var(--text-secondary);">提示词：hole</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-21')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-21">
+                <div class="correct-answer">✅ 正确答案：holes</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词复数</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 种树需要挖不止一个坑，因此hole要用复数形式holes。</p>
+                    <p>2. 可数名词表示泛指一类时，通常用复数形式，"dig holes"表示挖坑（多个），符合语境。</p>
+                    <p>3. 如果用单数a hole，语义变成只挖一个坑，不符合机器人帮助社区种树的实际情况。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 22. 短文填空 第8题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 7-Unit 8 | ��文填空 第8题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>People will be <span class="blank">8. </span> to fly to the moon during the holiday and people will live on a space station. They believe life will be more comfortable <span class="blank">9. </span> the future.</p>
+            </div>
+            <p style="margin: 1rem 0; color: var(--text-secondary);">提示：纯空格题</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-22')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-22">
+                <div class="correct-answer">✅ 正确答案：able</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>固定搭配</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. 本题考查固定短语 "be able to"，意思是"能够"。</p>
+                    <p>2. 这是固定搭配，必须用able，不能用其他形容词。</p>
+                    <p>3. 句子意思：人们将来能够在假期飞去月球，符合未来生活预测的语境。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 23. 短文填空 第9题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">Unit 7-Unit 8 | 短文填空 第9题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>People will be <span class="blank">8. </span> to fly to the moon during the holiday and people will live on a space station. They believe life will be more comfortable <span class="blank">9. </span> the future. However, some people 10. ____ (agree), they think it's impossible for humans to live in space.</p>
+            </div>
+            <p style="margin: 1rem 0; color: var(--text-secondary);">提示：纯空格题</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-23')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-23">
+                <div class="correct-answer">✅ 正确答案：in</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>固定搭配（时间介词）</p>
+                    <h4>💡 解析：</h4>
+                    <p>1. "in the future"是固定搭配，表示"在将来"。</p>
+                    <p>2. 时间介词固定用法：in用于表示较长的时间段（未来、早晨、月份等）。</p>
+                    <p>3. 这个短语是英语中表示"将来"的标准表达方式，必须用介词in。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 22</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 22;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

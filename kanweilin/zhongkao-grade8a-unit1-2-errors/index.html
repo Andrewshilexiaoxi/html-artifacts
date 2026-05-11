@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阚威麟中考八上 Unit 1-2 错题</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页 */
+        .slide.active.cover {
+            text-align: center;
+        }
+        .cover h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        .cover p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .cover button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.2s;
+        }
+        .cover button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1rem;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+        .context-box p {
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        /* 题目 */
+        .question-text {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        .blank {
+            display: inline-block;
+            min-width: 100px;
+            border-bottom: 3px solid var(--accent);
+            text-align: center;
+            margin: 0 0.3rem;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            transition: background 0.2s;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 短文填空（无选项） */
+        .blank-container {
+            margin: 1.5rem 0;
+        }
+        .blank-item {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .answer-toggle:hover {
+            transform: scale(1.02);
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+        .analysis p {
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .navigation button:hover:not(:disabled) {
+            background: var(--accent-light);
+        }
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active cover">
+        <h1>📚 阚威麟 错题复习</h1>
+        <p>中考八上 Unit 1-2</p>
+        <p>共 12 道错题</p>
+        <button onclick="goToSlide(1)">开始复习</button>
+    </div>
+
+    <!-- 第1题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 1 题 · 单项选择</div>
+            <p class="question-text">( )2. ________ you don't give up, your dreams will come true.</p>
+            <div class="options">
+                <div class="option">A. As long as</div>
+                <div class="option">B. As soon as</div>
+                <div class="option">C. As well as</div>
+                <div class="option">D. As often as</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>考点：</strong>连词短语词义辨析</p>
+                    <p><strong>解析：</strong><strong>As long as</strong> 意思是"只要"，引导条件状语从句，符合句意"只要你不放弃，你的梦想就会实现"。</p>
+                    <p><strong>干扰项分析：</strong>B. As soon as 表示"一...就..."，引导时间状语从句；C. As well as 表示"也；和...一样"，常作介词或副词短语；D. As often as 表示"每次；每当"，语义不符。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 2 题 · 单项选择</div>
+            <p class="question-text">( )4. If you're traveling in Thailand, never ________ people's heads or point your feet at them.</p>
+            <div class="options">
+                <div class="option">A. nod</div>
+                <div class="option">B. raise</div>
+                <div class="option">C. bow</div>
+                <div class="option">D. touch</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>考点：</strong>动词词义辨析 + 文化常识</p>
+                    <p><strong>解析：</strong>在泰国文化中，<strong>touch</strong>（触摸）别人的头被认为是不礼貌的行为，因为头被视为身体最神圣的部位。所以句子意思是"如果你在泰国旅行，永远不要触摸别人的头，也不要用脚指向他们"。</p>
+                    <p><strong>干扰项分析：</strong>A. nod 点头；B. raise 抬起；C. bow 鞠躬；这三个动词都不符合泰国文化习俗和句子语境。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 3 题 · 单项选择</div>
+            <p class="question-text">( )5. Germany Team ________ Brazil Team and ________ the soccer game last week.</p>
+            <div class="options">
+                <div class="option">A. beat; beat</div>
+                <div class="option">B. beat; won</div>
+                <div class="option">C. won; beat</div>
+                <div class="option">D. won; won</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>考点：</strong>动词词义辨析（beat vs win）</p>
+                    <p><strong>解析：</strong><strong>beat</strong> 表示"打败"，后面接<strong>对手</strong>（人、球队）；<strong>win</strong> 表示"赢得"，后面接<strong>比赛、奖品</strong>等。本题中第一个空后是 Brazil Team（对手），用 beat；第二个空后是 the soccer game（比赛），用 won。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 4 题 · 单项选择</div>
+            <p class="question-text">( )6. —What do you think is important for the players on a team?<br>—It's to play together and ________ the best in each other.</p>
+            <div class="options">
+                <div class="option">A. find out</div>
+                <div class="option">B. come out</div>
+                <div class="option">C. work out</div>
+                <div class="option">D. bring out</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>考点：</strong>动词短语固定搭配</p>
+                    <p><strong>解析：</strong>短语 <strong>bring out the best in sb.</strong> 是固定搭配，意思是"使某人展现出最好的一面"，符合句意。</p>
+                    <p><strong>干扰项分析：</strong>A. find out 查明，发现；B. come out 出来，出版；C. work out 解决，算出；这三个短语都不能和 the best in each other 构成正确搭配。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 5 题 · 完形填空 · 第 3 空</div>
+            <div class="context-box">
+                <p>There are purple clothes, purple handbags, purple bicycles, purple furniture, even purple computers! So purple is one of the most __1__ colors today. But in the past, purple was a very expensive and unusual color. Let's take a look at the rich __2__ of the color purple.</p>
+                <p>Some scientists believe that the first plants to appear on Earth over 500 million years ago <span class="blank">3. ________</span> looked purple, not green. Plants today are green __4__ they use green chlorophyll (叶绿素) to produce energy.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. gradually</div>
+                <div class="option">B. especially</div>
+                <div class="option">C. exactly</div>
+                <div class="option">D. probably</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>考点：</strong>副词词义辨析</p>
+                    <p><strong>解析：</strong>上文提出科学家关于古代植物颜色的观点，下文说现在的植物是绿色的，古代植物使用一种叫retinal的物质，颜色是深紫色。<strong>probably</strong> 表示"可能"，符合科学家对5亿年前远古植物颜色的推测语气。</p>
+                    <p><strong>干扰项分析：</strong>A. gradually 逐渐地；B. especially 特别，尤其；C. exactly 确切地；都不符合这种科学推测的语境。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 6 题 · 完形填空 · 第 6 空</div>
+            <div class="context-box">
+                <p>But these __5__ plants probably used something called retinal, which is a dark purple color.</p>
+                <p>During the time of the Roman Empire (37 BC—476 AD), it was very <span class="blank">6. ________</span> to make purple dye(染料). The dye came from sea snails (海螺).</p>
+            </div>
+            <div class="options">
+                <div class="option">A. dangerous</div>
+                <div class="option">B. common</div>
+                <div class="option">C. difficult</div>
+                <div class="option">D. strange</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>考点：</strong>形容词词义辨析 + 语境理解</p>
+                    <p><strong>解析：</strong>根据后文"10,000只死海螺只能得到一克紫色染料"，还伴有难闻的气味，说明制作紫色染料非常<strong>困难</strong>，因此选 <strong>difficult</strong>。</p>
+                    <p><strong>干扰项分析：</strong>A. dangerous 危险的；B. common 普通的；D. strange 奇怪的；都不符合文中描述的制作难度。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 7 题 · 完形填空 · 第 11 空</div>
+            <div class="context-box">
+                <p>In 16th century England, purple was __10__ for the kings' family members. Queen Elizabeth I's clothes were purple, but ordinary people were not allowed to <span class="blank">11. ________</span> the color.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. wear</div>
+                <div class="option">B. sell</div>
+                <div class="option">C. change</div>
+                <div class="option">D. make</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>考点：</strong>动词词义辨析 + 语境理解</p>
+                    <p><strong>解析：</strong>前文提到在16世纪的英国，紫色只供皇室家族成员使用，伊丽莎白女王的衣服就是紫色的，因此普通人不被允许<strong>穿</strong>这种颜色的衣服，选 <strong>wear</strong>。</p>
+                    <p><strong>干扰项分析：</strong>B. sell 卖；C. change 改变；D. make 制作；都不符合语境，禁令是针对穿着，不是针对制作或售卖。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第8题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 8 题 · 完形填空 · 第 13 空</div>
+            <div class="context-box">
+                <p>In 1856, William Perkin, an 18-year-old __12__ student, noticed something strange while doing an experiment(实验).</p>
+                <p>The chemicals(化学药品) he used to clean his instruments <span class="blank">13. ________</span> with the chemicals he used in his experiment and produced a bright purple color.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. compared</div>
+                <div class="option">B. mixed</div>
+                <div class="option">C. collected</div>
+                <div class="option">D. kept</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>考点：</strong>动词词义辨析 + 固定搭配</p>
+                    <p><strong>解析：</strong><strong>mix with</strong> 是固定搭配，意思是"与...混合"。句意为"他用来清洁仪器的化学药品和实验中使用的化学药品混合，产生了明亮的紫色"，因此选 <strong>mixed</strong>。</p>
+                    <p><strong>干扰项分析：</strong>A. compared 比较；C. collected 收集；D. kept 保持；都不能与后文构成符合语境的搭配。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 9 题 · 完形填空 · 第 14 空</div>
+            <div class="context-box">
+                <p>The chemicals(化学药品) he used to clean his instruments mixed with the chemicals he used in his experiment and produced a bright purple color.</p>
+                <p><span class="blank">14. ________</span> led Perkin to start a company using this chemical mixture to make purple dye. The dye was much __15__ than sea snail dye. Thanks to Perkin, now anyone can afford to wear purple clothes.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. survey</div>
+                <div class="option">B. suggestion</div>
+                <div class="option">C. discovery</div>
+                <div class="option">D. exam</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>考点：</strong>名词词义辨析 + 语境理解</p>
+                    <p><strong>解析：</strong>Perkin 在实验中意外得到了紫色，这种偶然得到的制造紫色染料的方法是一个科学<strong>发现</strong>，因此选 <strong>discovery</strong>。</p>
+                    <p><strong>干扰项分析：</strong>A. survey 调查；B. suggestion 建议；D. exam 考试；都不符合这种意外科学发现的语境。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第10题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 10 题 · 短文填空</div>
+            <div class="blank-container">
+                <div class="blank-item">5. Later, with other people's help, he cheered up and made a living by making shoes. He met many ________ (difficulty) but he faced them bravely and kept on working hard.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：difficulties</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>考点：</strong>名词复数形式</p>
+                    <p><strong>解析：</strong><strong>many</strong> 修饰可数名词复数，<strong>difficulty</strong> 表示"困难"时是可数名词，需要变为复数形式 <strong>difficulties</strong>。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第11题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 11 题 · 短文填空</div>
+            <div class="blank-container">
+                <div class="blank-item">7. After a few years, he set ________ his own factory and it was successful. However, he didn't forget those who had helped him.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：up</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>考点：</strong>固定短语搭配</p>
+                    <p><strong>解析：</strong><strong>set up</strong> 是固定搭配，意思是"建立；创立"，此处表示"建立他自己的工厂"，因此填 <strong>up</strong>。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第12题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 12 题 · 短文填空</div>
+            <div class="blank-container">
+                <div class="blank-item">10. He always tells us, "________ we are disabled, we can also achieve (实现) our dreams by working hard, " said Xie Ting, who was helped by Jia.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-12">
+                <div class="correct-answer">✅ 正确答案：Though 或 Although</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>考点：</strong>让步状语从句连词</p>
+                    <p><strong>解析：</strong>根据句意，"我们残疾"和"我们也能通过努力实现梦想"之间是让步转折关系，需要用表示"虽然；尽管"的连词 <strong>Though</strong> 或 <strong>Although</strong>。注意句首单词首字母必须大写。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 12</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 12;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

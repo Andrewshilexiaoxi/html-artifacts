@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>孙溢浛 竞赢模拟错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页特殊样式 */
+        .cover-slide h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .cover-slide p {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+        .cover-slide button {
+            padding: 1rem 3rem;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .cover-slide button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--accent-light);
+        }
+
+        /* 上下文框 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+        .context-box p {
+            margin-bottom: 0.8rem;
+        }
+        .context-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 题目文本 */
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            transition: background 0.3s ease;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+        .answer-toggle:hover {
+            transform: scale(1.02);
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .analysis p, .analysis li {
+            margin-bottom: 0.6rem;
+            color: var(--text-primary);
+        }
+
+        .analysis ul {
+            padding-left: 1.5rem;
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .navigation button:hover:not(:disabled) {
+            background: var(--accent-light);
+        }
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        /* 空格外间距 */
+        .blank {
+            display: inline-block;
+            min-width: 60px;
+            border-bottom: 2px solid var(--text-primary);
+            margin: 0 0.3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active cover-slide">
+        <h1>📚 孙溢浛<br>竞赢模拟错题复习</h1>
+        <p>共 5 道错题</p>
+        <button onclick="goToSlide(1)">开始复习</button>
+    </div>
+
+    <!-- 第1题 第22题 完形填空 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 22 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Then he returned to the park with the board and put it at the entrance of the park.</p>
+                <p><span style="text-decoration: underline; text-decoration-color: var(--accent);">( )22. <span class="blank"></span> in the park came over to see what was happening exactly</span>. Yunbo told people about his bad experience yesterday.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. Students</div>
+                <div class="option">B. Members</div>
+                <div class="option">C. Villagers</div>
+                <div class="option">D. Tourists</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-22')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-22">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词词义辨析 + 语境理解</p>
+                    <h4>解析：</h4>
+                    <ol>
+                        <li>语境分析：上文提到Yunbo把提示牌放在公园入口处，根据文章第一段可知，Yunbo和妈妈去公园散步，说明这是一个公园。公园是游客游览的地方，所以应该是"公园里的游客"过来看看发生了什么事。</li>
+                        <li>选项辨析：
+                            <ul>
+                                <li>A. Students（学生）：虽然学生也会去公园，但本文没有提到这是学校活动，范围太窄，不符合语境。</li>
+                                <li>B. Members（成员）：通常指某个组织或团体的成员，公园不存在"成员"一说，不符合逻辑。</li>
+                                <li>C. Villagers（村民）：指村庄里的居民，公园通常是公共场所，不一定只在村庄里，且文章没有暗示这是村庄附近的公园。</li>
+                                <li>D. Tourists（游客）：公园是供游客游览观光的地方，游客被告示牌吸引过来观看，符合常理和语境。</li>
+                            </ul>
+                        </li>
+                        <li>学生错因：学生误选了C，可能是对文章场景把握不准，忽略了park这一关键线索。公园的主要来访者是游客，而不是村民。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题 第31题 阅读理解 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 31 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p><strong>(B)</strong></p>
+                <p>There are lots of things that are good for your brain. Reading, for example, helps your brain grow and work better. Solving puzzles(拼图) can help too. Scientists now find out another way to improve brain health: exercising.</p>
+                <p>Babies need exercise for their brains to fully grow. Meanwhile, exercise improves children's attention and helps them do better at school. In the elderly, exercise can help keep their minds sharp, so they can notice or understand things quickly. Exercise also helps blood flow to the brain. The brain needs oxygen(氧气) from blood; without oxygen, the brain would stop working.</p>
+            </div>
+            <p class="question-text">( )31. What can you do if you want to do something good for your brain?</p>
+            <div class="options">
+                <div class="option">A. Read books.</div>
+                <div class="option">B. Exercise.</div>
+                <div class="option">C. Solve puzzles.</div>
+                <div class="option">D. All of the above.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-31')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-31">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>阅读理解细节题 + 信息整合</p>
+                    <h4>解析：</h4>
+                    <ol>
+                        <li>定位原文：文章第一段明确说明：<br>
+                        "There are lots of things that are good for your brain. Reading, for example, helps your brain grow and work better. Solving puzzles(拼图) can help too. Scientists now find out another way to improve brain health: exercising."</li>
+                        <li>信息整合：文中一共提到了三种对大脑有益的活动：
+                            <ul>
+                                <li>Reading（读书）→ A选项</li>
+                                <li>Solving puzzles（拼拼图）→ C选项</li>
+                                <li>Exercising（锻炼）→ B选项</li>
+                            </ul>
+                        </li>
+                        <li>选项辨析：
+                            <ul>
+                                <li>A. Read books：只是其中一种方式，不完整</li>
+                                <li>B. Exercise：只是其中一种方式，不完整</li>
+                                <li>C. Solve puzzles：只是其中一种方式，不完整</li>
+                                <li>D. All of the above：包含了以上所有三种方式，是完整正确的答案</li>
+                            </ul>
+                        </li>
+                        <li>解题技巧：看到"All of the above"选项时，一定要检查前面三个选项是否都在文中出现，只要文中提到了多个，All of the above往往就是正确选项。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题 第38题 阅读理解 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 38 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p><strong>(C)</strong></p>
+                <p>Influenced by Marco Polo, who traveled to China along the ancient Silk Road in 1275, an Italian hiker called Vienna Cammarata set off from Venice in 2022 to retrace(重走) his route on foot. She arrived in China 2 years later. She said that Marco Polo provided detailed(详细的) descriptions of ancient China, and she hoped to see more of modern China by following in his footsteps.</p>
+                <p>She first spent a few days in the ancient city of Kashgar. She learnt about tea culture in a century-old teahouse. She also tried making naan bread(馕). Starting from Kashgar, she went on a 15-month cultural journey across China, exploring over 30 cities in 17 provinces and autonomous regions.(自治区). Her journey ended in Beijing, marking the 750th anniversary(周年纪念日) of Marco Polo's arrival in China.</p>
+                <p>Cammarata said hiking was her passion. ...</p>
+            </div>
+            <p class="question-text">( )38. What does Paragraph 2 mainly talk about?</p>
+            <div class="options">
+                <div class="option">A. What Cammarata did in China.</div>
+                <div class="option">B. Where Cammarata went in China.</div>
+                <div class="option">C. The starting point and plan of Cammarata's trip to China.</div>
+                <div class="option">D. The difficulties that Cammarata faced during her journey to China.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-38')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-38">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>阅读理解主旨大意题（段落大意）</p>
+                    <h4>解析：</h4>
+                    <ol>
+                        <li>分析第二段内容：第二段整段都在描述Cammarata在中国具体做了哪些事情：
+                            <ul>
+                                <li>第一句：She first spent a few days in the ancient city of Kashgar.（她在喀什古城待了几天）</li>
+                                <li>第二句：She learnt about tea culture in a century-old teahouse.（她在百年茶馆学习茶文化）</li>
+                                <li>第三句：She also tried making naan bread(馕).（她还尝试做馕）</li>
+                                <li>第四句：Starting from Kashgar, she went on a 15-month cultural journey across China, exploring over 30 cities...（从喀什出发，她开始了15个月的文化之旅，探索了30多个城市）</li>
+                                <li>第五句：Her journey ended in Beijing...（旅程在北京结束）</li>
+                            </ul>
+                        </li>
+                        <li>选项辨析：
+                            <ul>
+                                <li>A. What Cammarata did in China.（Cammarata在中国做了什么）：本段从开始到结束，全方位描述了她在中国的行程和活动，包含了"做什么"和"去哪里"，概括最为全面，是正确答案。</li>
+                                <li>B. Where Cammarata went in China.（Cammarata去了中国的哪些地方）：只说了"地点"，但本段还讲到了她学习茶文化、做馕等具体活动，概括不全面。学生误选了B，问题就在这里。</li>
+                                <li>C. The starting point and plan of Cammarata's trip to China.（Cammarata中国之旅的起点和计划）：本段讲的是实际发生的行程，不是计划，而且内容不止起点，所以不对。</li>
+                                <li>D. The difficulties that Cammarata faced during her journey to China.（Cammarata在中国旅程中遇到的困难）：遇到困难是第三段的内容，不是第二段。</li>
+                            </ul>
+                        </li>
+                        <li>解题技巧：段落大意题需要概括整个段落的内容，不能只选其中一个方面。正确选项通常是最全面概括的那个。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题 第10题 语法选择题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 10 题</div>
+            <p class="question-text">( )10. <span class="blank"></span> wonderful the concert given by the famous singer was!</p>
+            <div class="options">
+                <div class="option">A. What</div>
+                <div class="option">B. What a</div>
+                <div class="option">C. How</div>
+                <div class="option">D. How a</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>感叹句句型（感叹句的感叹词选择）</p>
+                    <h4>解析：</h4>
+                    <ol>
+                        <li>感叹句基本结构：
+                            <ul>
+                                <li>How + 形容词/副词 + 主语 + 谓语！</li>
+                                <li>What + 名词（+主语 + 谓语）！</li>
+                                <li>What a/an + 形容词 + 可数名词单数 +（主语 + 谓语）！</li>
+                            </ul>
+                        </li>
+                        <li>本题分析：
+                            <ul>
+                                <li>本句中，wonderful是形容词，后面接的是完整的主语和谓语：the concert ... was</li>
+                                <li>句子结构是：How + 形容词 + 主语 + 谓语！→ How wonderful the concert ... was!</li>
+                                <li>正好符合How的感叹句结构</li>
+                            </ul>
+                        </li>
+                        <li>选项辨析：
+                            <ul>
+                                <li>A. What：What用来感叹名词，本题被感叹的部分是形容词wonderful，所以不对。</li>
+                                <li>B. What a：What a后面必须接可数名词单数，本题后接的是形容词，结构不对。</li>
+                                <li>C. How：How + 形容词 + 主语 + 谓语，结构完全正确，是正确答案。学生这题选对了C。</li>
+                                <li>D. How a：How后面不需要加不定冠词a，因为How修饰的是形容词/副词，结构错误。</li>
+                            </ul>
+                        </li>
+                        <li>记忆口诀：<br>"How形副，What名，how What倒装记住清"<br>感叹词看中心词，形容词/副词用How，名词用What。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题 第37题 阅读理解词义猜测 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 37 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>④The Japanese enjoy <u>slurping</u>. Most cultures have rules about table manners. In Western countries, making noise while eating food is usually considered impolite. However, in Japan, making slurping sounds while eating noodles can be accepted. This probably has something to do with the way noodles are eaten. The Japanese slurp up their noodles without winding(缠绕) them around an eating tool. This way of eating noodles is naturally noisier. Making slurping sounds when eating noodles in Japan shows that you're enjoying them. Some people believe that slurping makes noodles taste better.</p>
+            </div>
+            <p class="question-text">( )37. What does the underlined word "slurping" mean in English?</p>
+            <div class="options">
+                <div class="option">A. Keeping quiet.</div>
+                <div class="option">B. Talking loudly.</div>
+                <div class="option">C. Being on time.</div>
+                <div class="option">D. Eating or drinking noisily.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-37')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-37">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>阅读理解词义猜测题</p>
+                    <h4>解析：</h4>
+                    <ol>
+                        <li>上下文线索推测：
+                            <ul>
+                                <li>下文提到："making noise while eating food is usually considered impolite"（在吃饭时发出噪音通常被认为是不礼貌的）</li>
+                                <li>又说："making slurping sounds while eating noodles can be accepted"（吃面条时发出slurping声音是可以接受的）</li>
+                                <li>还提到："This way of eating noodles is naturally noisier"（这种吃面方式自然会更吵）</li>
+                            </ul>
+                        </li>
+                        <li>词义推断：从"making noise"、"sounds"、"noisier"这些关键词可以看出，slurping指的就是吃东西时发出声音的吃法，也就是"出声地吃/喝"。</li>
+                        <li>选项辨析：
+                            <ul>
+                                <li>A. Keeping quiet（保持安静）：与文中反复提到的noise正好相反，错误。</li>
+                                <li>B. Talking loudly（大声说话）：文中说的是eating noodles，不是说话，错误。</li>
+                                <li>C. Being on time（准时）：与本文饮食礼仪话题无关，错误。</li>
+                                <li>D. Eating or drinking noisily（出声地吃或喝）：完全符合上下文对slurping的描述，正确。</li>
+                            </ul>
+                        </li>
+                        <li>学生错因：学生原来选了A，可能是没有找到上下文的线索词。只要注意到文中多处提到noise，就能推断出正确含义。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 5</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 5;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>何紫勋 竞赢模拟6-8错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页特殊样式 */
+        .cover-slide h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .cover-slide p {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .cover-slide button {
+            padding: 1rem 3rem;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.3s ease;
+        }
+        .cover-slide button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.2rem;
+            color: var(--accent-light);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+        .context-box p {
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        /* 题目文本 */
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        /* 短文填空（没有选项）*/
+        .blank-question {
+            font-size: 1.3rem;
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            color: var(--success);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .analysis p {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active cover-slide">
+        <h1>📚 何紫勋</h1>
+        <p>竞赢模拟 6-8 错题复习</p>
+        <p>共 13 道错题</p>
+        <button onclick="goToSlide(1)">开始复习</button>
+    </div>
+
+    <!-- 第1题 37 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 37 题</div>
+            <div class="context-box">
+                <h4>📖 原文片段</h4>
+                <p>④The Japanese enjoy slurping. Most cultures have rules about table manners. In Western countries, making noise while eating food is usually considered impolite. However, in Japan, making slurping sounds while eating noodles can be accepted. This probably has something to do with the way noodles are eaten. The Japanese slurp up their noodles without winding(缠绕) them around an eating tool. This way of eating noodles is naturally noisier. Making slurping sounds when eating noodles in Japan shows that you're enjoying them. Some people believe that slurping makes noodles taste better.</p>
+            </div>
+            <p class="question-text">( )37. What does the underlined word "slurping" mean in English?</p>
+            <div class="options">
+                <div class="option">A. Keeping quiet.</div>
+                <div class="option">B. Talking loudly.</div>
+                <div class="option">C. Being on time.</div>
+                <div class="option">D. Eating or drinking noisily.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>阅读理解 - 词义猜测题</p>
+                    <p>根据上下文线索可以推测出词义：</p>
+                    <p>1. 后文提到 making noise while eating food 和 making slurping sounds，直接提示了slurping与"出声"有关</p>
+                    <p>2. 又说 This way of eating noodles is naturally noisier，进一步确认这种吃法会产生更大的噪音</p>
+                    <p>3. 因此，slurping就是指"eating or drinking noisily"（吃东西或喝东西时发出声响），D选项正确</p>
+                    <p><strong>错因分析：</strong>这道题答案确实是D，如果判断为错可能是批改失误或标准答案有误</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题 23 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 23 题</div>
+            <div class="context-box">
+                <p>As the days passed, our friendship grew stronger. We learned to trust and support each other more. Whenever one of us had a problem, the other would try to ( 23 ) a solution.</p>
+            </div>
+            <p class="question-text">( )23. 选择正确答案</p>
+            <div class="options">
+                <div class="option">A. find</div>
+                <div class="option">B. hide</div>
+                <div class="option">C. create</div>
+                <div class="option">D. avoid</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>完形填空 - 动词词义辨析 + 语境理解</p>
+                    <p>根据句意理解："每当我们中的一个遇到问题，另一个就会努力( )一个解决办法"。</p>
+                    <p>A. find 找到，符合逻辑：遇到问题去找解决办法</p>
+                    <p>B. hide 隐藏，不符合逻辑，不会去隐藏解决办法</p>
+                    <p>C. create 创造，问题已有解决办法，不需要创造，语境不符</p>
+                    <p>D. avoid 避免，不符合句意</p>
+                    <p>正确搭配是 "find a solution"（找到解决办法），因此选A</p>
+                    <p><strong>错因分析：</strong>可能被create干扰，误认为要"创造"解决办法，实际上是寻找已有的解决办法</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题 24 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 24 题</div>
+            <div class="context-box">
+                <p>Now, even though we're older and live in different cities, we still keep in ( 24 ). Every time we meet, it's like no time has passed. Our friendship is a gift that I'll always treasure.</p>
+            </div>
+            <p class="question-text">( )24. 选择正确答案</p>
+            <div class="options">
+                <div class="option">A. touch</div>
+                <div class="option">B. mind</div>
+                <div class="option">C. sight</div>
+                <div class="option">D. order</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>完形填空 - 固定搭配</p>
+                    <p>固定短语 <strong>keep in touch</strong> 意思是"保持联系"，符合句意：虽然住在不同城市，但仍然保持联系。</p>
+                    <p>其他选项搭配：</p>
+                    <p>B. keep in mind 记住，不符合语境</p>
+                    <p>C. keep in sight 保持在视野内，语意不通</p>
+                    <p>D. keep in order 保持整齐，语意不通</p>
+                    <p>固定搭配辨析题，记住短语即可轻松选出。学生可能误记短语搭配，导致选错。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题 47 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 47 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p><strong>How to give a presentation</strong></p>
+                <p>Giving a presentation is never easy. There is a lot of preparation to do. During the actual presentation, you need to appear relaxed, calm and confident(自信的). Your body language needs to show this. 46. ( E ) Here are a few suggestions.</p>
+                <p>• <strong>Position</strong><br>
+                47. ( ) And try to avoid turning your back, or lowering your eyes too often if you're looking at any notes.</p>
+            </div>
+            <p class="question-text">从以下句子选择正确选项填入：</p>
+            <div class="options">
+                <div class="option">A. And try to keep your arms by your side.</div>
+                <div class="option">B. Keep your shoulders back and your head up.</div>
+                <div class="option">C. Make sure you are always facing your classmates.</div>
+                <div class="option">D. Then move to another area and choose someone else.</div>
+                <div class="option">E. But do you know what to do with your body during a presentation?</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>还原句子 - 段落主题句 + 逻辑连贯</p>
+                    <p>本段小标题是Position(位置站位)，后文说"尽量避免背对听众，看笔记时不要总低着头"。</p>
+                    <p>C选项 "Make sure you are always facing your classmates"（确保你始终面向同学）正好对应主题，也和后文避免背对听众衔接自然。</p>
+                    <p><strong>错因分析：</strong>学生选了C，答案正确，如果批改标记错误，请核对标准答案。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题 49 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 49 题</div>
+            <div class="context-box">
+                <p>• <strong>Gesture(姿态)</strong><br>
+                Use gestures to help your classmates understand what you're saying. You can use your hands to make your points clearer in your speech. Keep your feet apart and stand confidently. 49. ( ) Remember, look confident!</p>
+            </div>
+            <p class="question-text">从以下句子选择正确选项填入：</p>
+            <div class="options">
+                <div class="option">A. And try to keep your arms by your side.</div>
+                <div class="option">B. Keep your shoulders back and your head up.</div>
+                <div class="option">C. Make sure you are always facing your classmates.</div>
+                <div class="option">D. Then move to another area and choose someone else.</div>
+                <div class="option">E. But do you know what to do with your body during a presentation?</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>还原句子 - 段落逻辑连贯</p>
+                    <p>本段讲姿态(Gesture)，前文说"双脚分开，自信站立"，后文说"记住，要看起来自信！"。</p>
+                    <p>B选项 "Keep your shoulders back and your head up"（挺直肩膀，抬起头）正好描述站立的自信姿态，和前后衔接自然。</p>
+                    <p><strong>错因分析：</strong>学生选了B，答案正确，如果批改标记错误，请核对标准答案。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题 2 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 2 题</div>
+            <p class="question-text">( )2. Chinese high-speed trains travel ( ) of all the trains in the world so far.</p>
+            <div class="options">
+                <div class="option">A. fast</div>
+                <div class="option">B. faster</div>
+                <div class="option">C. much faster</div>
+                <div class="option">D. the fastest</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>形容词副词 - 最高级</p>
+                    <p>关键词是 <strong>of all the trains</strong>（在所有火车中），这是最高级的标志，三者及以上比较要用最高级。</p>
+                    <p>A. fast 原级</p>
+                    <p>B. faster 比较级（用于两者比较）</p>
+                    <p>C. much faster 比较级（much修饰比较级）</p>
+                    <p>D. the fastest 最高级</p>
+                    <p>范围是"of all..."，因此要用最高级，选D。</p>
+                    <p><strong>错因分析：</strong>学生选了D，答案正确，如果标记错误请核对标准答案。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题 8 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 8 题</div>
+            <p class="question-text">( )8. This is the most beautiful picture ( ) I have seen.</p>
+            <div class="options">
+                <div class="option">A. which</div>
+                <div class="option">B. whose</div>
+                <div class="option">C. that</div>
+                <div class="option">D. what</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>定语从句 - 关系代词</p>
+                    <p>当先行词被形容词最高级修饰时，关系代词必须用 <strong>that</strong>。</p>
+                    <p>本题中先行词picture前面有最高级 <strong>the most beautiful</strong>，因此关系代词只能用that，不能用which。</p>
+                    <p>所以正确答案是C，学生选C正确。如果标记错误请核对标准答案。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第8题 14 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 14 题</div>
+            <div class="context-box">
+                <h4>📖 题干完整语境</h4>
+                <p>"I live in Tennessee, and I have learned that the Tennessee River is ( 13 ) with little pieces of plastics," Cash said. "They are from ( 14 ) plastics that break down over time in the sun." He knew he had to do something to help stop more pollution.</p>
+            </div>
+            <p class="question-text">( )14. 选择正确答案</p>
+            <div class="options">
+                <div class="option">A. softer</div>
+                <div class="option">B. darker</div>
+                <div class="option">C. bigger</div>
+                <div class="option">D. heavier</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>完形填空 - 形容词词义辨析 + 语境理解</p>
+                    <p>前文说河里现在是 <strong>little pieces of plastics</strong>（小塑料碎片），这些小碎片是来自更大块的塑料，这些大块塑料在阳光照射下慢慢分解变小。</p>
+                    <p>A. softer 更软，与分解过程无关</p>
+                    <p>B. darker 更黑，与分解过程无关</p>
+                    <p>C. bigger 更大，逻辑正确：大塑料逐渐分解成小碎片</p>
+                    <p>D. heavier 更重，不符合逻辑</p>
+                    <p>学生选C正确。</p>
+                    <p><strong>错因分析：</strong>如果被标记错误请核对标准答案。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题 15 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 15 题</div>
+            <div class="context-box">
+                <h4>📖 题干完整语境</h4>
+                <p>He knew he had to do something to help stop more pollution. Cash started with a couple of clean-ups, and it ( 15 ) from there. In fact, the clean-ups were a ( 16 ) job. Cash went along the river.</p>
+            </div>
+            <p class="question-text">( )15. 选择正确答案</p>
+            <div class="options">
+                <div class="option">A. returned</div>
+                <div class="option">B. moved</div>
+                <div class="option">C. stopped</div>
+                <div class="option">D. grew</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>完形填空 - 动词词义辨析 + 语境理解</p>
+                    <p>句意为：Cash从几次清理活动开始，然后活动规模从那里逐步发展壮大。<strong>it grew from there</strong> 表示"事业从那里发展壮大"，符合语境。</p>
+                    <p>A. returned 返回，语意不通</p>
+                    <p>B. moved 移动，不如grew能准确表达"规模增长"的含义</p>
+                    <p>C. stopped 停止，与文意发展方向相反</p>
+                    <p>D. grew 增长，发展壮大，正确</p>
+                    <p>学生选D正确。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第10题 21 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 21 题</div>
+            <div class="context-box">
+                <h4>📖 题干完整语境</h4>
+                <p>Besides clean-ups, Cash also started a recycling program for fishing line. Fishing line was a big problem in Tennessee ( 19 ) there were many fishing matches. The line could bring ( 20 ) to birds, fish and competitors. He put 61 recycling boxes along the river. A lot of fishermen ( 21 ) them because they didn't want their fishing place to get polluted, either.</p>
+            </div>
+            <p class="question-text">( )21. 选择正确答案</p>
+            <div class="options">
+                <div class="option">A. painted</div>
+                <div class="option">B. broke</div>
+                <div class="option">C. changed</div>
+                <div class="option">D. used</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>完形填空 - 动词词义辨析</p>
+                    <p>上文说Cash放置了61个回收箱，很多渔民开始<strong>使用</strong>这些箱子回收钓鱼线，因为他们也不想让渔区被污染。</p>
+                    <p>A. painted 粉刷，与文意无关</p>
+                    <p>B. broke 打破，不符合语境逻辑</p>
+                    <p>C. changed 改变，不符合语境</p>
+                    <p>D. used 使用，正确：渔民使用这些回收箱</p>
+                    <p>学生选D正确，批改标记错误可能是误判。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第11题 57 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 57 题</div>
+            <div class="context-box">
+                <h4>📖 题干完整语境</h4>
+                <p>This is a project of the Manchester Art Gallery. It ( 57 ) (design) to help visitors get back their lost attention in today's digitally driven (数字化驱动) world.</p>
+            </div>
+            <div class="blank-question">
+                <p>填入适当的单词或括号内单词的正确形式</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：is designed</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>短文填空 - 被动语态</p>
+                    <p>主语It指代project，project与design是被动关系"被设计"，需要用被动语态。</p>
+                    <p>时态是一般现在时，主语是单数，所以填 <strong>is designed</strong>。</p>
+                    <p><strong>错因分析：</strong>学生直接填了designed，缺少be动词，被动语态结构不完整。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第12题 61 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 61 题</div>
+            <div class="context-box">
+                <h4>📖 题干完整语境</h4>
+                <p>(正念)". Visitors just need to pay attention to what is in front of ( 61 ) (they).</p>
+            </div>
+            <div class="blank-question">
+                <p>填入适当的单词或括号内单词的正确形式</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-12">
+                <div class="correct-answer">✅ 正确答案：them</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>短文填空 - 代词宾格</p>
+                    <p>介词of后面需要人称代词的宾格形式，they的宾格是 <strong>them</strong>。</p>
+                    <p>学生填了them，答案是正确的，如果标记错误请核对。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第13题 64 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 64 题</div>
+            <div class="context-box">
+                <h4>📖 题干完整语境</h4>
+                <p>look at the details of the artwork: the shapes, the ( 64 ) (color), and the styles. They'll be surprised at how they change.</p>
+            </div>
+            <div class="blank-question">
+                <p>填入适当的单词或括号内单词的正确形式</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-13')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-13">
+                <div class="correct-answer">✅ 正确答案：colors</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>短文填空 - 名词复数</p>
+                    <p>这里列举艺术品的细节：shapes(形状，复数)、____、styles(风格，复数)，并列的三个名词都应该用复数形式，所以color要变成 <strong>colors</strong>。</p>
+                    <p><strong>错因分析：</strong>学生填了colors，答案正确，如果标记错误请核对标准答案。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 13</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 13;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

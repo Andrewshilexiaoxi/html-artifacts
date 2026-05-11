@@ -3,285 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>英语教学 HTML 资料库</title>
+  <title>错题 PPT 学生入口</title>
   <style>
-    :root {
-      --ink: #17202a;
-      --muted: #5f6f7d;
-      --line: #d8e1e8;
-      --paper: #fffaf1;
-      --surface: #ffffff;
-      --mint: #d7f4ea;
-      --teal: #0f766e;
-      --blue: #2563eb;
-      --gold: #f5c542;
-      --rose: #f3d6d3;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--ink);
-      background:
-        linear-gradient(135deg, rgba(215, 244, 234, 0.85), rgba(255, 250, 241, 0.7) 42%, rgba(243, 214, 211, 0.55)),
-        var(--paper);
-    }
-
-    .shell {
-      width: min(1120px, calc(100% - 40px));
-      margin: 0 auto;
-    }
-
-    header {
-      min-height: 56vh;
-      display: grid;
-      align-content: center;
-      padding: 64px 0 36px;
-    }
-
-    .eyebrow {
-      width: max-content;
-      max-width: 100%;
-      margin-bottom: 18px;
-      padding: 8px 12px;
-      border: 1px solid rgba(15, 118, 110, 0.25);
-      border-radius: 999px;
-      color: #115e59;
-      background: rgba(255, 255, 255, 0.72);
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    h1 {
-      max-width: 760px;
-      margin: 0;
-      font-size: clamp(40px, 7vw, 76px);
-      line-height: 1.02;
-      letter-spacing: 0;
-    }
-
-    .lead {
-      max-width: 780px;
-      margin: 22px 0 0;
-      color: var(--muted);
-      font-size: 20px;
-      line-height: 1.75;
-    }
-
-    .url {
-      display: inline-block;
-      margin-top: 24px;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.78);
-      color: #0f172a;
-      font-size: 15px;
-      word-break: break-all;
-    }
-
-    section {
-      padding: 28px 0;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .panel {
-      min-height: 220px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.82);
-      padding: 22px;
-      box-shadow: 0 16px 32px rgba(23, 32, 42, 0.07);
-    }
-
-    .panel strong {
-      display: block;
-      margin-bottom: 12px;
-      font-size: 18px;
-    }
-
-    .panel p,
-    .panel li {
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.7;
-    }
-
-    .panel p {
-      margin: 0;
-    }
-
-    ul {
-      margin: 0;
-      padding-left: 20px;
-    }
-
-    .workflow {
-      border-top: 1px solid rgba(23, 32, 42, 0.12);
-      border-bottom: 1px solid rgba(23, 32, 42, 0.12);
-      background: rgba(255, 255, 255, 0.46);
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .step {
-      border-left: 4px solid var(--teal);
-      padding: 14px 14px 14px 16px;
-      background: rgba(255, 255, 255, 0.7);
-      border-radius: 6px;
-    }
-
-    .step b {
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .step span {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.55;
-    }
-
-    .examples {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 18px;
-      align-items: stretch;
-    }
-
-    pre {
-      margin: 0;
-      overflow-x: auto;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #17202a;
-      color: #e7f5ef;
-      padding: 18px;
-      font-size: 15px;
-      line-height: 1.65;
-    }
-
-    code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    }
-
-    .notice {
-      border: 1px solid rgba(245, 197, 66, 0.55);
-      border-radius: 8px;
-      background: rgba(255, 248, 220, 0.82);
-      padding: 18px;
-    }
-
-    footer {
-      padding: 34px 0 52px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    @media (max-width: 860px) {
-      .grid,
-      .steps,
-      .examples {
-        grid-template-columns: 1fr;
-      }
-
-      header {
-        min-height: auto;
-      }
-    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #17202a; background: linear-gradient(135deg, #fffaf1, #e8f6f1 58%, #f8e5e0); }
+    main { width: min(980px, calc(100% - 36px)); margin: 0 auto; padding: 52px 0 64px; }
+    .badge { display: inline-block; margin-bottom: 18px; padding: 7px 11px; border-radius: 999px; background: #d7f4ea; color: #115e59; font-weight: 700; font-size: 14px; }
+    h1 { margin: 0 0 12px; font-size: clamp(36px, 6vw, 64px); line-height: 1.08; letter-spacing: 0; }
+    p { max-width: 760px; margin: 0 0 30px; color: #5f6f7d; font-size: 18px; line-height: 1.75; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .student { display: grid; gap: 6px; padding: 20px; border: 1px solid #d8e1e8; border-radius: 8px; background: rgba(255,255,255,0.86); color: inherit; text-decoration: none; box-shadow: 0 12px 28px rgba(23, 32, 42, 0.07); }
+    .student:hover { border-color: #0f766e; }
+    .student span { font-size: 22px; font-weight: 800; }
+    .student small { color: #64748b; font-size: 14px; word-break: break-all; }
+    .note { margin-top: 28px; padding: 16px; border: 1px solid rgba(245, 197, 66, 0.55); border-radius: 8px; background: rgba(255, 248, 220, 0.82); color: #5f4a1c; }
+    @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <header class="shell">
-    <div class="eyebrow">Andrew's English Teaching Pages</div>
-    <h1>英语教学 HTML 资料库</h1>
-    <p class="lead">这里用于发布给学生查看的 HTML PPT、语法讲解、错题复盘、阅读精讲和互动练习。每份资料都可以放在独立文件夹里，生成一个可以直接发给学生的网页链接。</p>
-    <div class="url">https://andrewshilexiaoxi.github.io/html-artifacts/</div>
-  </header>
-
   <main>
-    <section class="shell">
-      <div class="grid">
-        <article class="panel">
-          <strong>适合放什么</strong>
-          <ul>
-            <li>给单个学生的 HTML PPT</li>
-            <li>一节课的语法复习页面</li>
-            <li>阅读精讲和词汇复盘</li>
-            <li>不含隐私的错题讲解</li>
-          </ul>
-        </article>
-
-        <article class="panel">
-          <strong>每个学生一个链接</strong>
-          <p>把一份 HTML PPT 放进一个单独文件夹，并命名为 <code>index.html</code>。学生收到文件夹对应的网址后，打开就是自己的学习页面。</p>
-        </article>
-
-        <article class="panel">
-          <strong>隐私边界</strong>
-          <p>GitHub Pages 是公开网页。建议使用学生代号、日期、课程主题命名，不要放真实姓名、成绩、联系方式或敏感评价。</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="workflow">
-      <div class="shell">
-        <div class="steps">
-          <div class="step">
-            <b>1. 做好 HTML</b>
-            <span>把课件导出或保存为一个完整的 HTML 页面。</span>
-          </div>
-          <div class="step">
-            <b>2. 建文件夹</b>
-            <span>用学生代号、日期和主题命名，避免暴露隐私。</span>
-          </div>
-          <div class="step">
-            <b>3. 上传文件</b>
-            <span>文件夹内主页面统一叫 <code>index.html</code>。</span>
-          </div>
-          <div class="step">
-            <b>4. 发送链接</b>
-            <span>把对应文件夹的网址发给学生本人即可。</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="shell">
-      <div class="examples">
-        <pre><code>html-artifacts/
-  index.html
-  s20260511-grammar-review/
-    index.html
-  s20260511-reading-notes/
-    index.html
-  class-vocab-lesson-01/
-    index.html</code></pre>
-
-        <div class="notice">
-          <strong>推荐链接格式</strong>
-          <p><code>/s20260511-grammar-review/</code></p>
-          <p>例如：<br><code>https://andrewshilexiaoxi.github.io/html-artifacts/s20260511-grammar-review/</code></p>
-        </div>
-      </div>
-    </section>
+    <div class="badge">English Error Review PPT</div>
+    <h1>错题 PPT 学生入口</h1>
+    <p>这里按学生整理错题复习 HTML PPT。点击学生姓名进入该学生的资料首页，再选择具体错题课件。</p>
+    <div class="grid">
+        <a class="student" href="./chengshaodi/">
+          <span>程少迪</span>
+          <small>6 份错题 PPT · /chengshaodi/</small>
+        </a>
+        <a class="student" href="./hezixun/">
+          <span>何紫勋</span>
+          <small>6 份错题 PPT · /hezixun/</small>
+        </a>
+        <a class="student" href="./kanweilin/">
+          <span>阚威麟</span>
+          <small>6 份错题 PPT · /kanweilin/</small>
+        </a>
+        <a class="student" href="./lijiaheng/">
+          <span>李佳衡</span>
+          <small>2 份错题 PPT · /lijiaheng/</small>
+        </a>
+        <a class="student" href="./lilinxuan/">
+          <span>李林轩</span>
+          <small>7 份错题 PPT · /lilinxuan/</small>
+        </a>
+        <a class="student" href="./sunyihan/">
+          <span>孙溢浛</span>
+          <small>5 份错题 PPT · /sunyihan/</small>
+        </a>
+        <a class="student" href="./zhaobojia/">
+          <span>赵泊嘉</span>
+          <small>2 份错题 PPT · /zhaobojia/</small>
+        </a>
+    </div>
+    <div class="note">分享给学生时，可以直接发送学生入口链接，也可以发送某一份错题 PPT 的单独链接。</div>
   </main>
-
-  <footer class="shell">
-    用途定位：这是一个轻量、公开、便于分享的英语教学网页资料库。
-  </footer>
 </body>
 </html>

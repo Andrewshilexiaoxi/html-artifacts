@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阚威麟中考八上6～7的选择错题</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .cover-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cover-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        .cover-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-box {
+            background: var(--card-bg);
+            padding: 1.5rem 2.5rem;
+            border-radius: 1rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .start-btn {
+            padding: 1.2rem 3rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .question-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .question-type {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem 1.2rem;
+            border-radius: 0.8rem;
+            font-size: 1.1rem;
+            transition: background 0.3s ease;
+        }
+
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .answer-toggle:hover {
+            transform: scale(1.02);
+        }
+
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.5s ease;
+        }
+
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 1rem;
+            border: 2px solid var(--success);
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .analysis h4:first-child {
+            margin-top: 0;
+        }
+
+        .analysis p {
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--accent);
+        }
+
+        .nav-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <h1 class="cover-title">📚 阚威麟 错题复习</h1>
+        <p class="cover-subtitle">中考八上 6～7单元</p>
+        <div class="cover-stats">
+            <div class="stat-box">
+                <div class="stat-number">7</div>
+                <div class="stat-label">总题数</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">2</div>
+                <div class="stat-label">短文填空</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">5</div>
+                <div class="stat-label">单项选择</div>
+            </div>
+        </div>
+        <button class="start-btn" onclick="goToSlide(1)">开始复习 →</button>
+    </div>
+
+    <!-- 短文填空 第3题 -->
+    <div class="slide">
+        <div class="question-number">第3题</div>
+        <div class="question-type">短文填空</div>
+        <div class="question-card">
+            <div class="context-box">
+                The garage is also a place for firemen to exercise. They must stay strong ( ) (save) people.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：to save</div>
+                <div class="analysis">
+                    <h4>📝 考点：动词不定式作目的状语</h4>
+                    <p><strong>to save</strong> 在这里作目的状语，表示"保持强壮"的目的是为了"救人"。句意为"他们必须保持强壮来救人"。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易忽略不定式表目的的用法，直接写成 saving 或 saves。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 短文填空 第8题 -->
+    <div class="slide">
+        <div class="question-number">第8题</div>
+        <div class="question-type">短文填空</div>
+        <div class="question-card">
+            <div class="context-box">
+                Last night, an old couple found a snake in their house and Uncle Jason ( ) (send) to offer help.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：was sent</div>
+                <div class="analysis">
+                    <h4>📝 考点：一般过去时的被动语态</h4>
+                    <p><strong>was sent</strong> 是一般过去时的被动语态。Uncle Jason 是"被派去"帮忙的，所以用被动语态。时间状语 Last night 表明用一般过去时。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易忽略被动语态，直接写成 sent，没有注意到 Uncle Jason 是动作的承受者。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 单项选择 第2题 -->
+    <div class="slide">
+        <div class="question-number">第2题</div>
+        <div class="question-type">单项选择</div>
+        <div class="question-card">
+            <div class="question-text">
+                It's said that there ( ) a singing competition tomorrow afternoon.
+            </div>
+            <div class="options">
+                <div class="option">A. will have</div>
+                <div class="option">B. is going to be</div>
+                <div class="option">C. is going to have</div>
+                <div class="option">D. has</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点：there be 句型的将来时</h4>
+                    <p><strong>there be</strong> 句型的将来时结构是 <strong>there is/are going to be</strong> 或 <strong>there will be</strong>。选项 B 符合这个结构。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>A. will have / C. is going to have / D. has：there be 句型不能与 have 同时使用，这是常见错误。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 单项选择 第3题 -->
+    <div class="slide">
+        <div class="question-number">第3题</div>
+        <div class="question-type">单项选择</div>
+        <div class="question-card">
+            <div class="question-text">
+                The boss will try his best to do the work with ( ) money and ( ) people.
+            </div>
+            <div class="options">
+                <div class="option">A. few; little</div>
+                <div class="option">B. a few; a little</div>
+                <div class="option">C. less; fewer</div>
+                <div class="option">D. fewer; less</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3-choice')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3-choice">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点：形容词比较级辨析（less vs fewer）</h4>
+                    <p><strong>less</strong> 修饰不可数名词，<strong>fewer</strong> 修饰可数名词复数。money 是不可数名词，用 less；people 是可数名词复数，用 fewer。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>A. few; little：都是原级，不符合句意隐含的"更少"的比较含义<br>
+                    B. a few; a little：表示肯定意义"一些"，与题意不符<br>
+                    D. fewer; less：修饰对象搞反了</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 单项选择 第4题 -->
+    <div class="slide">
+        <div class="question-number">第4题</div>
+        <div class="question-type">单项选择</div>
+        <div class="question-card">
+            <div class="question-text">
+                The coat doesn't fit him well, as he has ( ) a big body and the coat is ( ) small.
+            </div>
+            <div class="options">
+                <div class="option">A. so; such</div>
+                <div class="option">B. so; so</div>
+                <div class="option">C. such; so</div>
+                <div class="option">D. such; such</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点：such 与 so 的用法区别</h4>
+                    <p><strong>such</strong> 修饰名词（短语），<strong>such a big body</strong> = "如此大的身体"；<strong>so</strong> 修饰形容词或副词，<strong>so small</strong> = "如此小"。</p>
+                    <h4>💡 补充说明</h4>
+                    <p>记住结构：such + a/an + 形容词 + 名词；so + 形容词/副词。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 单项选择 第8题 -->
+    <div class="slide">
+        <div class="question-number">第8题</div>
+        <div class="question-type">单项选择</div>
+        <div class="question-card">
+            <div class="question-text">
+                Can you help me ( ) the computer? I want to look for some information online.
+            </div>
+            <div class="options">
+                <div class="option">A. turn off</div>
+                <div class="option">B. turn up</div>
+                <div class="option">C. turn down</div>
+                <div class="option">D. turn on</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8-choice')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8-choice">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点：动词短语辨析（turn 相关短语）</h4>
+                    <p><strong>turn on</strong> 意为"打开（电器）"，符合句意"你能帮我打开电脑吗？我想上网查些信息"。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>A. turn off：关闭<br>
+                    B. turn up：调大（音量），出现<br>
+                    C. turn down：调小（音量），拒绝</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 单项选择 第9题 -->
+    <div class="slide">
+        <div class="question-number">第9题</div>
+        <div class="question-type">单项选择</div>
+        <div class="question-card">
+            <div class="question-text">
+                Could you please tell me ( )?
+            </div>
+            <div class="options">
+                <div class="option">A. what will the future be like</div>
+                <div class="option">B. what the future will be like</div>
+                <div class="option">C. how do you think of the future</div>
+                <div class="option">D. what do you like the future</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点：宾语从句的语序</h4>
+                    <p>宾语从句必须用<strong>陈述语序</strong>，即"引导词 + 主语 + 谓语"。选项 B 中 what 是引导词，the future 是主语，will be like 是谓语，符合陈述语序。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>A. what will the future be like：疑问语序，错误<br>
+                    C. how do you think of the future：疑问语序且搭配错误（应为 what do you think of）<br>
+                    D. what do you like the future：疑问语序且句意不通</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 7</div>
+
+    <!-- 导航按钮 -->
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 7;
+
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

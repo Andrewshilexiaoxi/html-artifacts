@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赵泊嘉 必修二Unit2 错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .slide {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 2rem 5rem;
+        }
+        .slide.active { display: flex; }
+
+        .cover-content {
+            text-align: center;
+        }
+        .cover-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .cover-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .cover-stats {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+        .stat-item {
+            background: var(--card-bg);
+            padding: 1.5rem 2.5rem;
+            border-radius: 1rem;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+        .start-btn {
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.3);
+        }
+
+        .question-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+        }
+        .context-box p {
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .options {
+            margin-bottom: 1.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem 1.2rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+            transition: background 0.3s ease;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .answer-toggle {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .answer-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.3);
+        }
+
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.5s ease;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 1rem;
+            border: 2px solid var(--success);
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin: 1rem 0 0.5rem;
+        }
+        .analysis p {
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+        .analysis strong {
+            color: var(--text-primary);
+        }
+
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 4.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+        .nav-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+        .nav-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 0.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            max-height: 5rem;
+            overflow-y: auto;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 14px;
+            height: 14px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        .options-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 0.8rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .options-title {
+            color: var(--accent-light);
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+        .options-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1rem;
+        }
+        .option-item {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .cover-title { font-size: 2.2rem; }
+            .cover-stats { flex-direction: column; gap: 1rem; }
+            .question-card { padding: 1.5rem; }
+            .question-text { font-size: 1.1rem; }
+            .dot-navigation { gap: 0.3rem; padding: 0.5rem; }
+            .dot { width: 8px; height: 8px; }
+            .dot.active { width: 11px; height: 11px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <div class="cover-content">
+            <div class="cover-title">📚 赵泊嘉 错题复习</div>
+            <div class="cover-subtitle">必修二 Unit 2</div>
+            <div class="cover-stats">
+                <div class="stat-item">
+                    <div class="stat-number">21</div>
+                    <div class="stat-label">道错题</div>
+                </div>
+            </div>
+            <button class="start-btn" onclick="goToSlide(1)">开始复习 →</button>
+        </div>
+    </div>
+
+    <!-- 第1题 -->
+    <div class="slide">
+        <div class="question-number">第1题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                Rising sea temperatures and overfishing may ( 5 ) (threat) coral reefs in the ocean.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：threaten</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>词形转换（名词变动词）</strong></p>
+                    <p><strong>threat</strong> 是名词，意为"威胁"，此处需要动词形式 <strong>threaten</strong>。在情态动词 may 后面要用动词原形。句意为"海水温度上升和过度捕捞可能会威胁海洋中的珊瑚礁"。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易忽略情态动词后接动词原形的规则，或者不知道 threat 的动词形式是 threaten。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题 -->
+    <div class="slide">
+        <div class="question-number">第2题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                Although the thief was careful, he was still observed ( 7 ) (steal) into the shop and was caught.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：to steal</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>感官动词的被动语态</strong></p>
+                    <p>主动结构 <strong>observe sb. do sth.</strong>（看到某人做了某事）变为被动语态时，要还原不定式符号 to，即 <strong>be observed to do sth.</strong>。句意为"尽管小偷很小心，但还是被看到溜进商店并被抓住了"。</p>
+                    <h4>💡 补充说明</h4>
+                    <p>steal into 是固定短语，意为"偷偷溜进"。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题 -->
+    <div class="slide">
+        <div class="question-number">第3题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                The number of people giving concerts online is increasing at ( 9 ) alarming rate.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：an</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>冠词与固定搭配</strong></p>
+                    <p><strong>at a/an ... rate</strong> 是固定搭配，意为"以……的速度"。由于 <strong>alarming</strong> 以元音音素 /ə/ 开头，所以用不定冠词 <strong>an</strong>。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易只看字母而不看发音，误写成 a。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题 -->
+    <div class="slide">
+        <div class="question-number">第4题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                It can take many years to r( 10 ) from the death of a loved one.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：recover</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词词义与固定搭配</strong></p>
+                    <p><strong>recover from</strong> 是固定搭配，意为"从……中恢复过来"。句意为"从失去亲人的悲痛中恢复过来可能需要很多年"。</p>
+                    <h4>💡 补充说明</h4>
+                    <p>这是一个常用句型 It takes some time to do sth. 表示"做某事需要花费多长时间"。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题 -->
+    <div class="slide">
+        <div class="question-number">第5题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                Only after he failed ( 2 ) the importance of hard work.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：did he realize</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>部分倒装结构</strong></p>
+                    <p><strong>Only + 状语（从句）</strong> 位于句首时，主句需要使用部分倒装结构，即把助动词/情态动词/be动词提到主语之前。</p>
+                    <p>此句为一般过去时，所以在主语 he 前加助动词 did，谓语动词 realize 用原形。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易忘记倒装，直接写成 he realized；或者倒装时动词形式错误，写成 did he realized。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题 -->
+    <div class="slide">
+        <div class="question-number">第6题 / 21</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文定位</h4>
+                <p>Finless porpoise, also called Smiling Angels, have become a natural indicator of the health of the Yangtze River ecosystem, especially after the Lipotes vexillifer, a species of the freshwater dolphin commonly known as Baiji, became extinct in 2007.</p>
+            </div>
+            <div class="question-text">
+                What do we know about the Lipotes vexillifer?
+            </div>
+            <div class="options">
+                <div class="option">A. It was extinct about 19 years ago.</div>
+                <div class="option">B. Its favourite habitat is the ocean.</div>
+                <div class="option">C. Its population is falling rapidly.</div>
+                <div class="option">D. It has been a protected species.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>细节理解题</strong></p>
+                    <p>根据原文 <strong>became extinct in 2007</strong> 可知，白鳍豚在2007年灭绝，距2026年约19年，因此A选项正确。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- B. 错误，原文明确说是 <strong>freshwater dolphin</strong>（淡水豚），栖息地不是海洋</p>
+                    <p>- C. 错误，白鳍豚已经灭绝，不是数量快速下降</p>
+                    <p>- D. 错误，文中没有提到白鳍豚曾经是保护物种，只提到江豚是保护物种</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题 -->
+    <div class="slide">
+        <div class="question-number">第7题 / 21</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文定位</h4>
+                <p>They found that wildlife except lions ran around in response to human voices more than to any other sounds, and were also 40 percent quicker to escape.</p>
+            </div>
+            <div class="question-text">
+                Which animal responded to human voices least?
+            </div>
+            <div class="options">
+                <div class="option">A. Elephants.</div>
+                <div class="option">B. Giraffes.</div>
+                <div class="option">C. Lions.</div>
+                <div class="option">D. Dogs.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>细节理解题</strong></p>
+                    <p>根据原文 <strong>wildlife except lions ran around in response to human voices</strong> 可知，"除了狮子以外的野生动物"对人类声音的反应更大，也就是说狮子对人类声音的反应最小。关键词 <strong>except</strong> 表示"除了……之外（不包含）"。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易误解 except 的含义，以为狮子也包括在内，从而选错答案。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第8题 -->
+    <div class="slide">
+        <div class="question-number">第8题 / 21</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文定位</h4>
+                <p>The findings highlight the damaging impact that our presence could potentially be having significant ecological results. Even so, the findings could lead to positive outcomes as well. Human voices might prevent wildlife from entering crop fields or farms.</p>
+            </div>
+            <div class="question-text">
+                What is the main idea of the last paragraph?
+            </div>
+            <div class="options">
+                <div class="option">A. The advantages of human voices to animals.</div>
+                <div class="option">B. The damaging impact of human presence.</div>
+                <div class="option">C. The significant ecological results of human voices.</div>
+                <div class="option">D. The impact and possible application of human voices.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>段落主旨大意题</strong></p>
+                    <p>最后一段包含两个要点：<br>
+                    1. <strong>破坏性影响（damaging impact）</strong>：人类的存在可能对生态产生重大影响<br>
+                    2. <strong>积极应用（possible application）</strong>：人类声音可以用来防止野生动物进入农田</p>
+                    <p>因此D选项"人类声音的影响和可能的应用"最全面地概括了段落主旨。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- A. 只提到了"优点"，忽略了破坏性影响</p>
+                    <p>- B. 只提到了"破坏性影响"，忽略了积极应用</p>
+                    <p>- C. 只提到了"生态结果"，不够全面</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题 -->
+    <div class="slide">
+        <div class="question-number">第9题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                A cold spring will provide a natural check on the number of i( 4 ).
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：insects</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词词义与语境理解</strong></p>
+                    <p><strong>insect</strong> 意为"昆虫"，根据句意"寒冷的春天会自然抑制昆虫的数量"，且 <strong>the number of</strong> 后面需要接复数名词，所以填 <strong>insects</strong>。</p>
+                    <h4>💡 重点短语</h4>
+                    <p><strong>provide a natural check on</strong> 意为"对……起到自然的抑制/控制作用"，此处 check 作名词，意为"抑制，控制"。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易忘记名词复数形式，直接写成 insect。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第10题 -->
+    <div class="slide">
+        <div class="question-number">第10题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                People in the n( 5 ) heard the news and all wanted to help him.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：neighbourhood</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词词义与固定搭配</strong></p>
+                    <p><strong>neighbourhood</strong> 意为"社区，街坊，附近"，<strong>in the neighbourhood</strong> 是固定搭配，意为"在附近，在社区里"。句意为"附近的人们听到这个消息，都想帮助他"。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易误写为 neighbour（邻居），但 in the neighbour 不是正确搭配。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第11题 -->
+    <div class="slide">
+        <div class="question-number">第11题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                Several fishermen were on the beach, tending their n( 6 ).
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：nets</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词词义与语境理解</strong></p>
+                    <p><strong>net</strong> 意为"渔网"，根据语境 <strong>fishermen</strong>（渔民）和 <strong>on the beach</strong>（在海滩上），可以推断是"整理渔网"。their 后面需要接复数名词，所以填 <strong>nets</strong>。</p>
+                    <h4>💡 重点词汇</h4>
+                    <p><strong>tend</strong> 在此处意为"照料，整理，打理"。句意为"几个渔民在海滩上整理他们的渔网"。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易忽略复数形式，直接写成 net。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第12题 -->
+    <div class="slide">
+        <div class="question-number">第12题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                While doing some cleaning in my kitchen, I noticed a tiny black pellet on the shelf. Gecko dropping, I ( 1 ). There must be a baby gecko here.
+            </div>
+            <div class="options">
+                <div class="option">A. remembered</div>
+                <div class="option">B. discovered</div>
+                <div class="option">C. thought</div>
+                <div class="option">D. wished</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-12">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词词义辨析</strong></p>
+                    <p><strong>thought</strong> 是 <strong>think</strong> 的过去式，意为"心想，认为"，用来表达作者看到黑色小球时的内心想法和推断。句意为"我心想，这是壁虎的粪便"。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- A. remembered: 记起，想起，不符合语境</p>
+                    <p>- B. discovered: 发现，是已经确认的事实，不是内心推断</p>
+                    <p>- D. wished: 希望，表示愿望，不符合上下文</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易误选B，把"心里想"和"发现"混淆了。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第13题 -->
+    <div class="slide">
+        <div class="question-number">第13题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                Ever so carefully, I ( 9 ) one stone, then another—until I spotted a tiny yellow tail!
+            </div>
+            <div class="options">
+                <div class="option">A. arranged</div>
+                <div class="option">B. checked</div>
+                <div class="option">C. cleaned</div>
+                <div class="option">D. removed</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-13')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-13">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词词义辨析</strong></p>
+                    <p><strong>removed</strong> 意为"移开，拿走"。作者为了找壁虎，需要把篮子里的石头一块块"移开"，才能看到下面的壁虎。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- A. arranged: 安排，排列，不符合找东西的语境</p>
+                    <p>- B. checked: 检查，只是查看而不挪动石头是看不到下面的壁虎的</p>
+                    <p>- C. cleaned: 清洁，打扫，不符合语境</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易误选B，以为只是"检查"石头，但没有理解找藏在下面的东西需要"移开"石头。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第14题 -->
+    <div class="slide">
+        <div class="question-number">第14题 / 21</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 上下文语境</h4>
+                <p>There are lots of geckos here... I'd got into the habit of checking the oven and dishwasher before I turned them on.</p>
+            </div>
+            <div class="question-text">
+                Now I ( 13 ) peek(窥视) inside the dishwasher and the oven before turning them on.
+            </div>
+            <div class="options">
+                <div class="option">A. even</div>
+                <div class="option">B. never</div>
+                <div class="option">C. still</div>
+                <div class="option">D. already</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-14')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-14">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>副词词义辨析</strong></p>
+                    <p><strong>still</strong> 意为"仍然，还是"。关键语境线索：前文提到 <strong>I'd got into the habit of checking</strong>（我早已养成了检查的习惯），说明这个习惯在发现壁虎之前就存在了，经过壁虎事件后，现在"仍然"保持这个习惯。still 表示动作从过去延续到现在。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- A. even: 甚至，表示递进关系，前文没有提到递进的逻辑</p>
+                    <p>- B. never: 从不，与文意相反</p>
+                    <p>- D. already: 已经，常用于完成时，不表示持续的习惯</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易误选A，因为没有注意到前文"早已养成了检查习惯"这个关键语境，误以为是递进关系。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第15题 -->
+    <div class="slide">
+        <div class="question-number">第15题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                Whenever he's around, he always manages to s( 5 ) up trouble.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-15')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-15">
+                <div class="correct-answer">✅ 正确答案：stir</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>固定短语搭配</strong></p>
+                    <p><strong>stir up</strong> 是固定短语，意为"挑起，引起，惹起"，<strong>stir up trouble</strong> 意为"惹麻烦，挑起事端"。</p>
+                    <h4>💡 重点句型</h4>
+                    <p><strong>manage to do sth.</strong> 意为"设法做成某事"，表示成功地完成了某件事。句意为"只要他在附近，他总能设法惹出麻烦来"。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易误写成 start，但 <strong>start up trouble</strong> 不是常用搭配，正确表达是 <strong>stir up trouble</strong>。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第16题 -->
+    <div class="slide">
+        <div class="question-number">第16题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                Being exposed to the sunlight for too long will be harmful to your s( 6 ).
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-16')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-16">
+                <div class="correct-answer">✅ 正确答案：skin</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词词义与语境理解</strong></p>
+                    <p><strong>skin</strong> 意为"皮肤"，根据语境 <strong>Being exposed to the sunlight</strong>（长时间暴露在阳光下），可以推断会对"皮肤"有害。</p>
+                    <h4>💡 重点短语</h4>
+                    <p>- <strong>be exposed to</strong> 意为"暴露于，接触"</p>
+                    <p>- <strong>be harmful to</strong> 意为"对……有害"</p>
+                    <p>句意为"长时间暴露在阳光下会对你的皮肤有害"。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第17题 -->
+    <div class="slide">
+        <div class="question-number">第17题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                The news report often ( 5 ) emotions among the public.
+            </div>
+            <div class="options-box">
+                <div class="options-title">📋 备选短语</div>
+                <div class="options-list">
+                    <span class="option-item">carry out</span>
+                    <span class="option-item">cut down</span>
+                    <span class="option-item">stir up</span>
+                    <span class="option-item">pay attention to</span>
+                    <span class="option-item">put up</span>
+                </div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-17')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-17">
+                <div class="correct-answer">✅ 正确答案：stirs up</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词短语辨析 + 主谓一致</strong></p>
+                    <p><strong>stir up</strong> 意为"激起，挑起，引发"，<strong>stir up emotions</strong> 意为"激起情绪"，符合语境。由于主语 <strong>The news report</strong> 是第三人称单数，且有 <strong>often</strong> 表示经常性动作，所以动词要用一般现在时第三人称单数形式 <strong>stirs up</strong>。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- carry out: 执行，实施（carry out a project）</p>
+                    <p>- cut down: 削减，砍倒（cut down spending）</p>
+                    <p>- pay attention to: 注意（pay attention to safety）</p>
+                    <p>- put up: 建造，张贴（put up a building）</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易忽略主谓一致，直接写成 stir up 而不是 stirs up。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第18题 -->
+    <div class="slide">
+        <div class="question-number">第18题 / 21</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文定位</h4>
+                <p>But the good news is that each of us can play a role in helping wild animals by making the world a better place for them. ( 1 )<br>Go outside and connect with wildlife... Speak up for wildlife...</p>
+            </div>
+            <div class="question-text">
+                选出能填入空白处的最佳选项：
+            </div>
+            <div class="options">
+                <div class="option">A. Pick up rubbish around you.</div>
+                <div class="option">B. Contact the local government.</div>
+                <div class="option">C. Your choice could make a big difference.</div>
+                <div class="option">D. Become a voice for wildlife on social media.</div>
+                <div class="option">E. Take a free online class on wildlife protection.</div>
+                <div class="option">F. Learn about the lives and problems many animals are facing today.</div>
+                <div class="option">G. Let's become an active protector by putting the following ideas into practice.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-18')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-18">
+                <div class="correct-answer">✅ 正确答案：G</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>文章结构过渡句</strong></p>
+                    <p>第一段结尾提到"我们每个人都可以发挥作用帮助野生动物"，空格后开始逐条列出具体的建议。G选项意为"让我们把以下想法付诸实践，成为积极的保护者"，完美起到了承上启下的过渡作用，相当于 "Here are some ideas"。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易误选其他选项，因为没有看出这是一个"总起 → 分述"的文章结构，第1题需要一个能引出下文多条建议的句子。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第19题 -->
+    <div class="slide">
+        <div class="question-number">第19题 / 21</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文定位</h4>
+                <p>Never buy products from threatened or endangered species... When traveling to a foreign country, shopping overseas, or shopping in your local area, never buy gifts or products that support the illegal wildlife trade, or are from animals in danger. ( 5 )</p>
+            </div>
+            <div class="question-text">
+                选出能填入空白处的最佳选项：
+            </div>
+            <div class="options">
+                <div class="option">A. Pick up rubbish around you.</div>
+                <div class="option">B. Contact the local government.</div>
+                <div class="option">C. Your choice could make a big difference.</div>
+                <div class="option">D. Become a voice for wildlife on social media.</div>
+                <div class="option">E. Take a free online class on wildlife protection.</div>
+                <div class="option">F. Learn about the lives and problems many animals are facing today.</div>
+                <div class="option">G. Let's become an active protector by putting the following ideas into practice.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-19')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-19">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>段落总结句</strong></p>
+                    <p>本段的核心话题是"购买选择"（Never buy products...），强调了个人消费选择的重要性。C选项意为"你的选择可能会产生重大影响"，准确总结了本段主旨，呼应了上文关于"不购买濒危动物制品"的个人选择。</p>
+                    <h4>🔑 关键词</h4>
+                    <p><strong>choice</strong>（选择），与段落反复提到的 <strong>buy, shopping, never buy</strong> 等"购买选择"的主题完全一致。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易被其他看似相关的选项干扰，没有抓住 <strong>choice</strong> 这个与"购买选择"对应的关键词。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第20题 -->
+    <div class="slide">
+        <div class="question-number">第20题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                People often ( 4 ) (beauty) their homes with paper cuttings.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-20')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-20">
+                <div class="correct-answer">✅ 正确答案：beautify</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词变动词 + 构词法</strong></p>
+                    <p><strong>beauty</strong> 是名词，意为"美丽"，加上动词后缀 <strong>-fy</strong> 变成动词 <strong>beautify</strong>，意为"美化，使变美"。句意为"人们经常用剪纸来美化他们的家"。</p>
+                    <h4>📚 词汇扩展（名词/形容词 + -fy 变动词）</h4>
+                    <p>- simple (简单的，adj.) → simplify (简化，v.)</p>
+                    <p>- pure (纯净的，adj.) → purify (净化，v.)</p>
+                    <p>- class (类别，n.) → classify (分类，v.)</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易写成 beautiful，混淆了形容词和动词形式。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第21题 -->
+    <div class="slide">
+        <div class="question-number">第21题 / 21</div>
+        <div class="question-card">
+            <div class="question-text">
+                He came up with this question in three different ways ( 7 ) search of an answer.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-21')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-21">
+                <div class="correct-answer">✅ 正确答案：in</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>固定短语搭配</strong></p>
+                    <p><strong>in search of</strong> 是固定短语，意为"寻找，寻求"。句意为"他用三种不同的方式提出了这个问题，以寻求答案"。</p>
+                    <h4>🔄 同义表达</h4>
+                    <p>- in search of = in one's search for = in the search for</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易误写成 for 或者 on，没有记住这个固定搭配。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 21</div>
+
+    <!-- 导航按钮 -->
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 21;
+
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>程少迪 错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页 */
+        .cover-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .cover-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+        .cover-stats {
+            display: flex;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        .start-btn {
+            padding: 1.2rem 3rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .start-btn:hover { transform: scale(1.05); }
+
+        /* 题目卡片 */
+        .question-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+        .content-wrapper {
+            width: 100%;
+            max-width: 950px;
+            overflow-y: auto;
+            max-height: 75vh;
+            padding-right: 10px;
+        }
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+        .context-box p {
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        /* 题目文本 */
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 0.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        /* 答案按钮 */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.2s;
+        }
+        .answer-toggle:hover {
+            transform: translateY(-2px);
+        }
+
+        /* 答案区域 */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 1rem;
+            border-left: 4px solid var(--success);
+        }
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+        .analysis p {
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* 导航按钮 */
+        .navigation {
+            position: fixed;
+            bottom: 5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+        .navigation button {
+            padding: 0.8rem 2rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .navigation button:hover:not(:disabled) {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* 圆点导航 */
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            max-height: 70px;
+            overflow-y: auto;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <div class="cover-title">📚 程少迪 错题复习</div>
+        <div class="cover-subtitle">名校04阅读理解C开始～逐梦二的完形</div>
+        <div class="cover-stats">
+            <div class="stat-item">
+                <div class="stat-number">15</div>
+                <div class="stat-label">道错题</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">2026-05-03</div>
+                <div class="stat-label">整理日期</div>
+            </div>
+        </div>
+        <button class="start-btn" onclick="goToSlide(1)">开始复习 🚀</button>
+    </div>
+
+    <!-- 第37题 -->
+    <div class="slide">
+        <div class="question-number">第37题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文定位</h4>
+                    <p>An AI stylist can run into problems when people from different cultures use it. What is popular in Asia may be different from what is cool in Europe.</p>
+                </div>
+                <p class="question-text">What does the underlined words "run into" in Paragraph 3 probably mean?</p>
+                <div class="options">
+                    <div class="option">A. knock</div>
+                    <div class="option">B. reduce</div>
+                    <div class="option">C. refuse</div>
+                    <div class="option">D. meet</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-37')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-37">
+                    <div class="correct-answer">✅ 正确答案：D</div>
+                    <div class="analysis">
+                        <h4>📝 考点：词义猜测题</h4>
+                        <p><strong>run into</strong> 在这里意为"遇到，遭遇"，与 <strong>meet</strong> 意思相近。句意为"当来自不同文化背景的人们使用AI造型师时，它可能会遇到问题"。</p>
+                        <p><strong>干扰项分析：</strong></p>
+                        <p>- A. knock: 敲打，撞击，不符合语境</p>
+                        <p>- B. reduce: 减少，降低，不符合句意</p>
+                        <p>- C. refuse: 拒绝，与原文意思不符</p>
+                        <p><strong>常见错因：</strong>学生容易只记住 run into 表示"撞上"的字面意思，忽略它在不同语境下表示"遇到（问题、困难）"的含义。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第38题 -->
+    <div class="slide">
+        <div class="question-number">第38题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文定位</h4>
+                    <p>A team of people look after the data set and make sure it always has the newest information. They help the AI stylist get better at choosing clothes by improving its rules.</p>
+                </div>
+                <p class="question-text">What do the team of people do for AI stylists?</p>
+                <div class="options">
+                    <div class="option">A. Control the data set of outfits.</div>
+                    <div class="option">B. Test AI stylists' fashion advice.</div>
+                    <div class="option">C. Connect AI stylists with the Internet.</div>
+                    <div class="option">D. Find pictures and words about clothing.</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-38')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-38">
+                    <div class="correct-answer">✅ 正确答案：A</div>
+                    <div class="analysis">
+                        <h4>📝 考点：细节理解题</h4>
+                        <p>根据第4段第一句 <strong>"A team of people look after the data set"</strong>，其中 <strong>look after</strong>（照看、管理）与选项A中的 <strong>Control</strong>（控制、管理）意思一致。这个团队负责管理服装数据集，确保其拥有最新信息。</p>
+                        <p><strong>干扰项分析：</strong></p>
+                        <p>- B. 测试AI造型师的时尚建议：原文未提及测试建议</p>
+                        <p>- C. 连接AI造型师与互联网：原文没有提到互联网连接</p>
+                        <p>- D. 查找关于服装的图片和文字：这是AI造型师本身的功能，不是这个团队的工作</p>
+                        <p><strong>常见错因：</strong>学生容易把AI造型师的功能和维护团队的工作混淆，需要仔细定位原文信息。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第49题 -->
+    <div class="slide">
+        <div class="question-number">第49题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <p class="question-text">Music can also improve memory. 49. __________ This can help to exercise our memory.</p>
+                <div class="options">
+                    <div class="option">A. It is of great help to us.</div>
+                    <div class="option">B. We know that music can develop the right brain.</div>
+                    <div class="option">C. Music helps us to pay more attention to something.</div>
+                    <div class="option">D. In a certain situation, we get excited and energetic from music.</div>
+                    <div class="option">E. When we learn music, we need to remember the rhythm and lyrics.</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-49')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-49">
+                    <div class="correct-answer">✅ 正确答案：E</div>
+                    <div class="analysis">
+                        <h4>📝 考点：五选五（逻辑衔接）</h4>
+                        <p>本段主题是"音乐可以提高记忆力"。空格后说"这有助于锻炼我们的记忆力"，说明空格处应该填入具体<strong>是什么帮助锻炼记忆力</strong>的内容。</p>
+                        <p>选项E"当我们学习音乐时，我们需要记住节奏和歌词"正好解释了音乐如何帮助锻炼记忆力——记住节奏和歌词的过程本身就是记忆力训练，与前后文逻辑完美衔接。</p>
+                        <p><strong>错因分析：</strong>学生选了错误选项，可能是因为没有抓住本段核心主题"improve memory"与选项E中"remember the rhythm and lyrics"的对应关系。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第50题 -->
+    <div class="slide">
+        <div class="question-number">第50题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <p class="question-text">Learning music can develop creativity. 50. __________ And the right brain is responsible for creative thinking.</p>
+                <div class="options">
+                    <div class="option">A. It is of great help to us.</div>
+                    <div class="option">B. We know that music can develop the right brain.</div>
+                    <div class="option">C. Music helps us to pay more attention to something.</div>
+                    <div class="option">D. In a certain situation, we get excited and energetic from music.</div>
+                    <div class="option">E. When we learn music, we need to remember the rhythm and lyrics.</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-50')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-50">
+                    <div class="correct-answer">✅ 正确答案：B</div>
+                    <div class="analysis">
+                        <h4>📝 考点：五选五（逻辑衔接）</h4>
+                        <p>本段主题是"学习音乐可以培养创造力"。空格后紧接着说"右脑负责创造性思维"，说明空格处应该填入<strong>连接音乐与右脑</strong>的过渡句。</p>
+                        <p>选项B"我们知道音乐可以开发右脑"起到了完美的承上启下作用：前半句承接主题"音乐培养创造力"，后半句引出下文"右脑负责创造性思维"，形成完整的逻辑链：音乐→开发右脑→右脑负责创造性思维→音乐培养创造力。</p>
+                        <p><strong>错因分析：</strong>学生虽然选对了B，但标记了叉号，说明对这个答案不够确定。关键是要识别"右脑=创造力"这条逻辑线，选项B是唯一能把前后句连接起来的过渡句。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题 -->
+    <div class="slide">
+        <div class="question-number">第4题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <p class="question-text">I think it's a waste of time and __________ to play computer games all day. We should do something meaningful.</p>
+                <div class="options">
+                    <div class="option">A. attention</div>
+                    <div class="option">B. energy</div>
+                    <div class="option">C. memory</div>
+                    <div class="option">D. pleasure</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-4">
+                    <div class="correct-answer">✅ 正确答案：A</div>
+                    <div class="analysis">
+                        <h4>📝 考点：名词词义辨析</h4>
+                        <p><strong>energy</strong> 意为"精力，能量"，a waste of time and energy 意为"浪费时间和精力"，符合句意"我认为整天玩电脑游戏是浪费时间和精力"。</p>
+                        <p><strong>干扰项分析：</strong></p>
+                        <p>- A. attention: 注意力</p>
+                        <p>- C. memory: 记忆力</p>
+                        <p>- D. pleasure: 快乐，愉悦</p>
+                        <p><strong>错因分析：</strong>学生错选了A，说明对 energy 这个词的用法不熟悉。attention 是"注意力"，玩游戏浪费的是"精力"而不是"注意力"。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第15题 -->
+    <div class="slide">
+        <div class="question-number">第15题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>In the math class, she met a difficult math problem. ( 15 ) that moment, she remembered her mom's first kiss.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. At</div>
+                    <div class="option">B. On</div>
+                    <div class="option">C. In</div>
+                    <div class="option">D. For</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-15')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-15">
+                    <div class="correct-answer">✅ 正确答案：A</div>
+                    <div class="analysis">
+                        <h4>📝 考点：介词辨析（固定搭配）</h4>
+                        <p><strong>at that moment</strong> 是固定搭配，意为"就在那时，在那一刻"。at 用于表示具体的时间点。</p>
+                        <p><strong>干扰项分析：</strong></p>
+                        <p>- B. On: 用于具体日期或特定某一天</p>
+                        <p>- C. In: 用于月份、季节、年份或一段时间内</p>
+                        <p>- D. For: 用于表示持续的时间段</p>
+                        <p><strong>错因分析：</strong>学生虽然选对了A，但标记了叉号，说明对这个固定搭配不够熟练和确定。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第24题 -->
+    <div class="slide">
+        <div class="question-number">第24题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>Leaving school that day, Emma felt a deep sense of satisfaction. Her backpack was full of finished work, her heart was warm from helping others, and her spirit was lifted by laughter and play. Her mom's three simple phrases weren't just words. They were a compass guiding her towards a ( 24 ) filled with purpose, connection, and joy.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. dream</div>
+                    <div class="option">B. past</div>
+                    <div class="option">C. present</div>
+                    <div class="option">D. day</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-24')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-24">
+                    <div class="correct-answer">✅ 正确答案：D</div>
+                    <div class="analysis">
+                        <h4>📝 考点：名词词义辨析</h4>
+                        <p><strong>a day filled with...</strong> 意为"充满……的一天/生活"。这里 day 不仅仅指"一天"，而是引申为"生活、日子"。句意为"它们（妈妈的三句话）就像指南针，指引她走向充满目标、情感联结和快乐的生活"。</p>
+                        <p><strong>干扰项分析：</strong></p>
+                        <p>- A. dream: 梦想，不符合语境</p>
+                        <p>- B. past: 过去，towards 表示"朝向"，不能朝向过去</p>
+                        <p>- C. present: 现在，present 作名词表示"现在"时前面通常用 the</p>
+                        <p><strong>错因分析：</strong>学生虽然选对了D，但标记了叉号，说明对 day 的引申义理解不够到位，容易被 dream 干扰。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第29题 -->
+    <div class="slide">
+        <div class="question-number">第29题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文定位</h4>
+                    <p>But it has the largest discharge in the world, up to 219,000 m³ per second! The Congo River, with the second largest discharge, has only 20% discharge of it!</p>
+                </div>
+                <p class="question-text">How large is the discharge of the Congo River?</p>
+                <div class="options">
+                    <div class="option">A. It's about 43,800 m³ per second.</div>
+                    <div class="option">B. It's about 125,400 m³ per second.</div>
+                    <div class="option">C. It's about 219,000 m³ per second.</div>
+                    <div class="option">D. It's about 1,045,000 m³ per second.</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-29')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-29">
+                    <div class="correct-answer">✅ 正确答案：A</div>
+                    <div class="analysis">
+                        <h4>📝 考点：细节理解 + 数字计算题</h4>
+                        <p>根据原文，亚马逊河流量为 <strong>219,000 m³/秒</strong>，刚果河流量是它的 <strong>20%</strong>。</p>
+                        <p><strong>计算过程：</strong>219,000 × 20% = 219,000 × 0.2 = <strong>43,800 m³/秒</strong></p>
+                        <p><strong>干扰项分析：</strong></p>
+                        <p>- C 是亚马逊河的流量，不是刚果河的，学生容易粗心直接选这个数字</p>
+                        <p>- B、D 是错误计算结果</p>
+                        <p><strong>错因分析：</strong>学生虽然选对了A，但打了叉号，说明对这类计算题不够自信。关键是要区分"谁是谁的百分之几"，刚果河是亚马逊河的20%，而不是反过来。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第31题 -->
+    <div class="slide">
+        <div class="question-number">第31题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文定位</h4>
+                    <p>It is reported that the number of bear attacks in Japan this year is nearly at the highest it's ever been, with 69 attacks taking place across the country between April and August.</p>
+                </div>
+                <p class="question-text">What is the main concern about bear incidents in Japan this year?</p>
+                <div class="options">
+                    <div class="option">A. More city attacks.</div>
+                    <div class="option">B. Stopping all trains.</div>
+                    <div class="option">C. Targeting old people.</div>
+                    <div class="option">D. The near-record-high attack number.</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-31')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-31">
+                    <div class="correct-answer">✅ 正确答案：D</div>
+                    <div class="analysis">
+                        <h4>📝 考点：主旨大意题</h4>
+                        <p>根据第一段第一句，今年日本熊袭击事件的数量<strong>几乎达到历史最高水平</strong>，这是最主要的关注点。</p>
+                        <p><strong>干扰项分析：</strong></p>
+                        <p>- A、B、C 都是具体的个别现象，不是主要关注点</p>
+                        <p>- D 中的 near-record-high 与原文 nearly at the highest 对应</p>
+                        <p><strong>错因分析：</strong>学生选对了D但打了叉号，说明对主旨题的判断不够自信。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第32题 -->
+    <div class="slide">
+        <div class="question-number">第32题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文定位</h4>
+                    <p>① users can report bear sightings on a map, and also see sightings reported by other users.</p>
+                    <p>② The app also plays the sound of a dog barking...</p>
+                </div>
+                <p class="question-text">What can people do with the app?</p>
+                <div class="options">
+                    <div class="option">A. ①②③</div>
+                    <div class="option">B. ①②④</div>
+                    <div class="option">C. ①③④</div>
+                    <div class="option">D. ②③④</div>
+                    <div style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.95rem;">
+                        ① Report a bear sighting.<br>
+                        ② Check others' bear reports.<br>
+                        ③ Play a dog barking sound.<br>
+                        ④ Learn some safety guidelines.
+                    </div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-32')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-32">
+                    <div class="correct-answer">✅ 正确答案：A</div>
+                    <div class="analysis">
+                        <h4>📝 考点：细节理解题（多选题）</h4>
+                        <p>根据原文：</p>
+                        <p>- ① 正确：report bear sightings on a map</p>
+                        <p>- ② 正确：see sightings reported by other users</p>
+                        <p>- ③ 正确：plays the sound of a dog barking</p>
+                        <p>- ④ 错误：原文未提及"学习安全指南"</p>
+                        <p><strong>干扰项分析：</strong>学生错选了C，把④误认为正确，说明阅读不够细致，漏看了"learn safety guidelines"在原文没有依据。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第33题 -->
+    <div class="slide">
+        <div class="question-number">第33题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文定位</h4>
+                    <p>While the app can be a good way... it does depend on people using it to work.</p>
+                    <p>While it's becoming more popular, one user wrote online that the app could give people a "false sense of security".</p>
+                </div>
+                <p class="question-text">What is the writer's attitude towards the app?</p>
+                <div class="options">
+                    <div class="option">A. Supportive.</div>
+                    <div class="option">B. Doubtful.</div>
+                    <div class="option">C. Objective.</div>
+                    <div class="option">D. Worried.</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-33')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-33">
+                    <div class="correct-answer">✅ 正确答案：C</div>
+                    <div class="analysis">
+                        <h4>📝 考点：作者态度题</h4>
+                        <p>作者既提到了app的好处（good way to know if there are bears），也提到了它的局限性（depend on people using it, false sense of security），这是<strong>客观中立</strong>的态度。</p>
+                        <p><strong>干扰项分析：</strong></p>
+                        <p>- A. Supportive：片面，作者也说了问题</p>
+                        <p>- B. Doubtful：片面，作者也说了优点</p>
+                        <p>- D. Worried：不符合原文语气</p>
+                        <p><strong>错因分析：</strong>学生选对了C但打了叉号，说明对"客观态度"这种题型判断不够准确。作者既说好又说不好就是客观。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第45题 -->
+    <div class="slide">
+        <div class="question-number">第45题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文定位</h4>
+                    <p>In the end, this trip gave us many good memories. We enjoyed every moment, and we really can't wait to go back to China!</p>
+                </div>
+                <p class="question-text">The trip gave the writer many good memories and unforgotten experiences.</p>
+                <div class="options">
+                    <div class="option">A. T</div>
+                    <div class="option">B. F</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-45')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-45">
+                    <div class="correct-answer">✅ 正确答案：T</div>
+                    <div class="analysis">
+                        <h4>📝 考点：判断正误题（细节理解 + 推理判断）</h4>
+                        <p>原文明确说 "this trip gave us many good memories"，与题目中 "many good memories" 完全对应。题目中的 "unforgotten experiences"（难忘的经历）是对原文 "We enjoyed every moment, and we really can't wait to go back to China" 的合理推断——享受每一个时刻、迫不及待想回去，说明这些经历是难忘的。</p>
+                        <p><strong>错因分析：</strong>学生选对了T但打了叉号，说明对"同义替换+合理推断"这类题型不够自信。原文没有直接出现 "unforgotten" 这个词，但从上下文语境完全可以推断出来，这是阅读题的常见考法。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第1题 -->
+    <div class="slide">
+        <div class="question-number">第1题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <p class="question-text">I think it's a waste of time and __________ to play computer games all day. We should do something meaningful.</p>
+                <div class="options">
+                    <div class="option">A. attention</div>
+                    <div class="option">B. energy</div>
+                    <div class="option">C. memory</div>
+                    <div class="option">D. pleasure</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-1">
+                    <div class="correct-answer">✅ 正确答案：B</div>
+                    <div class="analysis">
+                        <h4>📝 考点：名词词义辨析</h4>
+                        <p><strong>energy</strong> 意为"精力，能量"，a waste of time and energy 意为"浪费时间和精力"，符合句意"我认为整天玩电脑游戏是浪费时间和精力"。</p>
+                        <p><strong>干扰项分析：</strong></p>
+                        <p>- A. attention: 注意力</p>
+                        <p>- C. memory: 记忆力</p>
+                        <p>- D. pleasure: 快乐，愉悦</p>
+                        <p><strong>错因分析：</strong>学生错选了A，说明对 energy 这个词的用法不熟悉。attention 是"注意力"，玩游戏浪费的是"精力"而不是"注意力"。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第13题 -->
+    <div class="slide">
+        <div class="question-number">第13题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>Bruce nodded. But the moment he sat on the bus, he ( 13 ) his headphones and closed his eyes. He was soon lost in a song of his favorite band, the BlueBob.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. took off</div>
+                    <div class="option">B. took away</div>
+                    <div class="option">C. turned off</div>
+                    <div class="option">D. turned on</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-13')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-13">
+                    <div class="correct-answer">✅ 正确答案：D</div>
+                    <div class="analysis">
+                        <h4>📝 考点：动词短语辨析</h4>
+                        <p><strong>turned on</strong> 意为"打开（电子设备）"，这里指"戴上并打开耳机"，符合后文"很快沉浸在最喜欢的乐队歌曲中"的语境。</p>
+                        <p><strong>干扰项分析：</strong></p>
+                        <p>- A. took off: 脱下，摘掉</p>
+                        <p>- B. took away: 拿走</p>
+                        <p>- C. turned off: 关闭（与后文沉浸在歌曲中矛盾）</p>
+                        <p><strong>错因分析：</strong>学生错选了C，混淆了"打开"和"关闭"的短语，也没有结合后文语境判断。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第20题 -->
+    <div class="slide">
+        <div class="question-number">第20题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>"Maybe he also loves the BlueBob. Maybe he was just being friendly," he thought. So when they saw each other on the bus the next day, Bruce managed to ( 20 ) a smile on his face.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. wear</div>
+                    <div class="option">B. find</div>
+                    <div class="option">C. make</div>
+                    <div class="option">D. get</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-20')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-20">
+                    <div class="correct-answer">✅ 正确答案：A</div>
+                    <div class="analysis">
+                        <h4>📝 考点：动词词义辨析（固定搭配）</h4>
+                        <p><strong>wear a smile</strong> 是固定搭配，意为"面带微笑"，wear 在这里表示"呈现某种表情或状态"。manage to wear a smile 意为"努力让自己面带微笑"，符合 Bruce 害羞但想友好的心理状态。</p>
+                        <p><strong>干扰项分析：</strong></p>
+                        <p>- C. make a smile 虽然语法也说得通，但 wear a smile 是更地道、更常用的固定搭配</p>
+                        <p>- B、D 不符合搭配</p>
+                        <p><strong>错因分析：</strong>学生选对了A，这是正确答案！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第25题 -->
+    <div class="slide">
+        <div class="question-number">第25题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>From that day on, Bruce and Mike became good friends. They often talked about music and shared their favorite songs. Bruce learned that being ( 25 ) was the first step to making friends.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. honest</div>
+                    <div class="option">B. brave</div>
+                    <div class="option">C. kind</div>
+                    <div class="option">D. careful</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-25')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-25">
+                    <div class="correct-answer">✅ 正确答案：A</div>
+                    <div class="analysis">
+                        <h4>📝 考点：形容词词义辨析（主旨理解）</h4>
+                        <p><strong>honest</strong> 意为"诚实的"。整篇文章中，Bruce 一开始对 Mike 撒谎说自己不喜欢 BlueBob，后来道歉说了实话，两人成为朋友，所以文章主旨是"诚实是交友的第一步"。</p>
+                        <p><strong>干扰项分析：</strong></p>
+                        <p>- B. brave: 勇敢的</p>
+                        <p>- C. kind: 善良的</p>
+                        <p>- D. careful: 小心的</p>
+                        <p><strong>错因分析：</strong>学生选对了A但打了叉号，说明对文章主旨理解不够自信，没有抓住"撒谎→道歉→成为朋友"这条主线。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 15</div>
+
+    <!-- 导航按钮 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()" disabled>← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 15;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.title = '封面';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.title = '第' + i + '题';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

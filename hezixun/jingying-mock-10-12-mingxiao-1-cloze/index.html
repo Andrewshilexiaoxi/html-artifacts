@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>何紫勋竞赢模拟10～12及名校1完形错题</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            padding-bottom: 5rem;
+        }
+        .slide.active { display: flex; }
+
+        .cover-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cover-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .cover-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem 2rem;
+            background: var(--card-bg);
+            border-radius: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .start-btn {
+            padding: 1rem 3rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .question-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .content-wrapper {
+            width: 100%;
+            max-width: 900px;
+            max-height: calc(100vh - 10rem);
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .context-box p {
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .options {
+            margin-bottom: 1rem;
+        }
+
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            transition: background 0.3s ease;
+        }
+
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .answer-toggle:hover {
+            transform: translateY(-2px);
+        }
+
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.5s ease;
+        }
+
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 1rem;
+            border: 2px solid var(--success);
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .analysis p {
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .analysis ul {
+            margin-left: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .error-cause {
+            background: rgba(233, 69, 96, 0.1);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-top: 1rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .navigation button:hover:not(:disabled) {
+            background: var(--accent);
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        .question-type {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: var(--accent);
+            color: white;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-type-title {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <div class="cover-title">📚 何紫勋竞赢模拟10～12及名校1完形错题</div>
+        <div class="cover-subtitle">英语错题复习PPT</div>
+        <div class="cover-stats">
+            <div class="stat-item">
+                <div class="stat-number">12</div>
+                <div class="stat-label">道错题</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4</div>
+                <div class="stat-label">种题型</div>
+            </div>
+        </div>
+        <button class="start-btn" onclick="goToSlide(1)">开始复习 🚀</button>
+    </div>
+
+    <!-- 第16题 -->
+    <div class="slide">
+        <div class="question-number">第16题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="question-type-title">题型：完形填空</div>
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>At first, I fell down several times, but the soft snow didn't hurt me. With the coach's help, I kept practicing ___16.___ two hours. Finally, I could ski slowly on the gentle slope without falling.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. in</div>
+                    <div class="option">B. for</div>
+                    <div class="option">C. at</div>
+                    <div class="option">D. on</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-16')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-16">
+                    <div class="correct-answer">✅ 正确答案：B</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p><strong>介词辨析（时间介词）</strong></p>
+                        <p>**for + 时间段** 表示动作持续的时间长度，"for two hours" 意为"长达两小时"，符合句意"在教练的帮助下，我坚持练习了两个小时"。</p>
+                        <h4>🔍 干扰项分析</h4>
+                        <ul>
+                            <li>A. in + 时间段：表示"在……之后"，常用于将来时</li>
+                            <li>C. at + 时间点：表示"在某一时刻"</li>
+                            <li>D. on + 具体日期：表示"在某一天"</li>
+                        </ul>
+                        <div class="error-cause">
+                            <strong>⚠️ 常见错因：</strong>学生容易混淆 for 和 in 的用法，for 强调持续时间，in 强调时间点或将来时间。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第25题 -->
+    <div class="slide">
+        <div class="question-number">第25题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="question-type-title">题型：完形填空</div>
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>I learned that as long as you don't give up, you can finally do it. I hope I can visit Harbin again next winter and ___25.___ more interesting ice and snow activities.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. take part in</div>
+                    <div class="option">B. look forward to</div>
+                    <div class="option">C. come up with</div>
+                    <div class="option">D. get ready for</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-25')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-25">
+                    <div class="correct-answer">✅ 正确答案：A</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p><strong>短语动词辨析</strong></p>
+                        <p>**take part in** 意为"参加，参与"，符合句意"我希望明年冬天能再去哈尔滨，参加更多有趣的冰雪活动"。</p>
+                        <h4>🔍 干扰项分析</h4>
+                        <ul>
+                            <li>B. look forward to: 期待，盼望（后面接名词或动名词）</li>
+                            <li>C. come up with: 想出，提出（主意、计划等）</li>
+                            <li>D. get ready for: 为……做准备</li>
+                        </ul>
+                        <div class="error-cause">
+                            <strong>⚠️ 常见错因：</strong>学生可能因为前文提到 hope（希望），误选 look forward to，但此处需要表示"参与活动"的动词短语。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第58题 -->
+    <div class="slide">
+        <div class="question-number">第58题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="question-type-title">题型：短文填空</div>
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>Some communities also have smart lockers—people can pick up their packages ___58.___ any time by scanning a code.</p>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-58')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-58">
+                    <div class="correct-answer">✅ 正确答案：at</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p><strong>介词固定搭配</strong></p>
+                        <p>**at any time** 是固定搭配，意为"在任何时候，随时"，符合句意"人们可以通过扫描二维码随时取件"。</p>
+                        <div class="error-cause">
+                            <strong>⚠️ 常见错因：</strong>学生容易漏写介词 at，或者误用其他介词（如 in/on），需要牢记这个常用短语搭配。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第65题 -->
+    <div class="slide">
+        <div class="question-number">第65题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="question-type-title">题型：短文填空</div>
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>They will not only change how we get packages but also make our city a better place ___65.___ (live).</p>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-65')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-65">
+                    <div class="correct-answer">✅ 正确答案：to live</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p><strong>动词不定式作后置定语</strong></p>
+                        <p>不定式 **to live** 作后置定语修饰 place，表示"居住的地方"，结构为 "a better place to live"（一个更好的居住地）。</p>
+                        <h4>📚 语法规则</h4>
+                        <p>当名词被形容词最高级、序数词或 the only, the very 等修饰时，或表示"用途/功能"的名词，常用不定式作后置定语。</p>
+                        <div class="error-cause">
+                            <strong>⚠️ 常见错因：</strong>学生容易写成 living 或 live，没有掌握不定式作后置定语的用法。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第12题 -->
+    <div class="slide">
+        <div class="question-number">第12题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="question-type-title">题型：完形填空</div>
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>Students from No. 1 High School of Science City in Mianyang, Sichuan Province, recently became student reporters for their School's Autumn Day. To do their job, they used what they had ___12.___ in their Chinese class to write their reports.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. taught</div>
+                    <div class="option">B. learned</div>
+                    <div class="option">C. read</div>
+                    <div class="option">D. heard</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-12">
+                    <div class="correct-answer">✅ 正确答案：B</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p><strong>动词辨析（语境理解）</strong></p>
+                        <p>**learned** 意为"学习，学到"，符合句意"为了完成他们的工作，他们运用了在语文课上学到的知识来写报道"。</p>
+                        <h4>🔍 干扰项分析</h4>
+                        <ul>
+                            <li>A. taught: 教，教授（主语应该是老师，不是学生）</li>
+                            <li>C. read: 阅读（只强调阅读，不如 learned 全面）</li>
+                            <li>D. heard: 听到（只强调听觉输入）</li>
+                        </ul>
+                        <div class="error-cause">
+                            <strong>⚠️ 常见错因：</strong>学生可能误选 taught，忽略主语是"学生"而不是"老师"。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第14题 -->
+    <div class="slide">
+        <div class="question-number">第14题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="question-type-title">题型：完形填空</div>
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>Eighth graders Ouyang Panxi and Liao Yuhan ___14.___ together on their story. "At first, nothing really stood out to me," Ouyang said.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. played</div>
+                    <div class="option">B. studied</div>
+                    <div class="option">C. worked</div>
+                    <div class="option">D. talked</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-14')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-14">
+                    <div class="correct-answer">✅ 正确答案：C</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p><strong>动词短语搭配</strong></p>
+                        <p>**work together** 是固定搭配，意为"一起合作，共同努力"，符合句意"八年级学生欧阳潘西和廖雨涵一起合作写他们的报道"。</p>
+                        <h4>🔍 干扰项分析</h4>
+                        <ul>
+                            <li>A. played: 玩耍（不符合写报道的语境）</li>
+                            <li>B. studied: 学习（不与 on their story 搭配表示合作写作）</li>
+                            <li>D. talked: 谈话（只表示交谈，不表示共同完成任务）</li>
+                        </ul>
+                        <div class="error-cause">
+                            <strong>⚠️ 常见错因：</strong>学生可能误选 talked，忽略 work together on sth. 这个常用搭配表示"共同做某事"。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第17题 -->
+    <div class="slide">
+        <div class="question-number">第17题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="question-type-title">题型：完形填空</div>
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>But then I saw a smart jump rope (跳绳) and some weather-monitoring devices (气象监测设备). I ___17.___ that the role of technology in our sports day would make an interesting angle (角度) for our story.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. understood</div>
+                    <div class="option">B. forgot</div>
+                    <div class="option">C. helped</div>
+                    <div class="option">D. thought</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-17')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-17">
+                    <div class="correct-answer">✅ 正确答案：D</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p><strong>动词辨析（语境推断）</strong></p>
+                        <p>**thought** 意为"认为，想到"，符合句意"我想到科技在我们运动会中的作用会为我们的报道提供一个有趣的视角"。</p>
+                        <h4>🔍 干扰项分析</h4>
+                        <ul>
+                            <li>A. understood: 理解（强调理解已有的事实，而不是产生新想法）</li>
+                            <li>B. forgot: 忘记（不符合语境逻辑）</li>
+                            <li>C. helped: 帮助（主语应为事物，不是人）</li>
+                        </ul>
+                        <div class="error-cause">
+                            <strong>⚠️ 常见错因：</strong>学生可能误选 understood，没有区分"理解"和"想到/认为"在语境中的差异，此处强调记者产生了报道的灵感和想法。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第29题 -->
+    <div class="slide">
+        <div class="question-number">第29题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="question-type-title">题型：阅读理解</div>
+                <div class="context-box">
+                    <h4>📖 原文定位</h4>
+                    <p>Mountain Park, though with abundant fitness equipment, is less satisfying due to the limited number of restrooms.</p>
+                </div>
+                <div class="question-text">Why is Mountain Park less satisfying according to the passage?</div>
+                <div class="options">
+                    <div class="option">A. Because it has no playgrounds.</div>
+                    <div class="option">B. Because it doesn't have too many restrooms.</div>
+                    <div class="option">C. Because its location is inconvenient.</div>
+                    <div class="option">D. Because it has little fitness equipment.</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-29')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-29">
+                    <div class="correct-answer">✅ 正确答案：B</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p><strong>阅读理解细节题（原因分析）</strong></p>
+                        <p>根据原文 "due to the limited number of restrooms"（由于洗手间数量有限），可知正确答案为 B。"doesn't have too many restrooms" 是 "limited number of restrooms" 的同义转换。</p>
+                        <h4>🔍 干扰项分析</h4>
+                        <ul>
+                            <li>A. 文中未提及 Mountain Park 没有操场</li>
+                            <li>C. 地理位置问题是其他公园的特点，不是 Mountain Park</li>
+                            <li>D. 原文明确说 Mountain Park "with abundant fitness equipment"（健身器材充足），此项与原文相反</li>
+                        </ul>
+                        <div class="error-cause">
+                            <strong>⚠️ 常见错因：</strong>学生容易被 abundant 一词干扰，没有抓住 "due to" 后面的真正原因，或者误读 "abundant"（充足）为"缺少"。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第11题 -->
+    <div class="slide">
+        <div class="question-number">第11题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="question-type-title">题型：完形填空</div>
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>One afternoon, a father was sitting in the living room, trying to read a magazine quietly. But his little daughter kept running up to him, asking for stories and playing around, which ___11.___ him a lot. He needed to find something to keep her busy so he could focus on his reading.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. bothered</div>
+                    <div class="option">B. helped</div>
+                    <div class="option">C. protected</div>
+                    <div class="option">D. missed</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-11">
+                    <div class="correct-answer">✅ 正确答案：A</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p><strong>动词辨析（语境理解）</strong></p>
+                        <p>**bothered** 意为"打扰，烦扰"，符合句意"但是他的小女儿不停地跑到他身边，要听故事，到处玩耍，这让他很受打扰"。从后文父亲需要让女儿忙起来以便专心阅读，可以推断出女儿的行为打扰了他。</p>
+                        <h4>🔍 干扰项分析</h4>
+                        <ul>
+                            <li>B. helped: 帮助（不符合语境，女儿的行为不是帮助父亲）</li>
+                            <li>C. protected: 保护（与语境无关）</li>
+                            <li>D. missed: 想念，错过（不符合上下文逻辑）</li>
+                        </ul>
+                        <div class="error-cause">
+                            <strong>⚠️ 常见错因：</strong>学生可能对 bother 这个词不够熟悉，或者没有正确理解上下文的逻辑关系——父亲想安静看书，女儿的行为自然是"打扰"而不是其他。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第58题（核能短文） -->
+    <div class="slide">
+        <div class="question-number">第58题（核能短文）</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="question-type-title">题型：短文填空</div>
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>In the past, nuclear energy made up 30 percent of Germany's power, but ___58.___ (accident) in Chernobyl and Fukushima scared people.</p>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-58-nuclear')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-58-nuclear">
+                    <div class="correct-answer">✅ 正确答案：accidents</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p><strong>名词复数形式</strong></p>
+                        <p>**accidents** 是 accident 的复数形式，句中提到了切尔诺贝利和福岛两起核事故，所以需要用复数形式。</p>
+                        <h4>📚 语法规则</h4>
+                        <p>当表示多个同类事物（特别是有明确的两个或多个例子）时，可数名词需要用复数形式。</p>
+                        <div class="error-cause">
+                            <strong>⚠️ 常见错因：</strong>学生容易忽略后面提到的两个地点（Chernobyl and Fukushima）代表两起事故，误写成单数形式 accident。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第12题（天琴乐队） -->
+    <div class="slide">
+        <div class="question-number">第12题（天琴乐队）</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="question-type-title">题型：完形填空</div>
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>They are playing both ___12.___ instruments like guitars, a keyboard, and drums, and an ancient instrument called the tianqin.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. strange</div>
+                    <div class="option">B. real</div>
+                    <div class="option">C. different</div>
+                    <div class="option">D. modern</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-12-tianqin')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-12-tianqin">
+                    <div class="correct-answer">✅ 正确答案：D</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p><strong>形容词辨析（对比关系）</strong></p>
+                        <p>**modern** 意为"现代的"，与后文的 "ancient instrument"（古老乐器）形成对比。句意为"他们既演奏吉他、电子琴、架子鼓等现代乐器，也演奏一种叫天琴的古老乐器"。</p>
+                        <h4>🔍 干扰项分析</h4>
+                        <ul>
+                            <li>A. strange: 奇怪的，陌生的（不符合对比逻辑）</li>
+                            <li>B. real: 真实的（与"古老"不构成反义对比）</li>
+                            <li>C. different: 不同的（虽然语义通顺，但 modern 与 ancient 是更精确的反义词搭配）</li>
+                        </ul>
+                        <div class="error-cause">
+                            <strong>⚠️ 常见错因：</strong>学生可能只看到"不同的乐器"而误选 different，忽略了 both...and... 结构中前后的对比关系——modern 与 ancient 是鲜明的对比。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第21题（天琴乐队） -->
+    <div class="slide">
+        <div class="question-number">第21题（天琴乐队）</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="question-type-title">题型：完形填空</div>
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>They not only play the tianqin along with modern instruments, but also ___21.___ traditional Zhuang folk songs into their music.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. leave</div>
+                    <div class="option">B. develop</div>
+                    <div class="option">C. discover</div>
+                    <div class="option">D. introduce</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-21-tianqin')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-21-tianqin">
+                    <div class="correct-answer">✅ 正确答案：D</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p><strong>动词搭配（introduce...into...）</strong></p>
+                        <p>**introduce...into...** 是固定搭配，意为"把……引入/融入……"，符合句意"他们不仅将天琴与现代乐器一起演奏，还将壮族传统民歌融入他们的音乐中"。</p>
+                        <h4>🔍 干扰项分析</h4>
+                        <ul>
+                            <li>A. leave: 离开，留下（不符合语境）</li>
+                            <li>B. develop: 发展，开发（不与 into 搭配表示"融入"）</li>
+                            <li>C. discover: 发现（与句意不符，民歌是已存在的，不是被发现的）</li>
+                        </ul>
+                        <div class="error-cause">
+                            <strong>⚠️ 常见错因：</strong>学生可能对 introduce A into B 这个搭配不够熟悉，误选 develop 等其他词。这个短语表示"将A引入/融入B"，在文化融合的语境中很常用。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 12</div>
+
+    <!-- 导航按钮 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 12;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

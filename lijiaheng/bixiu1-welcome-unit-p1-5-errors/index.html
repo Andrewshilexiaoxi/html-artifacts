@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李佳衡 必修一 Welcome Unit 错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .slide {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 2rem 5rem 2rem;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .cover-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cover-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .cover-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-box {
+            background: var(--card-bg);
+            padding: 1.5rem 2.5rem;
+            border-radius: 1rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .start-btn {
+            padding: 1.2rem 3rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.4);
+        }
+
+        .question-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .context-box h4 {
+            color: var(--warning);
+            margin-bottom: 0.8rem;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .options {
+            margin-bottom: 1rem;
+        }
+
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem 1.2rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            transition: background 0.3s ease;
+        }
+
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.8rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .answer-toggle:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(74, 222, 128, 0.4);
+        }
+
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.5s ease;
+        }
+
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 1rem;
+            border: 2px solid var(--success);
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent);
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .analysis p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--accent);
+        }
+
+        .nav-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        @media (max-width: 768px) {
+            .cover-title {
+                font-size: 2rem;
+            }
+
+            .cover-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .question-card {
+                padding: 1.5rem;
+            }
+
+            .question-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active" id="slide-0">
+        <h1 class="cover-title">📚 李佳衡 错题复习</h1>
+        <p class="cover-subtitle">必修一 Welcome Unit P1~P5</p>
+        <div class="cover-stats">
+            <div class="stat-box">
+                <div class="stat-number">11</div>
+                <div class="stat-label">道错题</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">5</div>
+                <div class="stat-label">种题型</div>
+            </div>
+        </div>
+        <button class="start-btn" onclick="goToSlide(1)">开始复习 →</button>
+    </div>
+
+    <!-- 第1题：语法填空第3题 -->
+    <div class="slide" id="slide-1">
+        <div class="question-number">第1题 - 语法填空</div>
+        <div class="question-card">
+            <div class="question-text">
+                Her voice was filled with ( 3 ) (anxious), so I went over and tried to comfort her.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：anxiety</div>
+                <div class="analysis">
+                    <h4>📝 考点：词性转换（名词作介词宾语）</h4>
+                    <p>be filled with 是固定搭配，意为"充满"，介词 with 后面需要接名词作宾语。anxious 是形容词，意为"焦虑的"，其名词形式是 anxiety，意为"焦虑"。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易忘记介词后接名词的规则，直接填形容词形式 anxious。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题：语法填空第7题 -->
+    <div class="slide" id="slide-2">
+        <div class="question-number">第2题 - 语法填空</div>
+        <div class="question-card">
+            <div class="question-text">
+                He would like to work in the restaurant ( 7 ) exchange for a meal for free.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：in</div>
+                <div class="analysis">
+                    <h4>📝 考点：固定介词搭配</h4>
+                    <p>in exchange for 是固定短语，意为"作为……的交换"。句意为"他想在餐厅工作，以换取免费的一餐"。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生对这个固定搭配不熟悉，容易误填其他介词如 for、on、with 等。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题：语法填空第9题 -->
+    <div class="slide" id="slide-3">
+        <div class="question-number">第3题 - 语法填空</div>
+        <div class="question-card">
+            <div class="question-text">
+                There was a lot ( 9 ) (explore) when I moved to a new city.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：to explore</div>
+                <div class="analysis">
+                    <h4>📝 考点：非谓语动词（不定式作定语）</h4>
+                    <p>a lot to explore 意为"很多可以探索的东西"，这里用不定式 to explore 作后置定语修饰前面的 a lot，表示"有待探索的"。不定式作定语时，通常表示尚未发生的动作。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易误填 exploring 或 explored，忽略了不定式作定语表示"有待……"的含义。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题：语法填空第10题 -->
+    <div class="slide" id="slide-4">
+        <div class="question-number">第4题 - 语法填空</div>
+        <div class="question-card">
+            <div class="question-text">
+                The course ( 10 ) (design) for beginners like me, focusing on listening and speaking practice.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：is designed</div>
+                <div class="analysis">
+                    <h4>📝 考点：被动语态</h4>
+                    <p>句子主语 The course（课程）和动词 design（设计）之间是被动关系，课程是"被设计"的，所以要用被动语态 be + 过去分词。主语是单数，描述一般事实用一般现在时，所以是 is designed。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易忽略被动关系，直接写成主动形式 designed 或 designs，需要培养分析主被动关系的意识。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题：句型训练第1题 -->
+    <div class="slide" id="slide-5">
+        <div class="question-number">第5题 - 句型训练</div>
+        <div class="question-card">
+            <div class="question-text">
+                我发现阅读在我们的日常生活中非常有用。(find+宾语+宾补)<br>
+                I ( 1 ) in our daily life.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：find reading very useful</div>
+                <div class="analysis">
+                    <h4>📝 考点：find + 宾语 + 宾语补足语结构</h4>
+                    <p>find + 宾语 + 形容词 是常用结构，表示"发现某物……"。这里 reading（阅读）是动名词作宾语，very useful（非常有用）是形容词短语作宾语补足语。完整句子为：I find reading very useful in our daily life.</p>
+                    <h4>💡 结构拓展</h4>
+                    <p>类似的动词还有 think, consider, feel 等，如 I think it important.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题：句型训练第2题 -->
+    <div class="slide" id="slide-6">
+        <div class="question-number">第6题 - 句型训练</div>
+        <div class="question-card">
+            <div class="question-text">
+                这本书比那本书有趣多了。(比��级)<br>
+                This book is ( 2 ) that one.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：much more interesting than</div>
+                <div class="analysis">
+                    <h4>📝 考点：形容词比较级</h4>
+                    <p>interesting 是多音节形容词，比较级形式为 more interesting。much 可以修饰比较级，表示"……得多"。than 是比较级的标志词，用于连接比较的对象。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易忘记 much 修饰比较级，或误写成 much interesting than；另外多音节形容词比较级要加 more，不能直接加 -er。</p>
+                    <h4>💡 拓展</h4>
+                    <p>修饰比较级的词还有 a lot, a little, even, still 等。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题：阅读理解第3题 -->
+    <div class="slide" id="slide-7">
+        <div class="question-number">第7题 - 阅读理解（细节理解）</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文定位</h4>
+                <p>I like my English class, too. I think the teacher is really supportive. Today we wrote about ourselves. The teacher said that we just needed to write what we thought, and we would pay attention to punctuation later. We could write a paragraph or a poem, and I wrote a poem about myself. I thought it was a good poem, and the teacher said I had used good images to communicate my feelings.</p>
+            </div>
+            <div class="question-text">What did the English teacher do after seeing the author's work?</div>
+            <div class="options">
+                <div class="option">A. He praised the author.</div>
+                <div class="option">B. He pointed out the author's mistakes.</div>
+                <div class="option">C. He asked the author to check punctuation.</div>
+                <div class="option">D. He encouraged the author to introduce himself.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点：细节理解题</h4>
+                    <p>根据原文定位句 "the teacher said I had used good images to communicate my feelings"（老师说我使用了很好的意象来表达情感），这是老师对作者的表扬，所以选 A。</p>
+                    <h4>❌ 干扰项分析</h4>
+                    <p>B. 文中没有提到老师指出错误，反而在表扬<br>
+                    C. 老师说的是"以后再注意标点"，不是看完作品后让作者检查<br>
+                    D. 写自我介绍是写作任务，不是看完作品后的鼓励内容</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第8题：单词填空第3题 -->
+    <div class="slide" id="slide-8">
+        <div class="question-number">第8题 - 单词填空</div>
+        <div class="question-card">
+            <div class="question-text">
+                The learning ( 3 ) (策略) you shared in your lecture are practical and useful.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：strategies</div>
+                <div class="analysis">
+                    <h4>📝 考点：名词复数 + 主谓一致</h4>
+                    <p>strategy 是可数名词，意为"策略"。根据后面的谓语动词 are 可知，主语应该用复数形式。strategy 的复数变化是把 y 变 i 加 es → strategies。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易忽略后面的 are，直接填单数 strategy；或者复数变化错误，写成 strategys。</p>
+                    <h4>💡 记忆口诀</h4>
+                    <p>以辅音字母 + y 结尾的名词，变复数时 y → i + es</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题：单词填空第5题 -->
+    <div class="slide" id="slide-9">
+        <div class="question-number">第9题 - 单词填空</div>
+        <div class="question-card">
+            <div class="question-text">
+                When he was thinking over the plan, a new idea f ( 5 ) in his mind.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：flashed</div>
+                <div class="analysis">
+                    <h4>📝 考点：动词时态 + 固定搭配</h4>
+                    <p>flash in one's mind 是固定搭配，意为"在某人脑海中闪过"。根据时间状语从句 When he was thinking over the plan 可知，事情发生在过去，所以用一般过去时 flashed。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易忽略时态，填现在时 flash；或者拼写错误（注意双写 s + ed）。</p>
+                    <h4>💡 拓展搭配</h4>
+                    <p>a flash of lightning 闪电，flash back 回想</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第10题：介词填空第2题 -->
+    <div class="slide" id="slide-10">
+        <div class="question-number">第10题 - 介词填空</div>
+        <div class="question-card">
+            <div class="question-text">
+                Six months have passed ( 2 ) a flash since we parted in Beijing.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：in</div>
+                <div class="analysis">
+                    <h4>📝 考点：固定介词短语（本单元核心短语）</h4>
+                    <p>in a flash 是本单元核心短语，意为"瞬间，一刹那，转瞬间"。句意为"自从我们在北京分别以来，六个月转瞬即逝"。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易误填 like，因为 like a flash 也可以表示"像闪电一样"，但本单元重点掌握的固定搭配是 in a flash。</p>
+                    <h4>💡 用法拓展</h4>
+                    <p>in a flash = in an instant = in a blink，都表示"瞬间，马上"</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第11题：阅读理解第2题 -->
+    <div class="slide" id="slide-11">
+        <div class="question-number">第11题 - 阅读理解（词义猜测）</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文定位</h4>
+                <p>Most high schools hold freshman orientation before school actually starts, which is helpful not only because you can know your way around the building, but also because you get to meet some of your teachers and fellow freshmen.</p>
+            </div>
+            <div class="question-text">What does the underlined word "orientation" mean in paragraph 2?</div>
+            <div class="options">
+                <div class="option">A. A game.</div>
+                <div class="option">B. Discussion.</div>
+                <div class="option">C. Training.</div>
+                <div class="option">D. An examination.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点：词义猜测题</h4>
+                    <p>根据上下文语境，orientation 是在开学前举行的活动，目的是帮助新生熟悉校园环境、认识老师和同学。这类活动属于入学培训/迎新活动，所以选 C. Training（培训，训练）最符合语境。</p>
+                    <h4>💡 猜词技巧</h4>
+                    <p>• 利用上下文逻辑：定语从句 which is helpful... 解释了这个活动的作用——熟悉校园、认识师生<br>
+                    • 利用生活常识：高中开学前通常会举办"新生入学培训"</p>
+                    <h4>❌ 干扰项分析</h4>
+                    <p>A. 游戏：范围太窄，不符合整个活动的性质<br>
+                    B. 讨论：只是活动的一部分，不是全部<br>
+                    D. 考试：与原文描述完全不符</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 11</div>
+
+    <!-- 导航按钮 -->
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>← 上一题</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 11;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

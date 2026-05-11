@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李林轩中考八下unit10~九年unit3错题</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .slide.active { display: flex; }
+
+        .cover-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cover-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .cover-stats {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+        }
+
+        .start-btn {
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .start-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .question-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            margin-bottom: 1rem;
+        }
+
+        .question-category {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .context-box h4 {
+            margin-bottom: 0.5rem;
+            color: var(--accent-light);
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        .answer-toggle:hover {
+            transform: scale(1.02);
+        }
+
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .analysis p {
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: var(--accent);
+        }
+        .nav-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            max-height: 80px;
+            overflow-y: auto;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: var(--accent);
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <h1 class="cover-title">📚 李林轩中考八下unit10~九年unit3错题</h1>
+        <p class="cover-subtitle">英语错题复习</p>
+        <p class="cover-stats">共 31 道错题</p>
+        <button class="start-btn" onclick="goToSlide(1)">开始复习 🚀</button>
+    </div>
+
+    <!-- 第1题：短文填空第2题 -->
+    <div class="slide">
+        <div class="category-badge">短文填空</div>
+        <div class="question-number">第 1 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">Mr. Zhang is among them. He has lived in his village ( 2 ) last century.</p>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：since</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>现在完成时的时间状语</strong></p>
+                    <p><strong>since + 时间点</strong> 用于现在完成时，表示"自从……以来"，last century是一个时间点，所以用since。句意为"自从上个世纪以来，他就一直住在村里"。</p>
+                    <p><strong>常见错因：</strong>学生容易混淆since和for，for后面接时间段，since后面接时间点。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题：短文填空第4题 -->
+    <div class="slide">
+        <div class="category-badge">短文填空</div>
+        <div class="question-number">第 2 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">Last week, Mr. Zhang ( 4 ) (hold) a yard sale.</p>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：held</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>一般过去时</strong></p>
+                    <p><strong>Last week</strong> 是明确的过去时间状语，句子要用一般过去时，hold的过去式是held。句意为"上周，张先生举办了一场庭院拍卖会"。</p>
+                    <p><strong>常见错因：</strong>学生容易忽略过去式的不规则变化，直接写成holded，需要牢记hold-held-held的变化形式。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题：短文填空第6题 -->
+    <div class="slide">
+        <div class="category-badge">短文填空</div>
+        <div class="question-number">第 3 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">He cleared out many old things from his bedroom... To be ( 6 ), Mr. Zhang felt sad to part with certain old things.</p>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：honest</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>固定短语</strong></p>
+                    <p><strong>to be honest</strong> 是固定短语，意为"说实话，老实说"，常用于口语中引出个人的真实想法。句意为"说实话，张先生对要卖掉某些旧东西感到很难过"。</p>
+                    <p><strong>常见错因：</strong>学生容易填honesty（名词）或其他词，没有记住这个固定搭配。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题：短文填空第8题 -->
+    <div class="slide">
+        <div class="category-badge">短文填空</div>
+        <div class="question-number">第 4 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">He thought they could give him some sweet memories especially his childhood. So he checked them out again and again before they ( 8 ) (sell).</p>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：were sold</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>被动语态（一般过去时）</strong></p>
+                    <p>they指代前面的old things，东西是"被卖掉"的，所以要用被动语态；全文是过去时，所以用一般过去时的被动语态were sold。</p>
+                    <p><strong>常见错因：</strong>学生容易忽略被动语态，直接填sold，没有考虑到物品是动作的承受者而不是执行者。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题：短文填空第9题 -->
+    <div class="slide">
+        <div class="category-badge">短文填空</div>
+        <div class="question-number">第 5 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">According to him, his home is just opposite a junior high school. ( 9 ) is a shame that he couldn't read or count because he had no money to go to school when he was young.</p>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：It</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>形式主语</strong></p>
+                    <p><strong>It is a shame that...</strong> 是固定句型，it作形式主语，真正的主语是后面that引导的从句。句意为"很遗憾的是，他小时候因为没钱上学，不会认字也不会数数"。</p>
+                    <p><strong>常见错因：</strong>学生容易填This或That，不熟悉形式主语it的用法。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题：完形填空第3题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空</div>
+        <div class="question-number">第 6 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">"My name is Clark, and I'm very hungry," said the beggar, as he walked up to the two woodcutters. "Can you ( 3 ) a little of your lunch for me?"</p>
+
+            <div class="option">A. collect</div>
+            <div class="option">B. heat</div>
+            <div class="option">C. check</div>
+            <div class="option">D. spare</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词辨析</strong></p>
+                    <p><strong>spare</strong> 意为"分出，抽出（时间、食物等）"，符合乞丐向樵夫请求分一点午餐的语境。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- A. collect: 收集</p>
+                    <p>- B. heat: 加热</p>
+                    <p>- C. check: 检查</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题：完形填空第8题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空</div>
+        <div class="question-number">第 7 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">Kent said to Clark, "We both work all day long and we only have enough food to get us through the day. But if you wish, I can lend you my ax and teach you to cut wood. Then you can sell the wood. And you will have a good ( 8 ) of buying yourself food."</p>
+
+            <div class="option">A. chance</div>
+            <div class="option">B. game</div>
+            <div class="option">C. excuse</div>
+            <div class="option">D. place</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词辨析与固定搭配</strong></p>
+                    <p><strong>have a good chance of doing sth.</strong> 是固定搭配，意为"有很大机会做某事"。句意为"这样你就有很大机会能买到吃的了"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- B. game: 游戏</p>
+                    <p>- C. excuse: 借口</p>
+                    <p>- D. place: 地方</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第8题：完形填空第11题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空</div>
+        <div class="question-number">第 8 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">At the end of the day, the three men walked to the market, ( 11 ) the wood that they had cut. Very soon, all of their wood was sold out.</p>
+
+            <div class="option">A. passing</div>
+            <div class="option">B. carrying</div>
+            <div class="option">C. storing</div>
+            <div class="option">D. throwing</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词辨析</strong></p>
+                    <p><strong>carry</strong> 意为"携带"，符合句意"三人走到市场，带着他们砍好的木头"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- A. passing: 传递</p>
+                    <p>- C. storing: 储存</p>
+                    <p>- D. throwing: 扔掉</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题：完形填空第14题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空</div>
+        <div class="question-number">第 9 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">"Look at this!" Clark said with excitement. "It's amazing! I have never had so much money in my life!" "You have done well. After all, it was your first ( 14 )," said Kent</p>
+
+            <div class="option">A. trip</div>
+            <div class="option">B. try</div>
+            <div class="option">C. plan</div>
+            <div class="option">D. order</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词辨析</strong></p>
+                    <p><strong>first try</strong> 意为"第一次尝试"，符合Clark第一次砍柴卖钱就获得成功的语境。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- A. trip: 旅行</p>
+                    <p>- C. plan: 计划</p>
+                    <p>- D. order: 命令，订单</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第10题：短文填空（语言学习）第2题 -->
+    <div class="slide">
+        <div class="category-badge">短文填空（语言学习）</div>
+        <div class="question-number">第 10 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">English was not difficult for me because I began to learn it when I was in middle school, but my ( 2 ) (pronounce) still hurt other people's ears.</p>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：pronunciation</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>词性转换（名词）</strong></p>
+                    <p>空格前面是形容词性物主代词my，后面需要接名词。pronounce的名词形式是pronunciation，意为"发音"。</p>
+                    <p><strong>常见错因：</strong>学生容易把名词后缀拼写错误，写成pronounciation或直接用动词形式pronounce。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第11题：短文填空（语言学习）第9题 -->
+    <div class="slide">
+        <div class="category-badge">短文填空（语言学习）</div>
+        <div class="question-number">第 11 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">I found an excellent textbook and some tapes. ( 9 ) listening to the tapes, my spoken Spanish improved quickly.</p>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：By</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>介词by的用法</strong></p>
+                    <p><strong>by + doing sth.</strong> 表示"通过某种方式或手段"，句意为"通过听磁带，我的西班牙语口语进步很快"。注意首字母要大写。</p>
+                    <p><strong>常见错因：</strong>学生容易用With或其他介词，或者忘记首字母大写。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第12题：单项选择第7题 -->
+    <div class="slide">
+        <div class="category-badge">单项选择</div>
+        <div class="question-number">第 12 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">—What did Lily say to you just now, Emma?<br>—She wanted to know ______</p>
+
+            <div class="option">A. what will I do this Sunday</div>
+            <div class="option">B. who did I play volleyball with just now</div>
+            <div class="option">C. why I am late for class this morning</div>
+            <div class="option">D. if I could go shopping with her tonight</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-12">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>宾语从句</strong></p>
+                    <p>宾语从句必须满足两个条件：① 陈述句语序（引导词+主语+谓语）；② 时态一致（主句过去时，从句也要用相应的过去时）。</p>
+                    <p>- 选项A、B都是疑问句语序，排除</p>
+                    <p>- 选项C时态不对（am应该改为was），排除</p>
+                    <p>- 选项D语序和时态都正确，if表示"是否"</p>
+                    <p><strong>常见错因：</strong>学生容易忽略时态一致，误选C。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第13题：完形填空（Parents' Day）第4题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空（Parents' Day）</div>
+        <div class="question-number">第 13 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">Parents are those special people who contribute all their ( 4 ) to bring up their children in the best possible way.</p>
+
+            <div class="option">A. business</div>
+            <div class="option">B. patience</div>
+            <div class="option">C. importance</div>
+            <div class="option">D. difference</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-13')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-13">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词辨析</strong></p>
+                    <p><strong>patience</strong> 意为"耐心"，符合句意"父母是那些付出全部耐心，以最好的方式抚养孩子的特殊的人"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- A. business: 生意，事务</p>
+                    <p>- C. importance: 重要性</p>
+                    <p>- D. difference: 不同，差异</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第14题：完形填空（Parents' Day）第8题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空（Parents' Day）</div>
+        <div class="question-number">第 14 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">A Gift of Love. Our parents have always ( 8 ) us with many precious gifts.</p>
+
+            <div class="option">A. presented</div>
+            <div class="option">B. spread</div>
+            <div class="option">C. stolen</div>
+            <div class="option">D. lent</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-14')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-14">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词辨析与固定搭配</strong></p>
+                    <p><strong>present sb. with sth.</strong> 是固定搭配，意为"赠送某人某物"。句意为"我们的父母总是送给我们很多珍贵的礼物"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- B. spread: 传播，蔓延</p>
+                    <p>- C. stolen: 偷（过去分词）</p>
+                    <p>- D. lent: 借出</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第15题：完形填空（Parents' Day）第12题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空（Parents' Day）</div>
+        <div class="question-number">第 15 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">Nothing will be better than spending a whole day with your parents. So keep yourself ( 12 ) on this Parents' Day.</p>
+
+            <div class="option">A. busy</div>
+            <div class="option">B. full</div>
+            <div class="option">C. free</div>
+            <div class="option">D. angry</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-15')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-15">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>形容词辨析</strong></p>
+                    <p><strong>free</strong> 意为"有空的，空闲的"，符合句意"所以在这个父母节让自己空出时间来"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- A. busy: 忙碌的</p>
+                    <p>- B. full: 满的</p>
+                    <p>- D. angry: 生气的</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第16题：完形填空（Parents' Day）第14题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空（Parents' Day）</div>
+        <div class="question-number">第 16 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">Going to a movie and then having dinner in a restaurant can be ( 14 ). And if your parents prefer staying at home, try to cook them a delicious meal.</p>
+
+            <div class="option">A. careful</div>
+            <div class="option">B. useful</div>
+            <div class="option">C. successful</div>
+            <div class="option">D. wonderful</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-16')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-16">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>形容词辨析</strong></p>
+                    <p><strong>wonderful</strong> 意为"极好的，精彩的"，符合句意"去看电影然后在餐厅吃晚餐会很棒"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- A. careful: 小心的</p>
+                    <p>- B. useful: 有用的</p>
+                    <p>- C. successful: 成功的</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第17题：完形填空（Parents' Day）第15题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空（Parents' Day）</div>
+        <div class="question-number">第 17 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">In short, the whole idea is to give your parents quality ( 15 ) that they could cherish for the rest of their lives.</p>
+
+            <div class="option">A. rest</div>
+            <div class="option">B. life</div>
+            <div class="option">C. time</div>
+            <div class="option">D. meal</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-17')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-17">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词辨析</strong></p>
+                    <p><strong>quality time</strong> 是固定表达，意为"宝贵时光，优质时间（指与亲人共度的时光）"。句意为"简而言之，整个想法就是给你的父母他们可以在余生中珍惜的宝贵时光"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- A. rest: 休息</p>
+                    <p>- B. life: 生命</p>
+                    <p>- D. meal: 一餐</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第18题：阅读理解补全短文第2题 -->
+    <div class="slide">
+        <div class="category-badge">阅读理解补全短文</div>
+        <div class="question-number">第 18 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">His "Living Machine" can clean wastewater in your home or in your business. ( 2 ) The wastewater goes into a big plastic tank where bacteria start to break down the waste.</p>
+
+            <div class="option">A. If enough homes and businesses use "Living Machines",</div>
+            <div class="option">B. With the help of sunlight,</div>
+            <div class="option">C. He is also interested in saving money,</div>
+            <div class="option">D. It cannot be used for drinking or cooking,</div>
+            <div class="option">E. The "Living Machine" is a system for cleaning wastewater.</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-18')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-18">
+                <div class="correct-answer">✅ 正确答案：E</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>上下文逻辑衔接</strong></p>
+                    <p>前一句介绍了"Living Machine"能够净化污水，后一句开始描述污水如何进入塑料罐。选项E"Living Machine是一个净化污水的系统"起到承上启下的作用，先定义这个系统，再说明工作流程。</p>
+                    <p><strong>错因分析：</strong>学生容易误选其他选项，没有注意到这里需要一个过渡句来介绍系统本身。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第19题：阅读理解补全短文第3题 -->
+    <div class="slide">
+        <div class="category-badge">阅读理解补全短文</div>
+        <div class="question-number">第 19 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">A few days later it is dealt with, the water is brought into a greenhouse filled with plants and fish. ( 3 ) the plants and animals remove more chemicals from the water, making it cleaner.</p>
+
+            <div class="option">A. If enough homes and businesses use "Living Machines",</div>
+            <div class="option">B. With the help of sunlight,</div>
+            <div class="option">C. He is also interested in saving money,</div>
+            <div class="option">D. It cannot be used for drinking or cooking,</div>
+            <div class="option">E. The "Living Machine" is a system for cleaning wastewater.</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-19')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-19">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>介词短语作状语</strong></p>
+                    <p>后一句说"植物和动物从水中去除更多的化学物质"，这一过程需要阳光的帮助。选项B"在阳光的帮助下"作为介词短语作状语，说明了植物净化水的条件。</p>
+                    <p><strong>错因分析：</strong>学生容易忽略生态净化系统中阳光的作用，误选其他选项。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第20题：短文填空（中秋节）第7题 -->
+    <div class="slide">
+        <div class="category-badge">短文填空（中秋节）</div>
+        <div class="question-number">第 20 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">Before the eve, people often tie many kinds of mooncakes together and send them as presents to ( 7 ) (relative).</p>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-20')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-20">
+                <div class="correct-answer">✅ 正确答案：relatives</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词复数</strong></p>
+                    <p>relative是可数名词，意为"亲戚"，这里表示泛指多个亲戚，所以要用复数形式relatives。句意为"人们经常把各种各样的月饼捆在一起，作为礼物送给亲戚"。</p>
+                    <p><strong>常见错因：</strong>学生容易忘记用复数形式，直接填relative。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第21题：短文填空（中秋节）第8题 -->
+    <div class="slide">
+        <div class="category-badge">短文填空（中秋节）</div>
+        <div class="question-number">第 21 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">Sometimes, they use mooncakes to treat strangers, spreading their joy and ( 8 ) (warm).</p>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-21')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-21">
+                <div class="correct-answer">✅ 正确答案：warmth</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>词性转换（名词）</strong></p>
+                    <p>空格前面是and，连接并列成分，joy是名词，所以warm也要变成名词形式warmth，意为"温暖"。句意为"有时候，他们用月饼招待陌生人，传播他们的快乐和温暖"。</p>
+                    <p><strong>常见错因：</strong>学生容易直接填warm（形容词），没有注意到and连接的并列结构。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第22题：单项选择第10题 -->
+    <div class="slide">
+        <div class="category-badge">单项选择</div>
+        <div class="question-number">第 22 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">Have you ____ the leaflets about the show in our school yet?</p>
+
+            <div class="option">A. handed out</div>
+            <div class="option">B. cut out</div>
+            <div class="option">C. put out</div>
+            <div class="option">D. carried out</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-22')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-22">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词短语辨析</strong></p>
+                    <p><strong>hand out</strong> 意为"分发"，符合句意"你把我们学校演出的传单都分发出去了吗？"。hand out leaflets是固定搭配，意为"分发传单"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- B. cut out: 裁剪，删去</p>
+                    <p>- C. put out: 扑灭（火），出版</p>
+                    <p>- D. carried out: 执行，实施</p>
+                    <p><strong>常见错因：</strong>学生容易混淆短语动词的意思，误选其他形近短语。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第23题：完形填空（新西兰交通规则）第2题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空（新西兰交通规则）</div>
+        <div class="question-number">第 23 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">Driving around New Zealand may be different from your own country. It's necessary for you to know some traffic information there if you are traveling to New Zealand. Here are some tips to help you ( 2 ) freely in New Zealand and have fun there.</p>
+
+            <div class="option">A. perform</div>
+            <div class="option">B. play</div>
+            <div class="option">C. drive</div>
+            <div class="option">D. learn</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-23')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-23">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词辨析</strong></p>
+                    <p><strong>drive</strong> 意为"驾驶"，本文全文讲的是新西兰的交通规则和驾驶注意事项，所以这里是"帮助你在新西兰自由驾驶"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- A. perform: 表演</p>
+                    <p>- B. play: 玩</p>
+                    <p>- D. learn: 学习</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第24题：完形填空（新西兰交通规则）第10题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空（新西兰交通规则）</div>
+        <div class="question-number">第 24 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">At one lane bridges, cars traveling in one ( 10 ) must give way to cars going in the other one.</p>
+
+            <div class="option">A. purpose</div>
+            <div class="option">B. road</div>
+            <div class="option">C. direction</div>
+            <div class="option">D. place</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-24')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-24">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词辨析</strong></p>
+                    <p><strong>direction</strong> 意为"方向"，句意为"在单车道桥上，一个方向行驶的车辆必须给另一个方向的车辆让路"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- A. purpose: 目的</p>
+                    <p>- B. road: 路</p>
+                    <p>- D. place: 地方</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第25题：完形填空（新西兰交通规则）第11题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空（新西兰交通规则）</div>
+        <div class="question-number">第 25 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">Animals on the Road. Pay more attention to farm animals on the road, especially in the ( 11 ).</p>
+
+            <div class="option">A. farmland</div>
+            <div class="option">B. countryside</div>
+            <div class="option">C. city</div>
+            <div class="option">D. town</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-25')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-25">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词辨析</strong></p>
+                    <p><strong>countryside</strong> 意为"乡村，乡下"，句意为"要多注意路上的农场动物，尤其是在乡村"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- A. farmland: 农田</p>
+                    <p>- C. city: 城市</p>
+                    <p>- D. town: 城镇</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第26题：完形填空（新西兰交通规则）第13题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空（新西兰交通规则）</div>
+        <div class="question-number">第 26 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">On once seeing them, you should stop and let the animals go past you or move slowly up behind and follow the farmer's ( 13 ).</p>
+
+            <div class="option">A. eyes</div>
+            <div class="option">B. goats</div>
+            <div class="option">C. instructions</div>
+            <div class="option">D. information</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-26')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-26">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词辨析与固定搭配</strong></p>
+                    <p><strong>follow one's instructions</strong> 是固定搭配，意为"听从某人的指示"。句意为"看到它们时，你应该停下来让动物从你身边经过，或者慢慢跟在后面，听从农场主的指示"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- A. eyes: 眼睛</p>
+                    <p>- B. goats: 山羊</p>
+                    <p>- D. information: 信息</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第27题：完形填空（新西兰交通规则）第14题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空（新西兰交通规则）</div>
+        <div class="question-number">第 27 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">Seat belts. The seat belts must be ( 14 ) by the drivers.</p>
+
+            <div class="option">A. taken</div>
+            <div class="option">B. found</div>
+            <div class="option">C. worn</div>
+            <div class="option">D. bought</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-27')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-27">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词辨析（被动语态）</strong></p>
+                    <p><strong>wear seat belts</strong> 是固定搭配，意为"系安全带"，这里用被动语态be worn。句意为"司机必须系好安全带"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- A. taken: 拿</p>
+                    <p>- B. found: 发现</p>
+                    <p>- D. bought: 买</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第28题：完形填空（新西兰交通规则）第15题 -->
+    <div class="slide">
+        <div class="category-badge">完形填空（新西兰交通规则）</div>
+        <div class="question-number">第 28 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">If you are caught not without your seat belt, you will be ( 15 ).</p>
+
+            <div class="option">A. hated</div>
+            <div class="option">B. chased</div>
+            <div class="option">C. invited</div>
+            <div class="option">D. fined</div>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-28')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-28">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词辨析（被动语态）</strong></p>
+                    <p><strong>fine</strong> 意为"罚款"，句意为"如果你被抓到没系安全带，你会被罚款"。</p>
+                    <p><strong>干扰项分析：</strong></p>
+                    <p>- A. hated: 讨厌</p>
+                    <p>- B. chased: 追逐</p>
+                    <p>- C. invited: 邀请</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第29题：短文填空（礼貌用语）第4题 -->
+    <div class="slide">
+        <div class="category-badge">短文填空（礼貌用语）</div>
+        <div class="question-number">第 29 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">That's to say, you must ask ( 4 ) (polite).</p>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-29')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-29">
+                <div class="correct-answer">✅ 正确答案：politely</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>词性转换（副词修饰动词）</strong></p>
+                    <p>空格前面是动词ask，需要用副词来修饰。polite的副词形式是politely，意为"礼貌地"。句意为"也就是说，你必须礼貌地询问"。</p>
+                    <p><strong>常见错因：</strong>学生容易直接填polite（形容词），忘记副词修饰动词的规则。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第30题：短文填空（礼貌用语）第8题 -->
+    <div class="slide">
+        <div class="category-badge">短文填空（礼貌用语）</div>
+        <div class="question-number">第 30 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">If you show others the way at the corner of a ( 8 ) (park) lot, you can say...</p>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-30')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-30">
+                <div class="correct-answer">✅ 正确答案：parking</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动名词作定语</strong></p>
+                    <p><strong>parking lot</strong> 是固定搭配，意为"停车场"。parking是动名词作定语，修饰lot。</p>
+                    <p><strong>常见错因：</strong>学生容易直接填park，没有记住parking lot这个固定短语。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第31题：短文填空（礼貌用语）第9题 -->
+    <div class="slide">
+        <div class="category-badge">短文填空（礼貌用语）</div>
+        <div class="question-number">第 31 题 / 共 31 题</div>
+        <div class="question-card">
+            <p class="question-text">It's uncrowded and ( 9 ) (expensive).</p>
+
+            <button class="answer-toggle" onclick="toggleAnswer('answer-31')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+
+            <div class="answer-section" id="answer-31">
+                <div class="correct-answer">✅ 正确答案：inexpensive</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>形容词反义词（前缀in-）</strong></p>
+                    <p>根据前面的uncrowded（不拥挤的）和and连接的并列关系，这里需要一个表示"不贵的"的形容词。expensive的反义词是inexpensive，前面加前缀in-。句意为"那里不拥挤而且不贵"。</p>
+                    <p><strong>常见错因：</strong>学生容易直接填expensive，没有理解上下文语境，或者不知道inexpensive这个反义词形式。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 31</div>
+
+    <!-- 导航按钮 -->
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 31;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.title = '封面';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.title = '第' + i + '题';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

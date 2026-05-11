@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>何紫勋 - 竞赢模拟9～10 错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            overflow-y: auto;
+        }
+        .slide.active { display: flex; }
+
+        /* 封面样式 */
+        .cover-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .cover-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .cover-info {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        .start-btn {
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.3);
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .question-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .question-type {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            padding: 0.3rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            display: inline-block;
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+        }
+        .context-box p {
+            line-height: 1.8;
+        }
+
+        /* 题目文本 */
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+        .blank {
+            color: var(--accent-light);
+            font-weight: 700;
+            padding: 0 0.3rem;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem 1.2rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .option-label {
+            font-weight: 700;
+            color: var(--accent-light);
+            margin-right: 0.5rem;
+        }
+
+        /* 答案按钮 */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .answer-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(74, 222, 128, 0.3);
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.3s ease;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 1rem;
+            border: 2px solid var(--success);
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+        }
+        .analysis p {
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 导航按钮 */
+        .navigation {
+            position: fixed;
+            bottom: 5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .navigation button:hover:not(:disabled) {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <h1 class="cover-title">📚 何紫勋 错题复习</h1>
+        <p class="cover-subtitle">竞赢模拟 9～10</p>
+        <div class="cover-info">
+            <p>单项选择：4 题</p>
+            <p>短文填空：1 题</p>
+            <p>完形填空：2 题</p>
+            <p style="margin-top: 1rem; font-weight: 700;">共计 7 道错题</p>
+        </div>
+        <button class="start-btn" onclick="goToSlide(1)">开始复习 🚀</button>
+    </div>
+
+    <!-- 第3题 - 单项选择 -->
+    <div class="slide">
+        <div class="question-number">第 3 题</div>
+        <div class="question-type">单项选择</div>
+        <div class="question-card">
+            <p class="question-text">I found the key <span class="blank">( 3 )</span> when I was cleaning the room.</p>
+            <div class="options">
+                <div class="option"><span class="option-label">A.</span> by mistake</div>
+                <div class="option"><span class="option-label">B.</span> by the way</div>
+                <div class="option"><span class="option-label">C.</span> by accident</div>
+                <div class="option"><span class="option-label">D.</span> by the time</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>介词短语辨析</strong></p>
+                    <p><strong>by accident</strong> 意为"偶然，意外地"，符合句意"我打扫房间时偶然发现了钥匙"。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>A. by mistake: 错误地，由于差错</p>
+                    <p>B. by the way: 顺便说一下</p>
+                    <p>D. by the time: 到……时候为止，引导时间状语从句</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题 - 单项选择 -->
+    <div class="slide">
+        <div class="question-number">第 4 题</div>
+        <div class="question-type">单项选择</div>
+        <div class="question-card">
+            <p class="question-text">In many ways, the education system in the US is not very different from <span class="blank">( 4 )</span> in the UK.</p>
+            <div class="options">
+                <div class="option"><span class="option-label">A.</span> that</div>
+                <div class="option"><span class="option-label">B.</span> this</div>
+                <div class="option"><span class="option-label">C.</span> one</div>
+                <div class="option"><span class="option-label">D.</span> it</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>代词用法辨析</strong></p>
+                    <p><strong>that</strong> 用于比较结构中，代替前面提到的不可数名词或可数名词单数（the education system），避免重复。这是比较级中的经典用法。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>B. this: 这个，近指，不用于比较结构</p>
+                    <p>C. one: 泛指同类中的一个，相当于"a/an + 名词"，不能代替带定冠词的名词</p>
+                    <p>D. it: 指代同一个具体事物，此处不是同一个教育系统</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题 - 单项选择 -->
+    <div class="slide">
+        <div class="question-number">第 5 题</div>
+        <div class="question-type">单项选择</div>
+        <div class="question-card">
+            <p class="question-text">An accident <span class="blank">( 5 )</span> on this road last week.</p>
+            <div class="options">
+                <div class="option"><span class="option-label">A.</span> has been happened</div>
+                <div class="option"><span class="option-label">B.</span> happened</div>
+                <div class="option"><span class="option-label">C.</span> was happened</div>
+                <div class="option"><span class="option-label">D.</span> is happened</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词时态与语态</strong></p>
+                    <p><strong>happen</strong> 是不及物动词，没有被动语态，排除A、C、D。时间状语 last week 表示过去，用一般过去时 happened。</p>
+                    <h4>💡 易错点提醒</h4>
+                    <p><strong>happen, occur, take place</strong> 等表示"发生"的动词都是不及物动词，永远不能用被动语态！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题 - 单项选择 -->
+    <div class="slide">
+        <div class="question-number">第 6 题</div>
+        <div class="question-type">单项选择</div>
+        <div class="question-card">
+            <p class="question-text">I think the poor health will be <span class="blank">( 6 )</span> the way of your study.</p>
+            <div class="options">
+                <div class="option"><span class="option-label">A.</span> on</div>
+                <div class="option"><span class="option-label">B.</span> by</div>
+                <div class="option"><span class="option-label">C.</span> in</div>
+                <div class="option"><span class="option-label">D.</span> at</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>固定搭配</strong></p>
+                    <p><strong>in the way of</strong> 是固定搭配，意为"妨碍，阻碍"，句意"我认为身体不好会妨碍你的学习"。</p>
+                    <h4>💡 补充辨析</h4>
+                    <p>on the way: 在途中</p>
+                    <p>by the way: 顺便说一下</p>
+                    <p>in the way: 挡道，妨碍</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第59题 - 短文填空 -->
+    <div class="slide">
+        <div class="question-number">第 59 题</div>
+        <div class="question-type">短文填空</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Actually, no one had invited me to play before. I was too shocked <span class="blank">( 59 )</span> (say) no.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-59')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-59">
+                <div class="correct-answer">✅ 正确答案：to say</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>固定句型</strong></p>
+                    <p><strong>too...to...</strong> 是固定句型，意为"太……而不能……"，too 后面接形容词或副词，to 后面接动词原形。句意为"我太震惊了，以至于无法拒绝"。</p>
+                    <h4>💡 常见错因</h4>
+                    <p>学生容易忽略 too...to... 结构，直接写成动名词 saying，需要牢记这个经典句型。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第16题 - 完形填空 -->
+    <div class="slide">
+        <div class="question-number">第 16 题</div>
+        <div class="question-type">完形填空</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>At first, I fell down several times, but the soft snow didn't hurt me. With the coach's help, I kept practicing <span class="blank">( 16 )</span> two hours.</p>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A.</span> in</div>
+                <div class="option"><span class="option-label">B.</span> for</div>
+                <div class="option"><span class="option-label">C.</span> at</div>
+                <div class="option"><span class="option-label">D.</span> on</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-16')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-16">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>介词辨析（时间介词）</strong></p>
+                    <p><strong>for + 时间段</strong> 表示动作持续的时间长度，"for two hours" 意为"长达两小时"，符合句意"在教练的帮助下，我坚持练习了两个小时"。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>A. in + 时间段：表示"在……之后"，常用于将来时</p>
+                    <p>C. at + 时间点：表示"在某一时刻"</p>
+                    <p>D. on + 具体日期：表示"在某一天"</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第25题 - 完形填空 -->
+    <div class="slide">
+        <div class="question-number">第 25 题</div>
+        <div class="question-type">完形填空</div>
+        <div class="question-card">
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>I hope I can visit Harbin again next winter and <span class="blank">( 25 )</span> more interesting ice and snow activities.</p>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A.</span> take part in</div>
+                <div class="option"><span class="option-label">B.</span> look forward to</div>
+                <div class="option"><span class="option-label">C.</span> come up with</div>
+                <div class="option"><span class="option-label">D.</span> get ready for</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-25')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-25">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词短语辨析</strong></p>
+                    <p><strong>take part in</strong> 意为"参加，参与"，符合句意"我希望明年冬天能再次访问哈尔滨，参加更多有趣的冰雪活动"。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>B. look forward to: 期待，盼望（后面接名词或动名词）</p>
+                    <p>C. come up with: 想出，提出（主意、计划等）</p>
+                    <p>D. get ready for: 为……做准备</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 7</div>
+
+    <!-- 导航按钮 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 7;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

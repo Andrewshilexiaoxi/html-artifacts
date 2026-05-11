@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>何紫勋 竞赢模拟错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页 */
+        .slide.active h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .slide.active p {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .slide > button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: var(--success);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .slide > button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(74, 222, 128, 0.3);
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--accent-light);
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+        .context-box p {
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        /* 题目文本 */
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            transition: background 0.3s ease;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 短文填空 */
+        .blank-line {
+            display: inline-block;
+            min-width: 120px;
+            border-bottom: 2px solid var(--text-secondary);
+            margin: 0 0.5rem;
+            text-align: center;
+        }
+        .hint-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .answer-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(74, 222, 128, 0.3);
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+
+        .correct-answer {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            font-size: 1.2rem;
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+        }
+
+        .analysis p {
+            margin-bottom: 0.6rem;
+            color: var(--text-primary);
+        }
+
+        .analysis ul {
+            margin-left: 1.5rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .analysis li {
+            margin-bottom: 0.4rem;
+            color: var(--text-primary);
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .navigation button:hover:not(:disabled) {
+            transform: scale(1.05);
+            background: var(--accent-light);
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <h1>📚 何紫勋<br>竞赢模拟错题复习</h1>
+        <p>共 10 道错题</p>
+        <button onclick="goToSlide(1)">开始复习</button>
+    </div>
+
+    <!-- 第1题 选择题 第5题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">选择题 第5题</div>
+            <p class="question-text">
+( )5. Many people like to make resolutions ________ themselves at the beginning of the year.
+            </p>
+            <div class="options">
+                <div class="option">A. improved</div>
+                <div class="option">B. to improve</div>
+                <div class="option">C. improves</div>
+                <div class="option">D. improve</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>非谓语动词（动词不定式作目的状语）</p>
+                    <p>解析：</p>
+                    <ol>
+                        <li>本题考查固定搭配 <code>make resolutions to do sth.</code>，表示"下决心做某事"，其中动词不定式 <code>to do</code> 作目的状语，说明下决心的目的是什么。</li>
+                        <li>选项分析：
+                            <ul>
+                                <li>A. improved - 过去式/过去分词，不符合语法结构</li>
+                                <li>B. to improve - 动词不定式，符合 <code>make resolutions to do sth.</code> 固定搭配</li>
+                                <li>C. improves - 第三人称单数，不能作目的状语</li>
+                                <li>D. improve - 动词原形，不能直接跟在 <code>make resolutions</code> 后作目的状语</li>
+                            </ul>
+                        </li>
+                        <li>学生错选了其他选项，问题在于没有掌握这个固定搭配结构。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题 完形填空 第15题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">完形填空 第15题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>In the past, red represented dignity (尊严) and mystery. Even today, Chinese people ___15___ red far more than before. It can be said that "China Red" is an everlasting theme for China, and an ___16___ important color for the Chinese people.</p>
+            </div>
+            <div class="options">
+                <div class="option">( )15. A. need &nbsp;&nbsp;B. dislike &nbsp;&nbsp;C. hate &nbsp;&nbsp;D. love</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>语境理解与动词词义辨析</p>
+                    <p>解析：</p>
+                    <ol>
+                        <li>根据上文语境"中国人被红色吸引不仅因为它让人兴奋，还因为它承载着丰富的文化历史内涵"，可以看出中国人对红色是喜爱的态度。</li>
+                        <li>前文提到 <code>Chinese people are drawn to red</code>（中国人被红色吸引），这句与 <code>Even today, Chinese people ___15___ red far more than before</code> 是顺承关系，情感色彩一致。</li>
+                        <li>选项分析：
+                            <ul>
+                                <li>A. need - 需要，不符合语境表达的情感态度</li>
+                                <li>B. dislike - 不喜欢，与全文情感色彩相反</li>
+                                <li>C. hate - 讨厌，与全文情感色彩完全相反</li>
+                                <li>D. love - 喜爱，符合上下文语境和情感色彩</li>
+                            </ul>
+                        </li>
+                        <li>正确逻辑：从古至今，中国人一直喜爱红色，所以选D。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题 完形填空 第17题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">完形填空 第17题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>It can be said that "China Red" is an everlasting theme for China, and an ___16___ important color for the Chinese people. The term "China Red" has ___17___ ________ popular, drawing attention from around the world. Finding red-colored things in China is very ___18___, as you can see the color everywhere.</p>
+            </div>
+            <div class="options">
+                <div class="option">( )17. A. spoken &nbsp;&nbsp;B. said &nbsp;&nbsp;C. grown &nbsp;&nbsp;D. gotten</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词词义辨析与现在完成时</p>
+                    <p>解析：</p>
+                    <ol>
+                        <li>本句意思是："中国红"这个词已经变得流行，吸引了全世界的关注。</li>
+                        <li><code>grown popular</code> 是固定表达，表示"变得流行"，<code>grow</code> 在这里表示"逐渐变得"，符合语境。</li>
+                        <li>选项分析：
+                            <ul>
+                                <li>A. spoken - 说（某种语言），不能与 popular 搭配</li>
+                                <li>B. said - 说（话语），不能与 popular 搭配</li>
+                                <li>C. grown - 变得，grown popular 表示"变得流行"，搭配正确</li>
+                                <li>D. gotten - 得到，虽然 <code>gotten popular</code> 语法上可行，但 <code>grown</code> 更能体现"逐渐流行"的过程，更符合语境</li>
+                            </ul>
+                        </li>
+                        <li>正确搭配："grow + 形容词"表示"逐渐变得..."，是常见用法。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题 阅读理解B 第33题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">阅读理解B 第33题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Also, according to CNN, as young people in Japan move to big cities for work, villages are left with mostly older people. This leads to more empty farmland and fewer people around, so bears can go into towns more easily. People are worried about bear attacks. In Japan, only hunters with licenses (许可证) can shoot (射击) bears. But the number of such hunters is declining, as many are getting old and not enough new hunters are joining.</p>
+            </div>
+            <p class="question-text">
+( )33. What does the underlined word "declining" in the passage probably mean?
+            </p>
+            <div class="options">
+                <div class="option">A. Increasing</div>
+                <div class="option">B. Rising</div>
+                <div class="option">C. Unchanging</div>
+                <div class="option">D. Reducing</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>词义猜测题（根据上下文猜测生词词义）</p>
+                    <p>解析：</p>
+                    <ol>
+                        <li>定位到原句：<code>But the number of such hunters is declining, as many are getting old and not enough new hunters are joining.</code></li>
+                        <li>原因状语从句给出线索：<code>many are getting old and not enough new hunters are joining</code>（很多猎人年老了，没有足够多新猎人加入），由此可以推断出猎人的数量在"减少"。</li>
+                        <li>选项分析：
+                            <ul>
+                                <li>A. Increasing - 增加，与原文逻辑相反</li>
+                                <li>B. Rising - 上升，与原文逻辑相反</li>
+                                <li>C. Unchanging - 不变，不符合因果逻辑</li>
+                                <li>D. Reducing - 减少，符合上下文推断</li>
+                            </ul>
+                        </li>
+                        <li>技巧点拨：词义猜测题一定要从前后句找线索，因果关系是常见的命题方式。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题 选择题 第10题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">选择题 第10题</div>
+            <p class="question-text">
+( )10. —What are you going to do this summer vacation?<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;________. If I have enough time, I may go to Europe with my mother.
+            </p>
+            <div class="options">
+                <div class="option">A. Forget it</div>
+                <div class="option">B. It doesn't matter</div>
+                <div class="option">C. It depends</div>
+                <div class="option">D. Don't mention it</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>情景交际（交际用语辨析）</p>
+                    <p>解析：</p>
+                    <ol>
+                        <li>根据答语 "If I have enough time, I may go to Europe with my mother."（如果我有足够的时间，我可能和妈妈去欧洲），可见计划还不确定，要看情况而定。</li>
+                        <li>选项辨析：
+                            <ul>
+                                <li>A. Forget it - 算了吧/别提了，用于安慰或让对方忘记某事，不符合语境</li>
+                                <li>B. It doesn't matter - 没关系，用于回应别人的道歉，不符合语境</li>
+                                <li>C. It depends - 看情况而定，正好对应"如果有时间就去"这种不确定的回答</li>
+                                <li>D. Don't mention it - 不用谢，用于回应别人的感谢，不符合语境</li>
+                            </ul>
+                        </li>
+                        <li><code>It depends</code> 是英语口语中非常常用的表达，表示事情视情况而定，没有确定答案。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题 短文填空 第57题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">短文填空 第57题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>There were traditional Chinese arts such as sugar painting, paper-cutting and Kunqu Opera performances. Traditional festival food, like mooncakes, <span class="blank-line">57. ________</span> <span class="hint-text">(be)</span> served during the event. Some of the <span class="blank-line">58. ________</span> <span class="hint-text">(foreign)</span> went to the party with their families.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：was</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>主谓一致（不可数名词作主语）</p>
+                    <p>解析：</p>
+                    <ol>
+                        <li>本题主语是 <code>Traditional festival food</code>，中心词 <code>food</code> 是不可数名词，尽管后面有 <code>like mooncakes</code> 举例，但这个介词短语不改变主语的单复数，谓语动词仍用单数形式。</li>
+                        <li>语法规则：当主语后接 <code>like, including, with</code> 等介词短语时，谓语动词的单复数由主语中心词决定，不受介词短语影响。</li>
+                        <li>时态分析：全文描述的是去年（Last year）发生的事情，所以用一般过去时。</li>
+                        <li>因此，一般过去时单数对应的be动词是 <code>was</code>。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题 短文填空 第61题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">短文填空 第61题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>"We really enjoyed <span class="blank-line">61. ________</span> at the party. It was a really good chance for us to enjoy food and communicate with others," said Frenchman Yann Bozec, who went there with his Chinese wife and 11-year-old daughter.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：ourselves</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>反身代词（固定搭配 <code>enjoy oneself</code>）</p>
+                    <p>解析：</p>
+                    <ol>
+                        <li>固定搭配 <code>enjoy oneself</code> 表示"玩得开心"，其中反身代词oneself必须与主语保持人称一致。</li>
+                        <li>本句主语是 <code>We</code>，所以对应的反身代词是 <code>ourselves</code>（我们自己）。</li>
+                        <li>常见搭配拓展：
+                            <ul>
+                                <li>enjoy oneself = have fun = have a good time（玩得开心）</li>
+                                <li>反身代词变化：I → myself, we → ourselves, you → yourself/yourselves, he → himself, she → herself, they → themselves</li>
+                            </ul>
+                        </li>
+                        <li>学生如果写错，通常是拼写错误或者反身代词与主语不一致。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第8题 完形填空 第16题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">完形填空 第16题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>But he didn't ___15__ give up. He asked for help from engineers at a local technology company and ___16__ ________ improved his design. After three months of hard work, his smart parking system was finally ready.</p>
+            </div>
+            <div class="options">
+                <div class="option">( )16. A. suddenly &nbsp;&nbsp;B. probably &nbsp;&nbsp;C. gradually &nbsp;&nbsp;D. especially</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>副词词义辨析（语境理解）</p>
+                    <p>解析：</p>
+                    <ol>
+                        <li>根据上文，王宇一开始遇到很多困难：传感器不够灵敏，电池续航太短。但他没有放弃，求助于工程师，并且经过三个月的努力，最终完成了设计。</li>
+                        <li>"三个月的努力工作"这个时间线索清晰地表明，设计改进是一个逐步完善的过程，因此 <code>gradually</code>（逐渐地，逐步地）最符合语境逻辑。</li>
+                        <li>选项分析：
+                            <ul>
+                                <li>A. suddenly - 突然地，三个月的持续努力不可能是突然完成的，与时间线索矛盾</li>
+                                <li>B. probably - 可能地，语义不连贯，放在句中不通顺</li>
+                                <li>C. gradually - 逐渐地，逐步地，符合"三个月不断修改尝试"这个过程，语义和逻辑都正确</li>
+                                <li>D. especially - 特别，尤其，放在这里语法不通顺，<code>especially improved</code> 不是自然的英语搭配</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题 完形填空 第18题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">完形填空 第18题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>The local government and bike-sharing companies ___18__ ________ his invention. They thought it was useful and could be widely used in the city. A representative from a bike-sharing company even offered to help him in producing more systems.</p>
+            </div>
+            <div class="options">
+                <div class="option">( )18. A. praised &nbsp;&nbsp;B. doubted &nbsp;&nbsp;C. refused &nbsp;&nbsp;D. ignored</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词词义辨析（上下文逻辑推理）</p>
+                    <p>解析：</p>
+                    <ol>
+                        <li>根据后文线索：<code>They thought it was useful and could be widely used in the city.</code>（他们认为它很有用，可以在城市广泛使用），以及 <code>offered to help him in producing more systems</code>（主动提出帮助他生产更多系统），这些都表明政府和共享单车公司对这项发明持肯定态度。</li>
+                        <li>选项分析：
+                            <ul>
+                                <li>A. praised - 称赞，赞扬，完全符合后文肯定和支持的态度</li>
+                                <li>B. doubted - 怀疑，与后文积极态度相反</li>
+                                <li>C. refused - 拒绝，与后文主动提供帮助完全矛盾</li>
+                                <li>D. ignored - 忽视，不理睬，也与后文态度相反</li>
+                            </ul>
+                        </li>
+                        <li>逻辑线索：测试成功解决问题 → 被官方和企业认可赞扬 → 主动提出帮助生产更多。学生错选了D，没有学会从下文寻找情感态度的线索。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第10题 阅读理解 第28题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">阅读理解 第28题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>The pot-in-pot system is a simple way to keep food fresh without electricity. You put wet sand between two pots, one inside the other. The water in the sand evaporates(蒸发) and keeps the food cool. This helps food stay fresh longer. For example, tomatoes can last for weeks instead of just days. This means people can buy more fresh fruits and vegetables and that farmers can get more money.</p>
+            </div>
+            <p class="question-text">
+( )28. Why did people make the pot-in-pot system?
+            </p>
+            <div class="options">
+                <div class="option">A. To keep food warm</div>
+                <div class="option">B. To make food taste better</div>
+                <div class="option">C. To help farmer grow more food</div>
+                <div class="option">D. To keep food cool without electricity</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>细节理解题（目的意图推断）</p>
+                    <p>解析：</p>
+                    <ol>
+                        <li>定位到原文第一句：<code>The pot-in-pot system is a simple way to keep food fresh without electricity.</code> 以及后续说明：<code>The water in the sand evaporates(蒸发) and keeps the food cool.</code></li>
+                        <li>明确说明了这种罐中罐系统的作用是在没有电的情况下保持食物凉爽，从而延长食物保鲜时间。</li>
+                        <li>选项分析：
+                            <ul>
+                                <li>A. To keep food warm - 保持食物温暖，与原文 <code>keeps the food cool</code> 相反，错误</li>
+                                <li>B. To make food taste better - 让食物味道更好，文中未提及改进味道，错误</li>
+                                <li>C. To help farmer grow more food - 帮助农民种更多食物，文中只说农民能卖更多赚更多钱，并没有帮助种植，错误</li>
+                                <li>D. To keep food cool without electricity - 在没有电的情况下保持食物凉爽，完全符合原文表述，正确</li>
+                            </ul>
+                        </li>
+                        <li>这是一道细节题，答案可以直接在原文定位找到，解题关键在于仔细阅读第一段找到主题句。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第11题 短文填空 第57题（长春） -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">短文填空 第57题（长春）</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Changchun is a lively city that 56. ________ (develop) rapidly in recent years. As the capital of Jilin Province, it <span class="blank-line">57. ________</span> <span class="hint-text">(attract)</span> many people from home and abroad with its unique charm.<br>One of the most famous landmarks of Changchun is the China First Automobile Group</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：attracts</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词时态（一般现在时的主谓一致）</p>
+                    <p>解析：</p>
+                    <ol>
+                        <li>本题考查时态和主谓一致。这句话描述的是长春的现状（吸引着来自国内外的游客），是客观事实，应该用一般现在时。</li>
+                        <li>主语是 <code>it</code>，指代前文的 Changchun（长春），是第三人称单数，所以谓语动词 <code>attract</code> 需要加 <code>s</code> 变为 <code>attracts</code>。</li>
+                        <li>拼写注意：单词拼写正确为 a-t-t-r-a-c-t-s，注意双写 t，拼写错误会导致扣分。</li>
+                        <li>时态判断线索：前文 "Changchun is a lively city" 使用了一般现在时，本句承接上文继续描述现状，也应使用一般现在时。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 11</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 11;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

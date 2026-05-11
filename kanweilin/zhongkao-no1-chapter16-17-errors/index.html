@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阚威麟中考1号16~17章错题</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页特殊样式 */
+        .slide.active h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .slide.active p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .slide.active button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .slide.active button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            margin-bottom: 1rem;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            transition: background 0.2s;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .answer-toggle:hover {
+            transform: scale(1.02);
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-light);
+        }
+
+        .analysis p {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <h1>📚 阚威麟<br>中考一号错题复习</h1>
+        <p>第十六章 ~ 第十七章 共 14 道错题</p>
+        <button onclick="goToSlide(1)">开始复习</button>
+    </div>
+
+    <!-- 第1题 第5题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 1 题 · 第 5 题</div>
+            <p class="question-text">( )5. —Do you need more time to complete the task?<br>—Yes. Another two days __ enough.</p>
+            <div class="options">
+                <div class="option">A. is</div>
+                <div class="option">B. was</div>
+                <div class="option">C. are</div>
+                <div class="option">D. were</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：主谓一致</h4>
+                    <p>1. 表示时间、金钱、距离、重量等复数名词作主语时，通常被看作一个整体，谓语动词用单数形式。</p>
+                    <p>2. 本题中"Another two days"（再过两天）表示的是一个时间段，作为整体看待，所以谓语动词用单数is。</p>
+                    <p>3. 选项C "are"是复数形式，错误。选项B "was"是过去式，从句意看谈论的是现在的需求，不用过去时态。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题 第9题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 2 题 · 第 9 题</div>
+            <p class="question-text">( )9. Everyone except Tom and John __ there when the meeting began.</p>
+            <div class="options">
+                <div class="option">A. is</div>
+                <div class="option">B. was</div>
+                <div class="option">C. were</div>
+                <div class="option">D. are</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：主谓一致 - 就远原则</h4>
+                    <p>1. 当主语后面带有with, along with, together with, except, besides, but等介词短语时，谓语动词的数要与主语保持一致（就远原则），不受后面介词短语的影响。</p>
+                    <p>2. 本题主语是Everyone，不定代词作主语，谓语动词用单数形式。</p>
+                    <p>3. 从句中的时间状语"when the meeting began"可知，要用过去时态，所以选was。</p>
+                    <p>4. 选项C "were"是复数，错误；选项A "is"时态不对。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题 第10题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 3 题 · 第 10 题</div>
+            <p class="question-text">( )10. About __ of the books in our school library __ written in Chinese.</p>
+            <div class="options">
+                <div class="option">A. four-fifth; is</div>
+                <div class="option">B. four-fifths; are</div>
+                <div class="option">C. fourth-fifths; is</div>
+                <div class="option">D. fourths-fifth; are</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：分数表达法 + 主谓一致</h4>
+                    <p>1. 分数的表达法：分子用基数词，分母用序数词；当分子大于1时，分母要用复数形式。所以五分之四是four-fifths。</p>
+                    <p>2. 分数修饰名词作主语时，谓语动词的数取决于名词的数。本题中名词是the books（复数），所以谓语动词用复数are。</p>
+                    <p>3. 根据以上分析，只有选项B "four-fifths; are"符合规则。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题 第14题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 4 题 · 第 14 题</div>
+            <p class="question-text">( )14. —I have never visited a paper factory.<br>—__.</p>
+            <div class="options">
+                <div class="option">A. So have I</div>
+                <div class="option">B. So I have</div>
+                <div class="option">C. Neither have I</div>
+                <div class="option">D. Neither I have</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：倒装句 - 否定情况的附和</h4>
+                    <p>1. 当前一句是否定句，要表示"某人也不..."时，用Neither/Nor + 助动词/系动词/情态动词 + 主语 的倒装结构。</p>
+                    <p>2. 前一句是现在完成时(I have never visited...)，所以助动词是have，正确结构是Neither have I。</p>
+                    <p>3. 选项A "So have I"用于肯定句，表示"我也去过"，与前文否定语气不符。</p>
+                    <p>4. 选项B和D的语序不对，正确的倒装需要把助动词提前。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题 第15题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 5 题 · 第 15 题</div>
+            <p class="question-text">( )15. Not only you but also your brother __ too shy to talk with strangers.</p>
+            <div class="options">
+                <div class="option">A. is</div>
+                <div class="option">B. are</div>
+                <div class="option">C. be</div>
+                <div class="option">D. am</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：主谓一致 - 就近原则</h4>
+                    <p>1. 在Not only...but also...连接两个主语时，谓语动词的数要与最近的主语保持一致（就近原则）。</p>
+                    <p>2. 本题中离谓语动词最近的主语是your brother，是第三人称单数，所以be动词用is。</p>
+                    <p>3. 选项B "are"与you一致，但不遵循就近原则，错误。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题 第19题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 6 题 · 第 19 题</div>
+            <p class="question-text">( )19. Lily as well as her family __ the green mountain nearby at this time of year.</p>
+            <div class="options">
+                <div class="option">A. climbs</div>
+                <div class="option">B. climb</div>
+                <div class="option">C. has climbed</div>
+                <div class="option">D. have climbed</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：主谓一致 - 就远原则 + 时态</h4>
+                    <p>1. 当主语后面带有as well as介词短语时，谓语动词与主语Lily保持一致，不受as well as后面的名词影响，这是就远原则。Lily是第三人称单数，所以谓语动词用climbs。</p>
+                    <p>2. 时间状语"at this time of year"表示每年这个时候的习惯性动作，应该用一般现在时，不用现在完成时。</p>
+                    <p>3. 选项B "climb"是复数形式，不匹配主语单数；选项C/D时态不对。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题 第21题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 7 题 · 第 21 题</div>
+            <p class="question-text">( )21. I __ sleep well, but then I started doing yoga and it really helps.</p>
+            <div class="options">
+                <div class="option">A. didn't use to</div>
+                <div class="option">B. wasn't used to</div>
+                <div class="option">C. used to</div>
+                <div class="option">D. was used to</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：固定搭配 - used to 的否定形式</h4>
+                    <p>1. used to do sth. 表示"过去常常做某事"，其否定形式是didn't use to do sth.。</p>
+                    <p>2. 从句意看："我过去睡眠不好，但后来我开始做瑜伽，真的很有帮助"，前后是转折关系，所以应该用否定形式didn't use to。</p>
+                    <p>3. 选项C "used to"是肯定形式，表示"过去常常"，与句意转折矛盾。</p>
+                    <p>4. 选项B/D "was used to"表示"习惯于"或"被用来"，结构和意思都不符。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第8题 第1题 情景交际 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 8 题 · 第 1 题（情景交际）</div>
+            <p class="question-text">( )1. —What about joining the science club with me?<br>—__. I'm looking forward to it.</p>
+            <div class="options">
+                <div class="option">A. Good idea</div>
+                <div class="option">B. With pleasure</div>
+                <div class="option">C. Never mind</div>
+                <div class="option">D. It doesn't matter</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：情景交际 - 提建议的应答</h4>
+                    <p>1. What about...? 是用来提出建议的句型，意为"......怎么样？"。</p>
+                    <p>2. 从答语"I'm looking forward to it"（我对此很期待）可以看出，对方同意了这个建议，所以回答Good idea（好主意）。</p>
+                    <p>3. With pleasure 是用来回答请求帮助，表示"乐意效劳"，不用于回应建议。</p>
+                    <p>4. Never mind 和 It doesn't matter 都是用来回答道歉，表示"没关系"，不符合语境。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题 第4题 情景交际 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 9 题 · 第 4 题（情景交际）</div>
+            <p class="question-text">( )4. —It's said that shopping online is safe.<br>—__. You'd better be careful.</p>
+            <div class="options">
+                <div class="option">A. I agree</div>
+                <div class="option">B. That depends</div>
+                <div class="option">C. I think so</div>
+                <div class="option">D. No problem</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：情景交际 - 表达不同看法</h4>
+                    <p>1. 上文说"据说网上购物是安全的"，下文回答"你最好小心点"，说明说话者并不完全同意上文观点，认为要视情况而定。</p>
+                    <p>2. That depends 意思是"那得看情况"，符合语境，表示不确定，需要具体情况具体分析。</p>
+                    <p>3. I agree 和 I think so 都表示"我同意/我也这么认为"，与后文"You'd better be careful"的提醒矛盾。</p>
+                    <p>4. No problem 表示"没问题"，用于回答请求或感谢，不符合此处语境。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第10题 第7题 情景交际 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 10 题 · 第 7 题（情景交际）</div>
+            <p class="question-text">( )7. —I will interview a famous artist tomorrow, and I'd like you to go with me.<br>—__! I'll have an important meeting to attend.</p>
+            <div class="options">
+                <div class="option">A. Congratulations</div>
+                <div class="option">B. What a pity</div>
+                <div class="option">C. Good idea</div>
+                <div class="option">D. Good job</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：情景交际 - 婉拒邀请</h4>
+                    <p>1. 第一句邀请对方一起去采访艺术家，第二句说"我有一个重要会议要参加"，说明不能去，对此感到遗憾。</p>
+                    <p>2. What a pity 意思是"真遗憾"，表示对不能成行感到遗憾，符合语境。</p>
+                    <p>3. Congratulations 是"恭喜"，Good idea 是"好主意"，Good job 是"干得好"，都不符合此处因无法参加而遗憾的语境。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第11题 第9题 情景交际 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 11 题 · 第 9 题（情景交际）</div>
+            <p class="question-text">( )9. —Would you mind my smoking here, Jane?<br>—__. Go ahead.</p>
+            <div class="options">
+                <div class="option">A. Of course</div>
+                <div class="option">B. Never mind</div>
+                <div class="option">C. It doesn't matter</div>
+                <div class="option">D. No, not at all</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：情景交际 - 对介意的回答</h4>
+                    <p>1. "Would you mind...?" 问"你介意......吗？"，如果不介意，回答应该是"No, not at all."（不，一点也不介意）。</p>
+                    <p>2. 答语中的"Go ahead"（请便）也说明对方不介意，同意抽烟。</p>
+                    <p>3. Of course 表示"当然介意"，与Go ahead矛盾。</p>
+                    <p>4. Never mind 和 It doesn't matter 通常用于回答道歉，不用于回答Would you mind的提问。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第12题 第12题 情景交际 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 12 题 · 第 12 题（情景交际）</div>
+            <p class="question-text">( )12. —I think wearing seat belts is very important for road safety.<br>—________</p>
+            <div class="options">
+                <div class="option">A. That's all right</div>
+                <div class="option">B. All right</div>
+                <div class="option">C. That's a good idea</div>
+                <div class="option">D. I agree</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-12">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：情景交际 - 同意对方观点</h4>
+                    <p>1. 第一句表达了自己的观点"我认为系安全带对道路安全非常重要"，回答应该表示同意或不同意。</p>
+                    <p>2. I agree 意思是"我同意"，直接表达同意对方的观点，符合语境。</p>
+                    <p>3. That's all right 用于回答道歉或感谢，表示"没关系"。</p>
+                    <p>4. All right 表示"好吧"，语气勉强，不用于直接同意观点。That's a good idea 用于回应建议，不用于回应观点。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第13题 第16题 情景交际 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 13 题 · 第 16 题（情景交际）</div>
+            <p class="question-text">( )16. —Can I look at the menu for a few more minutes before I decide?<br>—Of course. __, sir.</p>
+            <div class="options">
+                <div class="option">A. Have fun</div>
+                <div class="option">B. Sorry to hear that</div>
+                <div class="option">C. Take your time</div>
+                <div class="option">D. Sounds interesting</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-13')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-13">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：情景交际 - 用餐用语</h4>
+                    <p>1. 顾客问"我可以再看几分钟菜单再决定吗"，主人应该回答"不急，慢慢来"。</p>
+                    <p>2. Take your time 意思就是"慢慢来，不着急"，正好符合顾客需要更多时间看菜单的语境。</p>
+                    <p>3. Have fun 是"玩得开心"，Sorry to hear that 是"听到这个消息很难过"，Sounds interesting 是"听起来很有趣"，都不符合用餐点菜的情景。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第14题 第18题 情景交际 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 14 题 · 第 18 题（情景交际）</div>
+            <p class="question-text">( )18. —I'm sorry I can't go swimming with you.<br>—________.</p>
+            <div class="options">
+                <div class="option">A. It's my pleasure</div>
+                <div class="option">B. What a pity</div>
+                <div class="option">C. You're welcome</div>
+                <div class="option">D. Sure, I am</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-14')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-14">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：情景交际 - 回应拒绝邀请</h4>
+                    <p>1. 对方因为不能一起去游泳而道歉，回答应该表达对此感到遗憾。</p>
+                    <p>2. What a pity 意思是"真遗憾"，符合对活动不能成行感到遗憾的语境。</p>
+                    <p>3. It's my pleasure 和 You're welcome 都是回答感谢用的，表示"不客气"。</p>
+                    <p>4. Sure, I am 结构和意思都不通顺。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 14</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 14;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

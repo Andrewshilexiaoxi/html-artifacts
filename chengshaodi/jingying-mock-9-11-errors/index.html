@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>程少迪竞赢模拟9-11错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .context-box h4 {
+            margin-bottom: 0.8rem;
+            color: var(--accent-light);
+        }
+
+        /* 题号 */
+        .question-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* 题目文本 */
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        /* 空格样式 */
+        .blank {
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent-light);
+            margin: 0 0.2rem;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+        .answer-toggle:hover {
+            transform: translateY(-2px);
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+        }
+
+        .correct-answer {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+
+        .analysis p {
+            margin-bottom: 0.6rem;
+            font-size: 1.05rem;
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .navigation button:hover:not(:disabled) {
+            background: var(--accent-light);
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        /* 封面 */
+        .cover h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .cover p {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-secondary);
+        }
+        .cover button {
+            padding: 1.2rem 3rem;
+            font-size: 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .cover button:hover {
+            background: var(--accent-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <div class="cover">
+            <h1>📚 程少迪<br>竞赢模拟 9-11 错题复习</h1>
+            <p>共 10 道错题</p>
+            <button onclick="goToSlide(1)">开始复习</button>
+        </div>
+    </div>
+
+    <!-- 第1题 第5题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 5 题</div>
+            <p class="question-text">( )5. My family <span class="blank">___</span> Nanhu Park three times, and we plan to go there again this weekend.</p>
+            <div class="options">
+                <div class="option">A. visit</div>
+                <div class="option">B. visits</div>
+                <div class="option">C. has visited</div>
+                <div class="option">D. have visited</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>集体名词的主谓一致 + 现在完成时</p>
+                    <p><strong>My family</strong>是集体名词，这里指<strong>家人们</strong>（多个家庭成员），强调个体，因此谓语动词用<strong>复数形式</strong>。</p>
+                    <p>从后半句"<strong>and we plan to go there again</strong>"使用代词we可以印证，这里将family看作复数概念。</p>
+                    <p>"three times"表示已经去过三次，是截至目前的经历，所以用现在完成时"have visited"。</p>
+                    <p>集体名词主谓一致判断规则：表示整体概念时谓语用单数，强调个体成员时谓语用复数，后文代词we提示这里是复数概念。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题 第15题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 15 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>He taught me the basic skills: how to stand steadily on skis, how to turn left and right slowly, and how to stop <span class="blank">___15.___</span> when necessary. At first, I fell down several times, but the soft snow didn't hurt me. With the coach's help, I kept practicing <span class="blank">___16.___</span> two hours.</p>
+            </div>
+            <p class="question-text">( )15. A. safely  B. quickly  C. loudly  D. easily</p>
+            <div class="options">
+                <div class="option">A. safely</div>
+                <div class="option">B. quickly</div>
+                <div class="option">C. loudly</div>
+                <div class="option">D. easily</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>语境词义辨析</p>
+                    <p>作者是<strong>第一次滑雪</strong>的初学者，教练教的都是基础动作：如何站稳、如何慢慢转弯，对于初学者来说，最重要的是<strong>安全</strong>。</p>
+                    <p>因此，学会在必要时<strong>安全地</strong>停下是关键的基础技能，符合初学者学习语境。</p>
+                    <p>前文的"basic skills"和"steadily"、"slowly"都暗示了这一点，安全比速度更重要。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题 第16题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 16 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>He taught me the basic skills: how to stand steadily on skis, how to turn left and right slowly, and how to stop quickly when necessary. At first, I fell down several times, but the soft snow didn't hurt me. With the coach's help, I kept practicing <span class="blank">___16.___</span> two hours.</p>
+            </div>
+            <p class="question-text">( )16. A. in  B. for  C. at  D. on</p>
+            <div class="options">
+                <div class="option">A. in</div>
+                <div class="option">B. for</div>
+                <div class="option">C. at</div>
+                <div class="option">D. on</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>介词用法与时态搭配</p>
+                    <p>介词<strong>for</strong>后面接时间段，表示动作持续了多长时间。本题中"for two hours"表示"持续练习了两个小时"，符合语境。</p>
+                    <p>容易混淆for和in的用法：in+时间段表示"在...之内"或"在...之后"（将来时），而for+时间段表示"持续..."，强调动作延续的时间长度。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题 第22题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 22 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>During our trip, we also tried some delicious food, like boiled dumplings and hot pot. They were delicious and helped us <span class="blank">___22.___</span> warm in the cold weather.</p>
+            </div>
+            <p class="question-text">( )22. A. keep  B. feel  C. turn  D. become</p>
+            <div class="options">
+                <div class="option">A. keep</div>
+                <div class="option">B. feel</div>
+                <div class="option">C. turn</div>
+                <div class="option">D. become</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>固定搭配与动词词义辨析</p>
+                    <p><strong>keep warm</strong>是固定搭配，意思是"保暖"。食物帮助我们在寒冷天气中保持温暖，符合逻辑。</p>
+                    <p>热食提供热量，使人持续保持温暖状态，keep表示"保持"这种状态，最为恰当。</p>
+                    <p>feel warm是"感到温暖"，侧重主观感受；而keep warm侧重"保持温暖"这个持续状态。美味食物帮助我们身体维持温暖，是客观功能，所以keep更准确。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题 第37题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 37 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>First, the shorter days in winter mean less sunlight. Sunlight helps our bodies make vitamin D, which is important for keeping our energy levels high. When there is less sunlight, our vitamin D levels drop, and this can make us feel tired. Also, sunlight affects a <u>hormone</u> called melatonin (褪黑素) that controls sleep. In winter, with less light, our bodies make more melatonin, making us want to sleep more.</p>
+            </div>
+            <p class="question-text">( )37. What does the underlined word "hormone" mean in Paragraph 2?</p>
+            <div class="options">
+                <div class="option">A. A kind of food that gives energy.</div>
+                <div class="option">B. A kind of vitamin made by the body.</div>
+                <div class="option">C. A chemical in the body that controls functions.</div>
+                <div class="option">D. A type of sunlight that affects sleep.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>词义猜测题</p>
+                    <p>从上文可知，<strong>vitamin D（维生素D）</strong>是阳光帮助身体产生的一种物质，它能保持能量水平。</p>
+                    <p>而文中说"Also, sunlight affects a hormone called melatonin (褪黑素)"，这里的"Also"表明hormone是<strong>不同于维生素D</strong>的另一种物质。</p>
+                    <p>根据"<strong>that controls sleep</strong>"定语从句可知，hormone控制睡眠，而且它是由身体产生的（"our bodies make more melatonin"）。</p>
+                    <p>由此可推断，hormone是"荷尔蒙"（激素），即身体内控制身体功能的一种化学物质。</p>
+                    <p>维生素D和褪黑素作用相反：阳光越多，维生素D越多，使人更有活力；阳光越少，褪黑素（一种激素）越多，使人越想睡觉。褪黑素本身就是人体大脑松果体分泌的一种激素，负责调节睡眠节律。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题 第43题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 43 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Now, Hod Lipson from <strong>Columbia University</strong> in New York and his team have made a robot named Emo. It uses AI tools and clear cameras to guess people's facial expressions and try to copy them.</p>
+            </div>
+            <p class="question-text">( )43. The robot Emo was made by Hod Lipson and his team from Stanford University.</p>
+            <p class="question-text">判断正(T)、误(F)：</p>
+            <div class="options">
+                <div class="option">A. T</div>
+                <div class="option">B. F</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：F</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>细节理解题</p>
+                    <p>根据原文，研发机器人Emo的是<strong>哥伦比亚大学（Columbia University）</strong>的Hod Lipson团队，不是斯坦福大学（Stanford University）。</p>
+                    <p>题干中的大学名称与原文不符，因此判断为错误。</p>
+                    <p>这道题考查细节查找能力，需要认真核对专有名词。做题时要注意大学名称是否与原文一致，不要因为都是美国著名大学就粗心看错。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题 第58题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 58 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Some communities also have smart lockers—people can pick up their packages <span class="blank">___58.___</span> any time by scanning a code.</p>
+            </div>
+            <p class="question-text">短文填空：填入适当单词</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：at</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>固定搭配</p>
+                    <p>"at any time"是固定短语，意思是"在任何时候"，表示随时都可以取包裹。</p>
+                    <p>这是固定用法，学生填写at本身是正确的，如果判错可能是其他原因。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第8题 第60题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 60 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Second, new technologies make it <span class="blank">___60.___</span> (easily) to provide better services. Third, many young people are interested in working in this field.</p>
+            </div>
+            <p class="question-text">短文填空：用括号内单词的正确形式填空</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：easy</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>固定句型 + 词性转换</p>
+                    <p>"make it + 形容词 + to do sth."是固定句型，it是形式宾语，真正的宾语是后面的不定式，形容词作宾语补足语。</p>
+                    <p>这里需要用形容词easy，而不是副词easily。</p>
+                    <p>这个结构是中考常考点：make + it + adj. + to do，表示"使得做某事..."。记住只有形容词才能作宾语补足语，副词不能在这里使用。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题 第14题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 14 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Eighth graders Ouyang Panxi and Liao Yuhan <span class="blank">___14.___</span> together on their story. "At first, nothing really stood out to me," Ouyang said.</p>
+            </div>
+            <p class="question-text">( )14. A. played  B. studied  C. worked  D. talked</p>
+            <div class="options">
+                <div class="option">A. played</div>
+                <div class="option">B. studied</div>
+                <div class="option">C. worked</div>
+                <div class="option">D. talked</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>语境词义辨析</p>
+                    <p>根据上下文，这两个学生要一起完成新闻报道的故事写作，"work together on sth."是固定搭配，表示"一起合作做某事"，符合两人合作写报道的语境。</p>
+                    <p>"talked together"只是一起交谈，只有"worked together"能体现出两人共同完成这项写作任务的过程。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第10题 第21题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 21 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>When the two reporters started <span class="blank">___21.___</span>, they hit a snag (困难): They needed to keep the language clear and simple.</p>
+            </div>
+            <p class="question-text">( )21. A. reading  B. speaking  C. writing  D. listening</p>
+            <div class="options">
+                <div class="option">A. reading</div>
+                <div class="option">B. speaking</div>
+                <div class="option">C. writing</div>
+                <div class="option">D. listening</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>上下文语境推理</p>
+                    <p>前文已经提到他们完成了采访发现，现在要开始写报道了。</p>
+                    <p>根据后句"they needed to keep the language clear and simple"（他们需要保持语言简洁明了）可以推断，他们已经开始<strong>写作</strong>阶段遇到了困难。</p>
+                    <p>speaking指"说"，而这里是写新闻报道，属于写作范畴，因此writing正确。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第11题 第24题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 24 题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Their Chinese teacher, Yang Hongru, helped them <span class="blank">___24.___</span> step of the way. With the teacher's help, they finished the report.</p>
+            </div>
+            <p class="question-text">( )24. A. every  B. something  C. anything  D. no</p>
+            <div class="options">
+                <div class="option">A. every</div>
+                <div class="option">B. something</div>
+                <div class="option">C. anything</div>
+                <div class="option">D. no</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>语境词义辨析</p>
+                    <p>根据后句"With the teacher's help, they finished the report"可知，老师在每一步都给予了帮助。</p>
+                    <p>"every step of the way"表示"一路上的每一步"，符合文意。</p>
+                    <p>something后面不能直接接名词step，语法不通。从逻辑上讲，老师全程指导，"every step"更符合语境。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 11</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 11;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>孙溢浛名校8和逐梦1～2阅读A错题</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            overflow-y: auto;
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页样式 */
+        .cover-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .cover-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .cover-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem 2rem;
+            background: var(--card-bg);
+            border-radius: 1rem;
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .start-btn {
+            padding: 1.2rem 3rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .start-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .question-type {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: var(--accent);
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            margin-bottom: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        .answer-toggle:hover {
+            transform: translateY(-2px);
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.5s ease;
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        .analysis p {
+            line-height: 1.7;
+            margin-bottom: 0.8rem;
+        }
+        .analysis strong {
+            color: var(--accent-light);
+        }
+
+        /* 导航按钮 */
+        .navigation {
+            position: fixed;
+            bottom: 5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 0.8rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+        .navigation button:hover:not(:disabled) {
+            background: var(--accent);
+        }
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* 圆点导航 */
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        /* 滚动条样式 */
+        .slide::-webkit-scrollbar {
+            width: 6px;
+        }
+        .slide::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+        }
+        .slide::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <h1 class="cover-title">📚 孙溢浛名校8和逐梦1～2阅读A错题</h1>
+        <p class="cover-subtitle">英语错题复习</p>
+        <div class="cover-stats">
+            <div class="stat-item">
+                <div class="stat-number">13</div>
+                <div class="stat-label">道错题</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4</div>
+                <div class="stat-label">种题型</div>
+            </div>
+        </div>
+        <button class="start-btn" onclick="goToSlide(1)">开始复习 →</button>
+    </div>
+
+    <!-- 第17题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-type">完形填空</div>
+            <div class="question-number">第 17 题</div>
+            <div class="question-text">
+                To open their minds, Mr. Xiong encouraged them to join in a national soccer game. They did not play well in the ( 17 ). However, with the physical advantages, they controlled the game soon.
+            </div>
+            <div class="options">
+                <div class="option">A. beginning</div>
+                <div class="option">B. process</div>
+                <div class="option">C. middle</div>
+                <div class="option">D. end</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-17')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-17">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词辨析（语境逻辑）</strong></p>
+                    <p><strong>in the beginning</strong> 意为"在开始的时候"，符合上下文逻辑：他们一开始踢得不好，但凭借身体优势很快就掌控了比赛。however 表示转折关系，前后形成对比。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- B. process: 过程，in the process 意为"在过程中"，无法与后文形成转折对比</p>
+                    <p>- C. middle: 中间，in the middle 意为"在中间"，逻辑不符</p>
+                    <p>- D. end: 结尾，in the end 意为"最后"，与后文 soon 矛盾</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第19题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-type">完形填空</div>
+            <div class="question-number">第 19 题</div>
+            <div class="question-text">
+                However, with the physical advantages, they controlled the game soon. Unluckily, because they were short of ( 19 ) in such competitions, they finally lost the game.
+            </div>
+            <div class="options">
+                <div class="option">A. progress</div>
+                <div class="option">B. development</div>
+                <div class="option">C. experience</div>
+                <div class="option">D. information</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-19')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-19">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词辨析（语境理解）</strong></p>
+                    <p><strong>experience</strong> 意为"经验"，be short of experience 意为"缺乏经验"，符合句意：不幸的是，因为他们在这类比赛中缺乏经验，最终输掉了比赛。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- A. progress: 进步，be short of progress 意为"缺乏进步"，不符合乡村球队首次参赛的语境</p>
+                    <p>- B. development: 发展，语义不通</p>
+                    <p>- D. information: 信息，be short of information 意为"缺乏信息"，不是输球的主要原因</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第57题（母爱短文填空） -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-type">短文填空</div>
+            <div class="question-number">第 57 题（母爱主题）</div>
+            <div class="question-text">
+                Your mother has done a lot for you ( 57 ) you were born.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-57-mother')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-57-mother">
+                <div class="correct-answer">✅ 正确答案：since</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>连词辨析（现在完成时时间状语）</strong></p>
+                    <p><strong>since</strong> 意为"自从……以来"，引导时间状语从句。这是现在完成时的标志性连词，主句用现在完成时(has done)，从句用一般过去时(were born)，表示"从你出生以来，妈妈为你做了很多"。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易混淆 since 与其他连词（如 when, after），忘记 since 与现在完成时的固定搭配关系。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第60题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-type">短文填空</div>
+            <div class="question-number">第 60 题</div>
+            <div class="question-text">
+                When you are ill, she stops her work to look after you day and night and ( 60 ) (complete) forgets about herself.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-60')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-60">
+                <div class="correct-answer">✅ 正确答案：completely</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>副词的用法（词性转换）</strong></p>
+                    <p><strong>completely</strong> 是副词，意为"完全地"，用来修饰动词 forgets。句意为"当你生病时，她停下工作日夜照顾你，完全忘记了她自己"。</p>
+                    <h4>💡 语法规则</h4>
+                    <p>修饰动词必须用副词形式，形容词 complete 需要加 -ly 变成副词 completely。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易直接使用形容词 complete 而忘记转换为副词形式，忽略"副词修饰动词"这一基本语法规则。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第14题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-type">完形填空</div>
+            <div class="question-number">第 14 题</div>
+            <div class="question-text">
+                Mom's three kisses helped Emma deal with different challenges she would meet in school. She ( 14 ) her math class. In the math class, she met a difficult math problem.
+            </div>
+            <div class="options">
+                <div class="option">A. followed</div>
+                <div class="option">B. learned</div>
+                <div class="option">C. failed</div>
+                <div class="option">D. started</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-14')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-14">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词辨析（语境逻辑）</strong></p>
+                    <p><strong>started</strong> 意为"开始"，符合上下文逻辑：妈妈的三个吻帮助Emma应对不同挑战，她开始上数学课，在数学课上遇到了难题。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- A. followed: 跟随，follow the class 意为"听课"，但不与 her math class 直接搭配</p>
+                    <p>- B. learned: 学习，learn 后通常接具体内容（如 learn math），不直接接 class</p>
+                    <p>- C. failed: 失败，不及格，与后文"遇到难题但通过努力解决"的积极语境不符</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第16题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-type">完形填空</div>
+            <div class="question-number">第 16 题</div>
+            <div class="question-text">
+                In the math class, she met a difficult math problem. At that moment, she remembered her mom's first ( 16 ). She took a deep breath and worked hard, eventually solving it.
+            </div>
+            <div class="options">
+                <div class="option">A. word</div>
+                <div class="option">B. kiss</div>
+                <div class="option">C. smile</div>
+                <div class="option">D. look</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-16')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-16">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词辨析（上下文呼应）</strong></p>
+                    <p><strong>kiss</strong> 意为"吻"，本文开篇就提到妈妈给了Emma三个吻(three special kisses)，此处第一个吻提醒她要努力，与前文形成完美呼应。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- A. word: 话语，虽然妈妈说了话，但文章核心线索是"三个吻"，first kiss 更贴合主题</p>
+                    <p>- C. smile: 微笑，文中未提到妈妈给微笑</p>
+                    <p>- D. look: 眼神，文中未提到</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第33题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-type">阅读理解</div>
+            <div class="question-number">第 33 题</div>
+            <div class="context-box">
+                <h4>📖 原文定位</h4>
+                <p>To help keep people safe, an app called BowBear has been released in Japan. With it, users can report bear sightings on a map, and also see sightings reported by other users. The app also plays the sound of a dog barking, which is expected to help scare a bear off. While the app can be a good way to know if there are bears in the area, it does depend on people using it to work. So the more people use it, the better it will be. While it's becoming more popular, one user wrote online that the app could give people a "false sense of security". So it's important to still check government maps and information to know about the sightings.</p>
+            </div>
+            <div class="question-text">
+                What is the writer's attitude towards the app?
+            </div>
+            <div class="options">
+                <div class="option">A. Supportive.</div>
+                <div class="option">B. Doubtful.</div>
+                <div class="option">C. Objective.</div>
+                <div class="option">D. Worried.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-33')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-33">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>作者态度题（阅读理解）</strong></p>
+                    <p><strong>Objective</strong> 意为"客观的"。作者既全面介绍了app的<strong>优点和功能</strong>：帮助人们保证安全、报告熊的踪迹、查看他人报告、播放狗叫声吓跑熊、"can be a good way"、"becoming more popular"；也客观指出了其<strong>局限性</strong>："depend on people using it to work"、可能给人"false sense of security"。作者没有明显偏向支持或反对，只是全面客观地呈现事实。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- A. Supportive: 支持的，作者并未一味支持，也指出了问题和注意事项</p>
+                    <p>- B. Doubtful: 怀疑的，作者也明确肯定了app的价值和功能，并非完全怀疑</p>
+                    <p>- D. Worried: 担忧的，作者只是客观陈述优缺点，没有表达个人的担忧情绪</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第56题（博物馆短文填空） -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-type">短文填空</div>
+            <div class="question-number">第 56 题（博物馆主题）</div>
+            <div class="question-text">
+                Let's get to know ( 56 ) special speaker for antiques: Dong Zhen.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-56-museum')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-56-museum">
+                <div class="correct-answer">✅ 正确答案：a</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>冠词的用法</strong></p>
+                    <p><strong>a</strong> 是不定冠词，表示"一个"，用于辅音音素开头的单词前。句意为"让我们来认识一位为文物发声的特别演讲者：董臻"。</p>
+                    <h4>💡 语法规则</h4>
+                    <p>表示"一个/一位"的泛指概念时，用不定冠词 a/an；special 以辅音音素 /s/ 开头，所以用 a。</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易漏填冠词，或混淆 a 和 an 的用法。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第57题（博物馆短文填空） -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-type">短文填空</div>
+            <div class="question-number">第 57 题（博物馆主题）</div>
+            <div class="question-text">
+                There, his interesting introduction to antiques caught ( 57 ) (tour) eyes as soon as they came along.
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-57-museum')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-57-museum">
+                <div class="correct-answer">✅ 正确答案：tourists'</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>名词所有格（复数名词的所有格）</strong></p>
+                    <p><strong>tourists'</strong> 意为"游客们的"，修饰名词 eyes。句意为"在那里，他对文物有趣的介绍一出现就吸引了游客们的目光"。</p>
+                    <h4>💡 语法规则</h4>
+                    <p>1. tour 变为表示人的名词 tourist（游客）</p>
+                    <p>2. 根据后文 they 可知用复数形式 tourists</p>
+                    <p>3. 复数名词以 s 结尾时，所有格只需加 '，即 tourists'</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易忘记变复数，或所有格形式错误（如写成 tourist's 或 tourists's）。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题（单项选择） -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-type">单项选择</div>
+            <div class="question-number">第 5 题</div>
+            <div class="question-text">
+                —Look! Somebody is dancing in the classroom.<br>
+                —It ( 5 ) be Gina. She will have a school dancing competition next week.
+            </div>
+            <div class="options">
+                <div class="option">A. can</div>
+                <div class="option">B. might</div>
+                <div class="option">C. must</div>
+                <div class="option">D. can't</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>情态动词表推测</strong></p>
+                    <p><strong>must</strong> 意为"一定，肯定"，表示有把握的肯定推测。根据上下文逻辑：有人在教室跳舞，而Gina下周要参加学校舞蹈比赛，所以跳舞的人"一定是Gina"（她在为比赛练习）。</p>
+                    <h4>💡 语法规则</h4>
+                    <p>- must: 一定（肯定推测，100%把握，有充分依据）</p>
+                    <p>- might: 可能（不确定，把握较小）</p>
+                    <p>- can't: 不可能（否定推测，100%把握）</p>
+                    <p>- can 表推测时通常用于否定句或疑问句，不用于肯定句</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易误选 B. might，没有意识到"舞蹈比赛"这个信息是非常有力的推测依据，应该用语气更强的 must 而不是 might。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题（单项选择） -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-type">单项选择</div>
+            <div class="question-number">第 7 题</div>
+            <div class="question-text">
+                The worker didn't ( 7 ) the machine when he left. Don't be as careless as he is!
+            </div>
+            <div class="options">
+                <div class="option">A. turn down</div>
+                <div class="option">B. put on</div>
+                <div class="option">C. cut up</div>
+                <div class="option">D. shut off</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>动词短语辨析</strong></p>
+                    <p><strong>shut off</strong> 意为"关闭，切断（电源、机器等）"，符合句意"这个工人离开时没有关掉机器"。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- A. turn down: 调小（音量），拒绝</p>
+                    <p>- B. put on: 穿上，上演，增加（体重）</p>
+                    <p>- C. cut up: 切碎，砍伤</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易混淆"关闭"的各种表达，shut off 常用于关闭机器、电源、供水等，比 turn off 更正式、更彻底。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第27题（阅读理解） -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-type">阅读理解</div>
+            <div class="question-number">第 27 题</div>
+            <div class="context-box">
+                <h4>📖 原文定位</h4>
+                <p>Recently, US scientists created the first "protocells" on Earth about 3,800 million years ago. At first, the protocells only merged with each other, so evolution couldn't take place. However, when the scientists added water like the rain on Earth 4 billion years ago, a "wall" formed around each protocell, keeping them separated and causing evolution to happen.</p>
+            </div>
+            <div class="question-text">
+                Which would be the best heading for the first piece of news?
+            </div>
+            <div class="options">
+                <div class="option">A. Life starting with rain</div>
+                <div class="option">B. Scientists creating the first life</div>
+                <div class="option">C. Scientists separating protocells</div>
+                <div class="option">D. Life being separated from protocells</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-27')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-27">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>主旨大意题（标题选择）</strong></p>
+                    <p><strong>Life starting with rain</strong>（生命始于雨水）是最佳标题。第一段的核心逻辑是：雨水（rain）使得原始细胞周围形成了"墙"，细胞分离后，进化（evolution）才得以发生，这标志着生命的开始。标题涵盖了核心要素"rain"和"life/evolution"。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- B. Scientists creating the first life：过于绝对，科学家是创造"protocells（原始细胞）"而非"first life"，且未提及雨水这个关键要素</p>
+                    <p>- C. Scientists separating protocells：只是过程细节，不是文章主旨</p>
+                    <p>- D. Life being separated from protocells：逻辑错误，是原始细胞之间分离，而非生命与原始细胞分离</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易误选 B，忽略了"rain"在整个过程中的关键触发作用，标题没有准确反映文章的核心逻辑。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第29题（阅读理解） -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-type">阅读理解</div>
+            <div class="question-number">第 29 题</div>
+            <div class="context-box">
+                <h4>📖 原文定位</h4>
+                <p>One of the most deadly marine snails can give off a kind of venom. It can make their "food" still in seconds. However, scientists recently discovered something in the venom that may help save lives. When separated from the venom, it can control blood sugar. The scientists think it may be able to help treat a disease that about 422 million people suffer from around the world.</p>
+            </div>
+            <div class="question-text">
+                What can we infer according to the third piece of news?
+            </div>
+            <div class="options">
+                <div class="option">A. Venom is the most useful to human beings.</div>
+                <div class="option">B. Venom can help marine snails make food.</div>
+                <div class="option">C. Venom can control blood sugar without being dealt with.</div>
+                <div class="option">D. Many people suffer from blood sugar problems around the world.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-29')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-29">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p><strong>推理判断题</strong></p>
+                    <p><strong>Many people suffer from blood sugar problems around the world</strong> 是正确答案。根据原文"help treat a disease that about 422 million people suffer from"和"it can control blood sugar"可以推断出：这种疾病是血糖相关疾病，全球约4.22亿人受其困扰。</p>
+                    <h4>⚠️ 干扰项分析</h4>
+                    <p>- A. Venom is the most useful：the most useful 过于绝对，原文未提到"最有用"</p>
+                    <p>- B. Venom help marine snails make food：原文是 make their "food" still（让猎物不动），不是 make food（制造食物）</p>
+                    <p>- C. without being dealt with：与原文"When separated from the venom, it can control blood sugar"矛盾，需要分离处理才能控制血糖</p>
+                    <h4>⚠️ 常见错因</h4>
+                    <p>学生容易误选 C，忽略了"when separated from the venom"这个前提条件。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 13</div>
+
+    <!-- 导航按钮 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 13;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

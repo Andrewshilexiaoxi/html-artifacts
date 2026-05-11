@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>程少迪竞赢模拟 7-8 错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页特殊样式 */
+        .cover-slide h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .cover-slide p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .cover-slide button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 60;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .cover-slide button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        /* 完形填空/短文填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+        .blank {
+            text-decoration: underline;
+            text-decoration-color: var(--accent);
+            text-decoration-thickness: 3px;
+            padding: 0 1rem;
+            min-width: 80px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        /* 题目文本 */
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            transition: background 0.3s ease;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+        .answer-toggle:hover {
+            transform: scale(1.02);
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .analysis p {
+            margin-bottom: 0.6rem;
+            color: var(--text-primary);
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .navigation button:hover:not(:disabled) {
+            background: var(--accent-light);
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active cover-slide">
+        <h1>📚 程少迪<br>竞赢模拟 7-8 错题复习</h1>
+        <p>共 13 道错题</p>
+        <button onclick="goToSlide(1)">开始复习</button>
+    </div>
+
+    <!-- 第1题 第24题 完形填空 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第24题（完形填空）</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Whenever one of us had a problem, the other would try to find a solution.<br>
+                Now, even though we're older and live in different cities, we still keep in <span class="blank">24. __</span> . Every time we meet, it's like no time has passed. Our friendship is a gift that I'll always treasure.</p>
+            </div>
+            <div class="options">
+                <div class="option">( )24. A. touch &nbsp;&nbsp; B. mind &nbsp;&nbsp; C. sight &nbsp;&nbsp; D. order</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>固定搭配辨析</p>
+                    <p>1. 本题考查英语固定短语搭配。keep in touch是固定搭配，意为"保持联系"，符合语境：虽然我们住在不同城市，但仍然保持联系。</p>
+                    <p>2. 干扰项分析：</p>
+                    <p>&nbsp;&nbsp;- B. mind：常见搭配是keep in mind，意为"记住"，不符合句意逻辑</p>
+                    <p>&nbsp;&nbsp;- C. sight：常见搭配是keep in sight，意为"保持在视线范围内"，不符合语境</p>
+                    <p>&nbsp;&nbsp;- D. order：常见搭配是keep in order，意为"保持整齐"，与句意不符</p>
+                    <p>3. 根据前文"we're older and live in different cities"的转折关系，可以推断出虽然分隔两地，但友谊仍在，保持联系符合逻辑。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题 第47题 五选五 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第47题（五选五）</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>• Position<br>
+                <span class="blank">47. __</span> And try to avoid turning your back, or lowering your eyes too often if you're looking at any notes.<br><br>
+                • Hands<br>
+                Avoid touching things like your hair, nose or pens.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. And try to keep your arms by your side.</div>
+                <div class="option">B. Keep your shoulders back and your head up.</div>
+                <div class="option">C. Make sure you re always facing your classmates.</div>
+                <div class="option">D. Then move to another area and choose someone else.</div>
+                <div class="option">E. But do you know what to do with your body during a presentation?</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>语篇逻辑与上下文推理</p>
+                    <p>1. 本题考查五选五题型中的语篇逻辑关系。本段小标题是Position（位置），讲的是演讲者的站位和朝向。</p>
+                    <p>2. 根据下一句"And try to avoid turning your back..."（尽量避免背对听众），可以推断出上一句应该是说"要确保始终面向同学们"，语义衔接紧密。</p>
+                    <p>3. 干扰项分析：</p>
+                    <p>&nbsp;&nbsp;- A. 选项内容与手的姿势相关，应该放在Hands段落，不符合Position主题</p>
+                    <p>&nbsp;&nbsp;- B. 选项内容讲的是肩膀和头部姿势，属于Gesture部分，不适合放在此处</p>
+                    <p>&nbsp;&nbsp;- E. 选项是引出下文的总起句，应该放在文章开头位置（46题），不符合此处语境</p>
+                    <p>4. 从逻辑上看：先要求面向听众，再补充提醒避免背对听众，符合行文思路。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题 第49题 五选五 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第49题（五选五）</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>• Gesture(姿态)<br>
+                Use gestures to help your classmates understand what you're saying. You can use your hands to make your points clearer in your speech. Keep your feet apart and stand confidently.<br>
+                <span class="blank">49. __</span> Remember, look confident!<br><br>
+                • Eye contact(交流)<br>
+                Remember to keep eye contact with your classmates.</p>
+            </div>
+            <div class="options">
+                <div class="option">A. And try to keep your arms by your side.</div>
+                <div class="option">B. Keep your shoulders back and your head up.</div>
+                <div class="option">C. Make sure you re always facing your classmates.</div>
+                <div class="option">D. Then move to another area and choose someone else.</div>
+                <div class="option">E. But do you know what to do with your body during a presentation?</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>语篇逻辑与主题一致性</p>
+                    <p>1. 本题考查五选五题型中的段落主题一致性。本段小标题是Gesture（姿态），主要讲演讲时的身体姿态。</p>
+                    <p>2. 前文提到"Keep your feet apart and stand confidently"（双脚分开，自信站立），后文接着说"Remember, look confident"（记住，要看起来自信），中间填入"Keep your shoulders back and your head up"（肩膀向后，抬起头）正好继续描述正确的站姿，保持主题一致。</p>
+                    <p>3. 干扰项分析：</p>
+                    <p>&nbsp;&nbsp;- A. 选项内容涉及手臂姿势，属于Hands段落，不适合放在Gesture部分</p>
+                    <p>&nbsp;&nbsp;- C. 选项内容讲的是朝向，属于Position部分，与本段姿态主题不符</p>
+                    <p>&nbsp;&nbsp;- D. 选项内容与眼神交流相关，应该放在Eye contact部分，不符合此处语境</p>
+                    <p>4. 从结构上看：foot姿势 → shoulder/head姿势 → 总结提醒保持自信，层层递进，逻辑清晰。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题 第62题 短文填空 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第62题（短文填空）</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>In the 1950s, Chinese farmers could produce only fifty million tons of rice. In a recent harvest <span class="blank">62. __</span> (season), nearly two hundred million tons of rice was produced. These increased harvests mean that 22% of the world's people 63. __ (feed) from just 7% of the farmland in China.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：season</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词单复数与句子结构</p>
+                    <p>1. 本题考查名词单复数的正确使用。短语"in a recent harvest season"表示"在最近一个收获季节"，因为前面有不定冠词a，修饰的是"recent harvest season"整个名词短语，中心词season是单数，所以应该用season。</p>
+                    <p>2. 句子结构分析：这里a 限定的是整个短语a recent harvest season，harvest是名词作定语修饰season，不论定语有多少个词，冠词a已经表明整体是单数，所以season用单数形式。</p>
+                    <p>3. 学生错写成seasons（复数），错误地认为这里指多个季节，但忽略了句首已经有不定冠词a，a决定了中心词必须是单数。</p>
+                    <p>4. 正确短语结构：in + [a recent harvest] + [season] → a修饰整个名词词组，所以season用单数。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题 第63题 短文填空 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第63题（短文填空）</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>In a recent harvest 62. __ (season), nearly two hundred million tons of rice was produced. These increased harvests mean that 22% of the world's people <span class="blank">63. __</span> (feed) from just 7% of the farmland in China. Dr. Yuan was quite satisfied with his life.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：are fed</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>被动语态与时态一致</p>
+                    <p>1. 本题考查被动语态的用法。句子主语是22% of the world's people，与动词feed之间是被动关系——人们被粮食养活，所以必须使用被动语态。</p>
+                    <p>2. 主句谓语动词mean是一般现在时，宾语从句陈述客观事实，也应该用一般现在时。主语people是复数概念，所以be动词用are，feed的过去分词是fed，因此正确形式是are fed。</p>
+                    <p>3. 如果学生写are fed但被批改错误，从语法角度看are fed实际上是正确答案。被动语态结构完整，时态和主谓一致都正确。</p>
+                    <p>4. 语法结构转换：</p>
+                    <p>&nbsp;&nbsp;- 主动句：China feeds 22% of the world's people</p>
+                    <p>&nbsp;&nbsp;- 被动句：22% of the world's people are fed (by China)</p>
+                    <p>&nbsp;&nbsp;- 被动语态构成：be + 过去分词</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题 第1题 选择题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第1题（单项选择）</div>
+            <p class="question-text">( )1. When you are riding a bike, think about the ________ of an accident!</p>
+            <div class="options">
+                <div class="option">A. symbol</div>
+                <div class="option">B. spirit</div>
+                <div class="option">C. risk</div>
+                <div class="option">D. value</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词词义辨析</p>
+                    <p>1. 句意理解：当你骑自行车的时候，要考虑到事故的风险。</p>
+                    <p>2. 词义辨析：</p>
+                    <p>&nbsp;&nbsp;- A. symbol 象征：不符合句意，"事故的象征"语义不通</p>
+                    <p>&nbsp;&nbsp;- B. spirit 精神："事故的精神"完全不搭配</p>
+                    <p>&nbsp;&nbsp;- C. risk 风险：the risk of an accident 表示"发生事故的风险"，符合骑车安全提醒的语境</p>
+                    <p>&nbsp;&nbsp;- D. value 价值："事故的价值"逻辑不通</p>
+                    <p>3. 学生错选A，对这四个名词词义理解有误，需要牢记risk表示"风险"的用法。</p>
+                    <p>4. 固定搭配：think about the risk of... 考虑……的风险。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题 第6题 选择题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第6题（单项选择）</div>
+            <p class="question-text">( )6. —Excuse me. ________ can I get the car if I order it today?<br>—In a month.</p>
+            <div class="options">
+                <div class="option">A. How often</div>
+                <div class="option">B. How long</div>
+                <div class="option">C. How much</div>
+                <div class="option">D. How soon</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>疑问词组辨析</p>
+                    <p>1. 根据答语"In a month"（一个月后），可知问题问的是"还要多久"能拿到车。</p>
+                    <p>2. 疑问词组辨析：</p>
+                    <p>&nbsp;&nbsp;- A. How often：提问频率，"多久一次"，回答应该是Once a week这类频率</p>
+                    <p>&nbsp;&nbsp;- B. How long：提问时间段或长度，"多长时间"，回答通常是For two weeks这类</p>
+                    <p>&nbsp;&nbsp;- C. How much：提问价格或不可数名词数量，"多少钱/多少"</p>
+                    <p>&nbsp;&nbsp;- D. How soon：提问将来时间，"还要过多久"，回答用In+一段时间，完全匹配本题答语</p>
+                    <p>3. 学生错选B，混淆了How long和How soon的用法区别：How long问"持续多长时间"，How soon问"还要多久(会发生)"。</p>
+                    <p>4. 本题中，问如果今天预定，还要多久能拿到车，回答In a month，所以用How soon。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第8题 第9题 选择题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第9题（单项选择）</div>
+            <p class="question-text">( )9.  Mr. Yao, I'm new here. Could you please tell me ________<br>—Sure. It has a long history and looks attractive.</p>
+            <div class="options">
+                <div class="option">A. what Slender West Lake is like</div>
+                <div class="option">B. how far Dongguan Street is</div>
+                <div class="option">C. how I can get to Ge Garden</div>
+                <div class="option">D. what I can see in Ge Garden</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>宾语从句语义匹配</p>
+                    <p>1. 根据答语"It has a long history and looks attractive"（它历史悠久，景色迷人），可以推断问题询问的是某个景点的整体情况。</p>
+                    <p>2. 选项分析：</p>
+                    <p>&nbsp;&nbsp;- A. what Slender West Lake is like："瘦西湖是什么样的"，询问瘦西湖的概况，答语描述它历史悠久风景迷人，完全匹配。</p>
+                    <p>&nbsp;&nbsp;- B. how far Dongguan Street is：问东关街有多远，回答应该是距离，不是描述景色</p>
+                    <p>&nbsp;&nbsp;- C. how I can get to Ge Garden：问路怎么走，回答应该是指路信息</p>
+                    <p>&nbsp;&nbsp;- D. what I can see in Ge Garden：问在个园能看到什么，回答应该是具体可以看到的景点，不是描述整体历史和外貌</p>
+                    <p>3. 学生错选D，但D问"在里面能看到什么"，答语应该列出具体景观；而A问"这个地方怎么样"，答语整体描述它的历史和吸引力，逻辑匹配。</p>
+                    <p>4. 句型what...is like 表示"……是什么样的"，用来询问整体情况。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题 第14题 完形填空 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第14题（完形填空）</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>"I live in Tennessee, and I have learned that the Tennessee River is 13. __ polluted with little pieces of plastics," Cash said. "They are from <span class="blank">14. __</span> plastics that break down over time in the sun." He knew he had to do something to help stop more pollution.</p>
+            </div>
+            <div class="options">
+                <div class="option">( )14. A. softer &nbsp;&nbsp; B. darker &nbsp;&nbsp; C. bigger &nbsp;&nbsp; D. heavier</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>形容词词义辨析与语境理解</p>
+                    <p>1. 根据上下文，这里说的是"小塑料碎片"（little pieces of plastics），它们来自更大的塑料，这些大塑料在阳光下随着时间分解成小碎片。</p>
+                    <p>2. 词义辨析：</p>
+                    <p>&nbsp;&nbsp;- A. softer 更软的：不符合逻辑，文中没有提到硬度</p>
+                    <p>&nbsp;&nbsp;- B. darker 更深色的：颜色与分解过程无关</p>
+                    <p>&nbsp;&nbsp;- C. bigger 更大的：大塑料慢慢分解成小塑料碎片，这是塑料污染形成的过程，逻辑正确</p>
+                    <p>&nbsp;&nbsp;- D. heavier 更重的：重量概念与分解过程不符</p>
+                    <p>3. 学生错选A，对语境理解错误，这里描述的是塑料从大到小的分解过程，不是软硬度变化。</p>
+                    <p>4. 逻辑关系：bigger plastics → break down in the sun → become little pieces，这个过程描述符合常识。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第10题 第15题 完形填空 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第15题（完形填空）</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Cash started with a couple of clean-ups, and it <span class="blank">15. __</span> from there.<br>
+                In fact, the clean-ups were a 16. __ job. Cash went along the river.</p>
+            </div>
+            <div class="options">
+                <div class="option">( )15. A. returned &nbsp;&nbsp; B. moved &nbsp;&nbsp; C. stopped &nbsp;&nbsp; D. grew</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>动词词义辨析与语境推理</p>
+                    <p>1. 前文说"Cash started with a couple of clean-ups"（Cash从几次清理活动开始），后文描述活动不断发展壮大，从那里逐步发展起来。</p>
+                    <p>2. 词义辨析：</p>
+                    <p>&nbsp;&nbsp;- A. returned 返回：表示从那里回去，不符合发展的语境</p>
+                    <p>&nbsp;&nbsp;- B. moved 移动：单纯移动位置，不能表达规模增长</p>
+                    <p>&nbsp;&nbsp;- C. stopped 停止：与文意相反，活动是发展了不是停止了</p>
+                    <p>&nbsp;&nbsp;- D. grew 增长，壮大：表示活动从几次开始，然后规模逐步壮大，符合语境</p>
+                    <p>3. 学生错选C，对语篇逻辑理解错误，公益活动从小小的开始，然后慢慢发展壮大，这是合理的发展过程。grew from there表示"从那里发展壮大"。</p>
+                    <p>4. 常用表达：sth. grew from... 表示某事从……起步后逐步发展壮大。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第11题 第17题 完形填空 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第17题（完形填空）</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>In fact, the clean-ups were a 16. __ job. Cash went along the river. Sometimes, he even went to places that could only be reached with a <span class="blank">17. __</span> . "Doing a clean-up makes me happy," he said. "I know I am making a difference and saving lives."</p>
+            </div>
+            <div class="options">
+                <div class="option">( )17. A. bike &nbsp;&nbsp; B. plane &nbsp;&nbsp; C. car &nbsp;&nbsp; D. boat</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>名词词义与上下文线索</p>
+                    <p>1. 根据前文"Cash went along the river"（Cash沿着河流进行清理），清理河流沿岸，有些地方只能通过船到达。</p>
+                    <p>2. 选项分析：</p>
+                    <p>&nbsp;&nbsp;- A. bike 自行车：河边有些地方水中或岸边深处只能坐船到达，自行车不能到达</p>
+                    <p>&nbsp;&nbsp;- B. plane 飞机：清理河流不需要飞机，不符合常理</p>
+                    <p>&nbsp;&nbsp;- C. car 汽车：河边很多地方汽车无法通行</p>
+                    <p>&nbsp;&nbsp;- D. boat 船：在河流上，有些地方只能坐船到达，完全符合语境</p>
+                    <p>3. 学生错选C，忽略了前文"along the river"这一关键线索，地点是在田纳西河上，所以需要船。</p>
+                    <p>4. 逻辑连接：river → places along the river → can only be reached with a boat，语境线索连贯。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第12题 第57题 短文填空 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第57题（短文填空）</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>This is a project of the Manchester Art Gallery. It <span class="blank">57. __</span> (design) to help visitors get back their lost attention in today's digitally driven world. Louise Thompson, the leader of 58. __ project, believes that museums or art galleries can do more than just store or display items.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-12">
+                <div class="correct-answer">✅ 正确答案：is designed</div>
+                <div class="analysis">
+                    <h4>📝 考点分析</h4>
+                    <p>一般现在时的被动语态</p>
+                    <p>1. 句子主语It指代前文的project，与动词design之间是被动关系——这个项目"被设计"用于帮助游客，所以需要用被动语态。</p>
+                    <p>2. 文章介绍的是这个项目现在的情况，用一般现在时。主语It是第三人称单数，所以be动词用is，design的过去分词是designed，因此正确形式是is designed。</p>
+                    <p>3. 被动语态结构：be + 过去分词。一般现在时+第三人称单数 → is + designed。</p>
+                    <p>4. 学生如果只写is或者漏写了过去分词形式designed，都是不完整的，必须同时有be动词和过去分词才构成完整的被动语态。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 12</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 12;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

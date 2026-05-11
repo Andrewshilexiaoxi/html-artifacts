@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赵泊嘉 必修二Unit1错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页特殊样式 */
+        .cover-slide {
+            text-align: center;
+        }
+        .cover-slide h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        .cover-slide p {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .cover-slide button {
+            padding: 1rem 3rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--success);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .cover-slide button:hover {
+            transform: scale(1.05);
+            background: var(--accent);
+            color: white;
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.2rem;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* 上下文框 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+
+        /* 题目文本 */
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 空格外加样式 */
+        .blank {
+            display: inline-block;
+            min-width: 80px;
+            border-bottom: 3px solid var(--text-secondary);
+            margin: 0 0.3rem;
+            vertical-align: bottom;
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .answer-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 222, 128, 0.4);
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .analysis p {
+            margin-bottom: 0.6rem;
+            color: var(--text-secondary);
+        }
+
+        .analysis ul {
+            margin-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+        .analysis li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .navigation button:hover:not(:disabled) {
+            transform: scale(1.05);
+            background: var(--accent-light);
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        /* 响应式适配移动端 */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 1rem;
+                padding-bottom: 6rem;
+            }
+            .cover-slide h1 {
+                font-size: 2rem;
+            }
+            .cover-slide p {
+                font-size: 1.2rem;
+            }
+            .question-card {
+                padding: 1.2rem;
+            }
+            .question-text {
+                font-size: 1.1rem;
+            }
+            .navigation {
+                bottom: 3.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active cover-slide">
+        <h1>📚 赵泊嘉 错题复习</h1>
+        <p>红对勾必修二 Unit 1<br>共 36 道错题</p>
+        <button onclick="goToSlide(1)">开始复习</button>
+    </div>
+
+    <!-- 1. 第8题 - 根据语境完成句子 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">1 / 36  I. 第8题</div>
+            <p class="question-text">
+                8. I would appreciate it if you could take my <span class="blank"></span> into consideration.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：application</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：固定搭配与词汇拼写</h4>
+                    <p>1. 固定搭配take sth into consideration表示"把...纳入考虑"，这里需要一个名词作宾语。</p>
+                    <p>2. application是"申请"的意思，符合语境。</p>
+                    <p>3. 常见的类似搭配还有：take sth into account = take sth into consideration。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 第9题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">2 / 36  I. 第9题</div>
+            <p class="question-text">
+                9. She has made great <span class="blank"></span> to the development of the company.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：contributions</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：固定搭配与名词复数</h4>
+                    <p>1. 固定搭配make contributions to表示"对...做出贡献"。</p>
+                    <p>2. 这里形容词great修饰名词，contribution是可数名词，前面没有不定冠词a，所以要用复数形式contributions。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 第10题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">3 / 36  I. 第10题</div>
+            <p class="question-text">
+                10. It is reported that causes of the disease have been well <span class="blank"></span> .
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：documented</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：被动语态与过去分词</h4>
+                    <p>1. 句子结构是现在完成时的被动语态：have been + 过去分词。</p>
+                    <p>2. document作动词表示"记载，记录"，过去分词形式是documented。</p>
+                    <p>3. 句意：据报道，这种疾病的病因已经被很好地记载下来了。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. II. 第3题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">4 / 36  II. 第3题</div>
+            <p class="question-text">
+                3. The whole issue is likely <span class="blank"></span> (investigate) thoroughly next month.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：to be investigated</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：动词不定式的被动语态</h4>
+                    <p>1. be likely to do sth 是固定搭配，表示"很可能做某事"。</p>
+                    <p>2. 主语the whole issue与动词investigate是被动关系，所以要用不定式的被动形式to be investigated。</p>
+                    <p>3. 句意：整个问题很可能在下个月被彻底调查。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. II. 第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">5 / 36  II. 第6题</div>
+            <p class="question-text">
+                6. After working devotedly for about 20 years, Mr Li got <span class="blank"></span> (promote) at last.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：promoted</div>
+                <div class="analysis">
+                    <h4>📝 考点分析："get + 过去分词"结构表被动</h4>
+                    <p>1. get promoted表示"被提拔；被晋升"，属于"get + 过去分词"的被动结构。</p>
+                    <p>2. get在此处是连系动词，相当于be动词，后接过去分词作表语。</p>
+                    <p>3. 类似用法还有：get dressed, get married, get hurt。</p>
+                    <p>4. 句意：努力工作了大约20年后，李先生终于得到了晋升。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. II. 第7题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">6 / 36  II. 第7题</div>
+            <p class="question-text">
+                7. Our aim is to make an attempt <span class="blank"></span> a new teaching method and style in this course.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：at</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：固定介词搭配</h4>
+                    <p>1. 固定搭配 make an attempt at 表示"尝试..."，后接名词或名词短语。</p>
+                    <p>2. 如果是接动词，则用 make an attempt to do sth。</p>
+                    <p>3. 句意：我们的目标是在这门课程中尝试一种新的教学方法和风格。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. II. 第8题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">7 / 36  II. 第8题</div>
+            <p class="question-text">
+                8. Feeling at <span class="blank"></span> loss, he saw a notice online looking for volunteers to work in hospitals.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：a</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：固定短语搭配</h4>
+                    <p>1. 固定短语 at a loss 表示"不知所措；茫然"，必须要有不定冠词a。</p>
+                    <p>2. 这是一个固定习语，需要记忆。loss这里指"困惑；失落"。</p>
+                    <p>3. 句意：感到不知所措时，他在网上看到一则招募志愿者到医院工作的通知。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. III. 第3题 选词填空 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">8 / 36  III. 选词填空 第3题</div>
+            <div class="context-box">
+                <p>选词框：give way to; turn to; prevent...from...; lead to; make sure; take part in</p>
+                <p>1. She will go home to __ the Thanksgiving dinner this weekend.</p>
+                <p>2. The rise in temperature has __ an increase in natural disaters worldwide.</p>
+                <p>3. My tiredness <span class="blank"></span> excitement when I saw those wonderful temples.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：gave way to</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：动词短语词义辨析</h4>
+                    <p>1. 根据句意"当我看到那些美妙的寺庙时，我的疲惫被兴奋所取代"，give way to表示"让步；被...取代"，符合语境。</p>
+                    <p>2. 根据从句时态saw，判断要用一般过去时，所以形式不变还是gave way to。</p>
+                    <p>3. 其他选项分析：</p>
+                    <ul>
+                        <li>turn to 转向；求助于，不符合语境</li>
+                        <li>lead to 导致，语义不通</li>
+                        <li>take part in 参加，与主语tiredness不搭配</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9. III. 第5题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">9 / 36  III. 选词填空 第5题</div>
+            <div class="context-box">
+                <p>选词框：give way to; turn to; prevent...from...; lead to; make sure; take part in</p>
+                <p>3. My tiredness gave way to excitement when I saw those wonderful temples.</p>
+                <p>4. The bad weather conditions prevented the plane from landing yesterday.</p>
+                <p>5. There was not a single soul in sight whom she could <span class="blank"></span> .</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：turn to</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：动词短语词义辨析</h4>
+                    <p>1. 句意为：眼前一个她可以求助的人都没有。whom she could turn to是定语从句修饰soul。</p>
+                    <p>2. turn to sb表示"向某人求助"，符合语境。</p>
+                    <p>3. 情态动词could后接动词原形，所以用原形turn to。</p>
+                    <p>4. 其他选项含义不符，只有turn to符合"向某人求助"的语义。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 10. VI. 课文语法填空 第1题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">10 / 36  VI. 课文语法填空 第1题</div>
+            <div class="context-box">
+                <p>Economic development is necessary if we want <span class="blank"></span> (improve) society. However, finding and keeping the right balance between progress and the protection of cultural sites can be a big challenge...</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-10">
+                <div class="correct-answer">✅ 正确答案：to improve</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：动词固定搭配</h4>
+                    <p>1. want后接动词不定式作宾语，即want to do sth，表示"想要做某事"。</p>
+                    <p>2. 这是基本固定搭配，不能直接接动词原形improve。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 11. VI. 第4题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">11 / 36  VI. 课文语法填空 第4题</div>
+            <div class="context-box">
+                <p>...Perhaps the best example is shown by UNESCO, <span class="blank"></span> (run) a programme that prevents world cultural heritage sites around the world from disappearing. In the 1950s, the Egyptian government wanted to build a new dam across the Nile...</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-11">
+                <div class="correct-answer">✅ 正确答案：running</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：现在分词作伴随状语</h4>
+                    <p>1. 句子主干是：Perhaps the best example is shown by UNESCO,... 后面 (run) a programme... 是作伴随状语，说明UNESCO的状态。</p>
+                    <p>2. UNESCO与run之间是主动关系，所以用现在分词running。</p>
+                    <p>3. 这是一个简单句，不是定语从句，不需要谓语动词。现在分词短语作后置定语/伴随状语，正确形式是running。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 12. VI. 第9题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">12 / 36  VI. 课文语法填空 第9题</div>
+            <div class="context-box">
+                <p>...Finally, the government turned to the United Nations for help. A committee was established to limit damage to the Egyptian buildings and prevent the <span class="blank"></span> (lose) of cultural relics. The group asked for contributions from different departments...</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-12">
+                <div class="correct-answer">✅ 正确答案：loss</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：词性转换与名词拼写</h4>
+                    <p>1. 定冠词the后面需要名词，lose是动词，要变成名词形式loss表示"丢失；丧失"。</p>
+                    <p>2. the loss of 表示"...的丧失/丢失"，固定表达。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 13. IV. 阅读理解A 第1题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">13 / 36  IV. 阅读理解 A 第1题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Imagine this: You're digging a well, and instead of hitting water, you unearth a headless human body made of pottery. This actually happened to farmers in Shaanxi province in central China in 1974. ... Archaeologists finally discovered three separate pits filled with about 8,000 life-sized statues, all made from terracotta—a type of fired clay.</p>
+            </div>
+            <p class="question-text">
+                1. What's the suitable description of the figure from the tomb?
+            </p>
+            <div class="options">
+                <div class="option">A. A copy of real soldiers.</div>
+                <div class="option">B. A model of emperors.</div>
+                <div class="option">C. In ruins.</div>
+                <div class="option">D. In colors.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-13')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-13">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：细节理解题</h4>
+                    <p>1. 定位：根据第一段"you unearth a headless human body made of pottery"可知，出土的俑是"没有头的"，说明已经残缺不全，即in ruins (成为废墟，残缺不全)。</p>
+                    <p>2. 选项分析：</p>
+                    <ul>
+                        <li>A. A copy of real soldiers. 文中说的是"life-sized statues"与真人大小一样，但没说是"真士兵的复制品"，信息不准确。</li>
+                        <li>B. A model of emperors. 兵马俑是陪葬士兵俑，不是皇帝模型，错误。</li>
+                        <li>C. In ruins. 因为出土时是headless (无头的)，说明已损毁，符合文意，正确。</li>
+                        <li>D. In colors. 文中未提及色彩，错误。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 14. IV. 阅读理解B 第8题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">14 / 36  IV. 阅读理解 B 第8题</div>
+            <div class="context-box">
+                <h4>📖 原文语境（最后一段）</h4>
+                <p>...However, there is so much culturally lost when a language dies. It is because the language carries so much local knowledge and culture.</p>
+                <p>In fact, in the 1970s, it was something like 2,000 native speakers of Hawaiian remained. But activists launched some schools where children are taught from birth, usually by kind of grandparents, and now more than 18,700 people speak it. And the same thing happened in New Zealand in the 1970s. Only 5% of young Maori people spoke the language, but now something like 25% now speak it.</p>
+            </div>
+            <p class="question-text">
+                8. What does the last paragraph want to convey?
+            </p>
+            <div class="options">
+                <div class="option">A. More languages are faced with dying out.</div>
+                <div class="option">B. It's a must for kids to learn their mother tongue.</div>
+                <div class="option">C. Grandparents play a vital role in passing down languages.</div>
+                <div class="option">D. More efforts have been made to save endangered languages.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-14')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-14">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：段落主旨大意题</h4>
+                    <p>1. 定位：最后一段前文说到语言消失会带走文化，然后举例：夏威夷语从只剩2000使用者，到现在通过开办学校已有18700人会说；新西兰毛利语从5%涨到25%的年轻人会说。</p>
+                    <p>2. 两个例子都说明人们已经做出了更多努力来拯救濒危语言，取得了一定成效。</p>
+                    <p>3. 选项分析：</p>
+                    <ul>
+                        <li>A. More languages are faced with dying out. 这不是本段主旨，前文讲过语言消失，最后一段讲拯救措施，错误。</li>
+                        <li>B. It's a must for kids to learn their mother tongue. 文中没有说"必须"，只是说成功案例，过于绝对，错误。</li>
+                        <li>C. Grandparents play a vital role in passing down languages. 这只是夏威夷案例中的一个细节，不是整段主旨，以偏概全，错误。</li>
+                        <li>D. More efforts have been made to save endangered languages. 两个成功案例都说明了人们已经做出更多努力拯救濒危语言，正确。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 15. 课时作业2 II. 第1题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">15 / 36  课时作业2 II. 第1题</div>
+            <p class="question-text">
+                1. There are seasoned <span class="blank"></span> (professional) who can teach you and show you what to do.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-15')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-15">
+                <div class="correct-answer">✅ 正确答案：professionals</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：名词复数</h4>
+                    <p>1. 本句是there be句型，be动词是are，说明主语要用复数形式。</p>
+                    <p>2. professional是可数名词，表示"专业人士"，所以要变成复数professionals。</p>
+                    <p>3. 句意：这里有经验丰富的专业人士可以教你，向你展示该做什么。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 16. 课时作业2 II. 第2题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">16 / 36  课时作业2 II. 第2题</div>
+            <p class="question-text">
+                2. If his wife had told him the truth, he would <span class="blank"></span> (forgive) her.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-16')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-16">
+                <div class="correct-answer">✅ 正确答案：have forgiven</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：虚拟语气（if条件句）</h4>
+                    <p>1. 这是虚拟语气，从句用过去完成时had told，表示对过去情况的假设，主句要用would have done结构。</p>
+                    <p>2. 所以正确形式是would have forgiven，表示"他就会原谅她了"（实际上没有原谅）。</p>
+                    <p>3. 学生只写了forgiven漏了have，或者错误判断了虚拟语气结构。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 17. 课时作业2 II. 第5题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">17 / 36  课时作业2 II. 第5题</div>
+            <p class="question-text">
+                5. On planes, experts recommend choosing a seat close to <span class="blank"></span> exit.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-17')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-17">
+                <div class="correct-answer">✅ 正确答案：an</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：冠词用法</h4>
+                    <p>1. exit是以元音音素开头的单词，表示泛指"一个出口"，需要用不定冠词an。</p>
+                    <p>2. 这里不是特指某个出口，只是说靠近一个出口的座位，所以用不定冠词不用定冠词the。</p>
+                    <p>3. 学生错填成了a，需要记住元音音素开头用an。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 18. 课时作业2 II. 第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">18 / 36  课时作业2 II. 第6题</div>
+            <p class="question-text">
+                6. His image was reflected many times <span class="blank"></span> the mirror.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-18')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-18">
+                <div class="correct-answer">✅ 正确答案：in</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：介词搭配</h4>
+                    <p>1. 表示"在镜子里"的反射，介词用in，即in the mirror。</p>
+                    <p>2. 这是习惯搭配，英语中表示照片、镜子里的影像都用in，不用on。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 19. III. 第4题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">19 / 36  III. 语法基础练 第4题</div>
+            <p class="question-text">
+                4. Those <span class="blank"></span> take responsibility for their actions are often highly respected.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-19')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-19">
+                <div class="correct-answer">✅ 正确答案：who</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：定语从句关系词</h4>
+                    <p>1. 先行词是Those，指代人，定语从句中缺少主语，所以要用关系代词who。</p>
+                    <p>2. 当先行词是those指人时，习惯上用who引导定语从句，这是英语的习惯用法。</p>
+                    <p>3. 句子结构：Those (who take responsibility...) are often highly respected。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 20. III. 第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">20 / 36  III. 语法基础练 第6题</div>
+            <p class="question-text">
+                6. I wish to thank Professor Johnson, without <span class="blank"></span> help I would never have succeeded.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-20')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-20">
+                <div class="correct-answer">✅ 正确答案：whose</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：定语从句关系词（作定语）</h4>
+                    <p>1. 先行词是Professor Johnson，关系词在定语从句中作定语修饰help，表示"Johnson的帮助"，所以要用关系代词whose。</p>
+                    <p>2. 结构：without whose help = without the help of whom，现代英语习惯用whose。</p>
+                    <p>3. 如果错填了who或which，那是因为没有看出关系词需要作定语修饰help，只有whose能作定语。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 21. III. 第8题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">21 / 36  III. 语法基础练 第8题</div>
+            <p class="question-text">
+                8. Many lessons are now available online, from <span class="blank"></span> students can choose for free.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-21')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-21">
+                <div class="correct-answer">✅ 正确答案：which</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：定语从句"介词+关系代词"</h4>
+                    <p>1. 这是"介词+关系代词"引导的定语从句，先行词是Many lessons，指物，介词from后面用which。</p>
+                    <p>2. 还原句子：students can choose from many lessons for free → 定语从句变换语序后就是from which students can choose...</p>
+                    <p>3. 学生错填了from，这里介词已经给出，空格只需要填关系代词which。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 22. IV. 第3题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">22 / 36  IV. 用定语从句完成句子 第3题</div>
+            <p class="question-text">
+                原句：她陷入一种难以判断对错的境地。<br>
+                She gets into a situation <span class="blank"></span> what is right or wrong.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-22')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-22">
+                <div class="correct-answer">✅ 正确答案：where it is hard to decide</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：定语从句关系词where</h4>
+                    <p>1. 先行词是situation，表示"处境；境况"，是一个抽象地点名词，定语从句中缺状语，所以要用关系副词where。</p>
+                    <p>2. it作形式主语，真正主语是不定式to decide。结构是：it + be + adj. + to do。</p>
+                    <p>3. 学生漏写了形式主语it，正确结构需要it is hard to...，不能直接说where is hard to...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 23. V. 第5题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">23 / 36  V. 语法与语篇 第5题</div>
+            <div class="context-box">
+                <p>...The palace complex consists of numerous halls and courtyards is a masterpiece of ancient Chinese architecture.</p>
+                <p>The Great Wall, 5<span class="blank"></span> construction spanned several dynasties, stretches across northern China like a giant dragon.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-23')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-23">
+                <div class="correct-answer">✅ 正确答案：whose</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：定语从句关系词（作定语）</h4>
+                    <p>1. 先行词是The Great Wall，关系词在定语从句中作定语修饰construction，表示"长城的建造"，所以要用关系代词whose。</p>
+                    <p>2. 结构：whose construction = the construction of which，两种写法都对，但空格只需要一个词，所以用whose。</p>
+                    <p>3. 如果错填了which，which不能作定语修饰construction，只有whose能表示所属关系。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 24. V. 第7题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">24 / 36  V. 语法与语篇 第7题</div>
+            <div class="context-box">
+                <p>...The soldiers, who were stationed along the wall, kept watch over the vast territory.</p>
+                <p>The wall, some sections of 7<span class="blank"></span> are well-preserved, offers breathtaking views of the surrounding landscapes.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-24')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-24">
+                <div class="correct-answer">✅ 正确答案：which</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：定语从句"介词+关系代词"</h4>
+                    <p>1. 先行词是The wall，指物，在介词of后面作宾语，所以要用关系代词which。</p>
+                    <p>2. 结构：some sections of which = some sections of the wall，介词+which引导非限制性定语从句。</p>
+                    <p>3. 这里不能用that，介词后面指物只能用which。</p>
+                    <p>4. 学生错填了whose，这里不需要定语，表示"长城的一些段落"，应该是some sections of the wall，所以用which指代the wall。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 25. VI. 第4题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">25 / 36  VI. 语法填空 第4题</div>
+            <div class="context-box">
+                <p>Some 20,000 students and their parents had visited the center by February, including 100 university students <span class="blank"></span> (major) in civil engineering.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-25')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-25">
+                <div class="correct-answer">✅ 正确答案：majoring</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：现在分词作后置定语</h4>
+                    <p>1. 句子主干已经完整：...including 100 university students...，这里需要非谓语动词。</p>
+                    <p>2. students 与 major 是主动关系，所以用现在分词majoring作后置定语，修饰university students。</p>
+                    <p>3. 结构：including 100 university students (who are) majoring in... → 省略关系代词和be动词，留下现在分词。</p>
+                    <p>4. 学生错填成了major，这是动词原形，不能作定语；如果错填majors也是谓语动词，句子已有谓语including，不需要再一个谓语。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 26. VI. 第5题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">26 / 36  VI. 语法填空 第5题</div>
+            <div class="context-box">
+                <p>...over the years, most of <span class="blank"></span> are in commercial production.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-26')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-26">
+                <div class="correct-answer">✅ 正确答案：which</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：定语从句"介词+关系代词"</h4>
+                    <p>1. 先行词是about 1,000 souvenirs and handcrafts，指物，在介词of后面作宾语，所以用关系代词which。</p>
+                    <p>2. 结构：most of which = most of the souvenirs and handcrafts，介词+which引导非限制性定语从句。</p>
+                    <p>3. 介词后面指物不能用that，只能用which。</p>
+                    <p>4. 学生错填了whick，拼写错误，正确拼写是w-h-i-c-h。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 27. VI. 第7题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">27 / 36  VI. 语法填空 第7题</div>
+            <div class="context-box">
+                <p>...the Han Dynasty, which attached great <span class="blank"></span> (important) to science and technology, lasted for over 400 years.</p>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-27')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-27">
+                <div class="correct-answer">✅ 正确答案：importance</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：词性转换（形容词转名词）</h4>
+                    <p>1. great是形容词，修饰名词，所以要把形容词important变成名词importance。</p>
+                    <p>2. 固定搭配attach importance to 表示"重视"，这是一个固定短语。</p>
+                    <p>3. 学生错写为importane，拼写错误，正确拼写是i-m-p-o-r-t-a-n-c-e。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 28. I. 阅读理解 第3题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">28 / 36  I. 阅读理解 第3题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>Some people say TCM is not scientific enough, but Ma thinks TCM is more accurate because it treats people based on their own needs.</p>
+            </div>
+            <p class="question-text">
+                3. What does the underlined word "accurate" in paragraph 3 probably mean?
+            </p>
+            <div class="options">
+                <div class="option">A. Useful.</div>
+                <div class="option">B. Advanced.</div>
+                <div class="option">C. Personalized.</div>
+                <div class="option">D. Special.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-28')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-28">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：词义猜测题</h4>
+                    <p>1. 定位：根据后一句"because it treats people based on their own needs"可知，中医根据每个人的不同需求量身治疗，也就是"个性化的"。</p>
+                    <p>2. 选项分析：</p>
+                    <ul>
+                        <li>A. Useful. 有用的。虽然中医有用，但这不是accurate在此处的含义，错误。</li>
+                        <li>B. Advanced. 先进的。文中没有提到先进不先进，错误。</li>
+                        <li>C. Personalized. 个性化的。根据每个人自己的需求治疗，就是个性化，符合语境，正确。</li>
+                        <li>D. Special. 特别的。这个词干扰性强，但accurate在这里强调的是"因人而异"，就是个性化，而不是"特别"，所以C更准确。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 29. I. 阅读理解 第4题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">29 / 36  I. 阅读理解 第4题</div>
+            <div class="context-box">
+                <h4>📖 原文语境</h4>
+                <p>TCM is becoming a big part of young people's lives. They are learning TCM skills to help themselves and others. Jin Ying, a 25-year-old student... is an enthusiast of TCM.</p>
+            </div>
+            <p class="question-text">
+                4. Why does the writer mention Jin Ying?
+            </p>
+            <div class="options">
+                <div class="option">A. To show Jin Ying's skills.</div>
+                <div class="option">B. To prove the acceptance of TCM.</div>
+                <div class="option">C. To praise Jin Ying's kindness.</div>
+                <div class="option">D. To explain the progress of TCM.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-29')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-29">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：写作意图题（例证目的）</h4>
+                    <p>1. 定位：前文说"TCM is becoming a big part of young people's lives. They are learning TCM skills to help themselves and others." 接着举了Jin Ying的例子。</p>
+                    <p>2. 举例的目的是为了证明前面的观点：中医现在已经被年轻人广泛接受，成为他们生活的一部分。</p>
+                    <p>3. 选项分析：</p>
+                    <ul>
+                        <li>A. To show Jin Ying's skills. 展示技能不是举例目的，只是例子内容，不是目的，错误。</li>
+                        <li>B. To prove the acceptance of TCM. 证明中医已经被（年轻人）接受，符合前文主题，正确。</li>
+                        <li>C. To praise Jin Ying's kindness. 文中没有表扬善良，只是举例，错误。</li>
+                        <li>D. To explain the progress of TCM. 解释中医的进步，这里讲的是年轻人接受中医，不是中医本身的进步，错误。</li>
+                    </ul>
+                    <p>4. 学生错选了D，混淆了"年轻人接受中医"和"中医进步"这两个不同概念。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 30. I. 单句语法填空 第2题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">30 / 36  I. 单句语法填空 第2题</div>
+            <p class="question-text">
+                2. While waiting for the opportunity to get <span class="blank"></span> (promote), Henry did his best to perform his duty.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-30')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-30">
+                <div class="correct-answer">✅ 正确答案：promoted</div>
+                <div class="analysis">
+                    <h4>📝 考点分析："get + 过去分词"结构表被动</h4>
+                    <p>1. get promoted表示"被晋升"，属于"get + 过去分词"的被动结构。</p>
+                    <p>2. opportunity to do sth 结构中，opportunity后面接不定式作定语，这里get promoted 是"得到晋升"的意思。</p>
+                    <p>3. Henry是"被晋升"，所以用过去分词promoted。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 31. I. 单句语法填空 第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">31 / 36  I. 单句语法填空 第6题</div>
+            <p class="question-text">
+                6. <span class="blank"></span> (historic), China has been a major player in the global silk trade.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-31')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-31">
+                <div class="correct-answer">✅ 正确答案：Historically</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：词性转换（形容词转副词）</h4>
+                    <p>1. 放在句首修饰整个句子，需要用副词形式，historic是形容词，要变成副词Historically。</p>
+                    <p>2. Historically表示"在历史上"，作句子的状语。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 32. I. 单句语法填空 第9题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">32 / 36  I. 单句语法填空 第9题</div>
+            <p class="question-text">
+                9. There are about seven million people taking part in the election, most of <span class="blank"></span> are well educated.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-32')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-32">
+                <div class="correct-answer">✅ 正确答案：whom</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：定语从句"介词+关系代词"</h4>
+                    <p>1. 这是"介词+关系代词"引导的定语从句，先行词是seven million people，指人，介词of后面用whom。</p>
+                    <p>2. 结构：most of whom = most of the seven million people，介词后面指代人只能用whom，不能用who。</p>
+                    <p>3. 如果错写成who，who不能放在介词后面作介词宾语；如果错写成which，which指代人不对，这里先行词是people，必须用whom。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 继续补充剩下的4道题，之前漏算了 -->
+
+    <!-- 33. II. 单句语法填空 第4题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">33 / 36  II. 单句语法填空 第4题</div>
+            <p class="question-text">
+                4. The beautiful scenery was beyond <span class="blank"></span> (describe).
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-33')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-33">
+                <div class="correct-answer">✅ 正确答案：description</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：词性转换（动词转名词）</h4>
+                    <p>1. 介词beyond后面需要名词作宾语，describe是动词，要变成名词description表示"描述"。</p>
+                    <p>2. 固定搭配beyond description 表示"难以形容，无法描述"。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 34. II. 单句语法填空 第6题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">34 / 36  II. 单句语法填空 第6题</div>
+            <p class="question-text">
+                6. The castle <span class="blank"></span> (build) over 600 years ago remains well preserved.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-34')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-34">
+                <div class="correct-answer">✅ 正确答案：built</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：过去分词作后置定语</h4>
+                    <p>1. 句子主干是The castle... remains well preserved，castle与build是被动关系，所以用过去分词built作后置定语。</p>
+                    <p>2. 相当于一个定语从句：The castle (which was built) over 600 years ago...，省略了关系代词和be动词。</p>
+                    <p>3. 这里不需要谓语动词，只需要非谓语动词作定语。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 35. II. 单句语法填空 第8题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">35 / 36  II. 单句语法填空 第8题</div>
+            <p class="question-text">
+                8. China is a country <span class="blank"></span> has about five thousand years of history.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-35')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-35">
+                <div class="correct-answer">✅ 正确答案：which/that</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：定语从句关系代词</h4>
+                    <p>1. 先行词是a country，指物，定语从句中缺少主语，所以可以用关系代词which或that引导。</p>
+                    <p>2. 句子结构：China is a country (which/that has about five thousand years of history).</p>
+                    <p>3. 当先行词是物且在从句中作主语时，which和that都可以，这里任选其一都对。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 36. II. 单句语法填空 第9题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">36 / 36  II. 单句语法填空 第9题</div>
+            <p class="question-text">
+                9. This is the famous church <span class="blank"></span> we visited last year.
+            </p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-36')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-36">
+                <div class="correct-answer">✅ 正确答案：which/that</div>
+                <div class="analysis">
+                    <h4>📝 考点分析：定语从句关系代词</h4>
+                    <p>1. 先行词是the famous church，指物，定语从句中谓语动词visited后面缺少宾语，所以用关系代词which或that。</p>
+                    <p>2. 句子还原：we visited the church last year → 关系代词指代church作visited的宾语。</p>
+                    <p>3. 注意区分：如果是we stayed last year，则先行词作地点状语，应该用where。这里visited需要宾语，所以用which/that。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 36</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 36;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

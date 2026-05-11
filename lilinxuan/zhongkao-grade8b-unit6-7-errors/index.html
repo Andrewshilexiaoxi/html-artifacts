@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李林轩 - 中考八下Unit6～7错题复习</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            overflow-y: auto;
+        }
+        .slide.active { display: flex; }
+
+        .cover-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .cover-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        .cover-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-box {
+            background: var(--card-bg);
+            padding: 1.5rem 2.5rem;
+            border-radius: 1rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .start-btn {
+            padding: 1.2rem 3rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .start-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .question-type {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .question-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .content-wrapper {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .context-box h4 {
+            color: var(--warning);
+            margin-bottom: 0.8rem;
+        }
+
+        .context-box p {
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .options {
+            margin-bottom: 1rem;
+        }
+
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem 1.2rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.6rem;
+            transition: background 0.2s ease;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.8rem;
+            transition: transform 0.2s ease;
+        }
+        .answer-toggle:hover {
+            transform: scale(1.02);
+        }
+
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.5s ease;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 1rem;
+            margin-top: 1.5rem;
+            border: 2px solid var(--success);
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--warning);
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .analysis p {
+            line-height: 1.8;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .analysis strong {
+            color: var(--accent-light);
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: var(--accent);
+        }
+        .nav-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 0.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            max-height: 80px;
+            overflow-y: auto;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 14px;
+            height: 14px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        .fill-blank {
+            display: inline-block;
+            border-bottom: 2px solid var(--accent);
+            padding: 0 0.5rem;
+            margin: 0 0.2rem;
+            color: var(--accent-light);
+            font-weight: 700;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .key-point {
+            background: rgba(233, 69, 96, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.3rem;
+            color: var(--accent-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <h1 class="cover-title">📚 李林轩 错题复习</h1>
+        <p class="cover-subtitle">中考英语 八下 Unit 6～7</p>
+        <div class="cover-stats">
+            <div class="stat-box">
+                <div class="stat-number">21</div>
+                <div class="stat-label">道错题</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">4</div>
+                <div class="stat-label">种题型</div>
+            </div>
+        </div>
+        <button class="start-btn" onclick="goToSlide(1)">🎯 开始复习</button>
+    </div>
+
+    <!-- 第1题：单项选择 -->
+    <div class="slide">
+        <div class="question-type">单项选择</div>
+        <div class="question-number">第1题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <p class="question-text">I fell in love with Hangzhou when I went there <span class="fill-blank">1</span> the first time.</p>
+                <div class="options">
+                    <div class="option">A. on</div>
+                    <div class="option">B. with</div>
+                    <div class="option">C. for</div>
+                    <div class="option">D. in</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-1">
+                    <div class="correct-answer">✅ 正确答案：C</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>介词固定搭配</p>
+                        <p><strong>for the first time</strong> 是固定短语，意为"第一次，首次"，在句中作时间状语。句意为"我第一次去杭州时就爱上了这座城市"。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- A. on the first time: 搭配错误</p>
+                        <p>- D. in the first time: 搭配错误，正确的是 in time（及时）</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题：单项选择第3题 -->
+    <div class="slide">
+        <div class="question-type">单项选择</div>
+        <div class="question-number">第3题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <p class="question-text">Jenny <span class="fill-blank">3</span> a rich man. She has <span class="fill-blank">3</span> him for 5 years.</p>
+                <div class="options">
+                    <div class="option">A. married with; marry with</div>
+                    <div class="option">B. married; married</div>
+                    <div class="option">C. married to; been married</div>
+                    <div class="option">D. married; been married to</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-2">
+                    <div class="correct-answer">✅ 正确答案：D</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>marry 的用法及时态</p>
+                        <p>- <strong>marry sb.</strong> 表示"嫁给某人/与某人结婚"，是短暂性动词，第一空用一般过去时 married</p>
+                        <p>- <strong>be married to sb.</strong> 表示"与某人结婚的状态"，是延续性表达，可以与 for + 时间段连用，第二空用 been married to</p>
+                        <p>句意为"珍妮嫁给了一个有钱人，他们已经结婚5年了"。</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易混淆 marry 的短暂性和延续性用法，注意 marry 不能直接与时间段连用，必须转换成 be married to。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题：单项选择第6题 -->
+    <div class="slide">
+        <div class="question-type">单项选择</div>
+        <div class="question-number">第6题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <p class="question-text"><span class="fill-blank">6</span> you keep moving, you'll never reach the top of the mountain.</p>
+                <div class="options">
+                    <div class="option">A. If</div>
+                    <div class="option">B. Although</div>
+                    <div class="option">C. Unless</div>
+                    <div class="option">D. Until</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-3">
+                    <div class="correct-answer">✅ 正确答案：C</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>连词辨析（条件状语从句）</p>
+                        <p><strong>unless</strong> 意为"除非，如果不"，相当于 if...not，引导条件状语从句。句意为"除非你继续前进，否则你永远到不了山顶"。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- A. If: 如果，逻辑相反（"如果你继续前进，你永远到不了"不符合常理）</p>
+                        <p>- B. Although: 虽然，引导让步状语从句</p>
+                        <p>- D. Until: 直到，引导时间状语从句</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题：单项选择第10题（so倒装） -->
+    <div class="slide">
+        <div class="question-type">单项选择</div>
+        <div class="question-number">第10题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <p class="question-text">—Kangkang is good at English.<br>—<span class="fill-blank">10</span> He often speaks to foreigners.</p>
+                <div class="options">
+                    <div class="option">A. So is he.</div>
+                    <div class="option">B. So he is.</div>
+                    <div class="option">C. So was he.</div>
+                    <div class="option">D. So he was.</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-4">
+                    <div class="correct-answer">✅ 正确答案：B</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>so 的倒装结构辨析</p>
+                        <p>- <strong>So + 主语 + be/助动词/情态动词</strong> 表示"的确如此"，用于对前面所说内容表示赞同或确认，主语指同一个人</p>
+                        <p>- <strong>So + be/助动词/情态动词 + 主语</strong> 表示"……也是如此"，主语指不同的人</p>
+                        <p>这里是对"康康英语好"表示赞同，所以用 <strong>So he is</strong>，意为"他确实如此"。</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易混淆两种 so 结构的用法，注意根据主语是否相同来判断。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题：完形填空第6题 -->
+    <div class="slide">
+        <div class="question-type">完形填空</div>
+        <div class="question-number">第6题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>I lifted the white chalk to the blackboard. As I was about to write my name, my mind went <span class="fill-blank">6</span>. I could not remember my name, not even the first letter.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. calm</div>
+                    <div class="option">B. clear</div>
+                    <div class="option">C. empty</div>
+                    <div class="option">D. full</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-5">
+                    <div class="correct-answer">✅ 正确答案：C</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>形容词辨析 + 语境理解</p>
+                        <p>根据后文"我记不起自己的名字，甚至连第一个字母都记不起来了"，说明大脑一片空白，<strong>empty</strong> 意为"空的"，符合语境。<strong>go empty</strong> 在这里形象地表示"大脑变得一片空白"。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- A. calm: 冷静的</p>
+                        <p>- B. clear: 清晰的，与语境相反</p>
+                        <p>- D. full: 满的，与语境相反</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题：完形填空第10题 -->
+    <div class="slide">
+        <div class="question-type">完形填空</div>
+        <div class="question-number">第10题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>The teacher stood up and walked to my side, smiling at me to give me confidence. She put her hand softly <span class="fill-blank">10</span> my shoulder and asked, "What's your name?"</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. in</div>
+                    <div class="option">B. with</div>
+                    <div class="option">C. to</div>
+                    <div class="option">D. on</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-6">
+                    <div class="correct-answer">✅ 正确答案：D</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>介词辨析（方位介词）</p>
+                        <p><strong>on one's shoulder</strong> 表示"在某人的肩膀上"。句意为"她把手轻轻放在我的肩膀上问道：'你叫什么名字？'"。</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易混淆身体部位前的介词，注意：on + 身体表面部位，in + 身体内部。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题：完形填空第11题 -->
+    <div class="slide">
+        <div class="question-type">完形填空</div>
+        <div class="question-number">第11题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>"Richard Wright," I whispered. And then I <span class="fill-blank">11</span> my name very quickly. "Now, can you write?"</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. took</div>
+                    <div class="option">B. spelled</div>
+                    <div class="option">C. wrote</div>
+                    <div class="option">D. called</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-7">
+                    <div class="correct-answer">✅ 正确答案：B</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>动词辨析 + 上下文逻辑</p>
+                        <p>根据上下文，前面作者只是低声说出了名字，老师问"现在你能写了吗？"，说明之前还没有写，只是<strong>拼写</strong>出了名字。<strong>spell</strong> 意为"拼写"，符合语境逻辑。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- C. wrote: 写，与后文老师问"能写了吗？"矛盾，如果已经写了就不会这么问了</p>
+                        <p>- A. took: 拿走，D. called: 呼叫，均不符合语境</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易只看中文意思而忽略上下文逻辑，注意后面的问句提供了关键线索。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第8题：完形填空第15题 -->
+    <div class="slide">
+        <div class="question-type">完形填空</div>
+        <div class="question-number">第15题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>The teacher stood up and walked to my side, smiling at me to give me confidence. She put her hand softly on my shoulder and asked, "What's your name?" Then I spelled my name very quickly. "Good boy. You may go to your seat," said the teacher. Today I can still remember my teacher's words and <span class="fill-blank">15</span>. They meant a lot to me.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. encouragement</div>
+                    <div class="option">B. lesson</div>
+                    <div class="option">C. praise</div>
+                    <div class="option">D. laugh</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-8">
+                    <div class="correct-answer">✅ 正确答案：A</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>名词辨析 + 全文主旨理解</p>
+                        <p>从上下文可以看到，老师整个过程都在给予作者信心：微笑鼓励、轻拍肩膀、温柔引导，最后才说了一句"Good boy"。这整个过程都是<strong>鼓励（encouragement）</strong>，而不只是简单的表扬。句意为"时至今日我仍然记得老师的话和她的鼓励，它们对我意义重大"。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- C. praise: 表扬，范围太窄，只体现了"Good boy"这一句话，忽略了老师全程给予的信心和支持</p>
+                        <p>- B. lesson: 教训，D. laugh: 笑，均不符合全文主旨</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易只看到"Good boy"就选 praise，但 encouragement 更能全面概括老师在整个过程中给予的支持和信心。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题：阅读理解第1题 -->
+    <div class="slide">
+        <div class="question-type">阅读理解</div>
+        <div class="question-number">第1题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文定位</h4>
+                    <p>Balloons are a symbol of celebration... but they can bring about some serious problems.</p>
+                    <p>After balloons are released, they can end up hundreds of kilometers away from where they were released, causing great harm to the environment and wildlife... This means they can fly almost everywhere, including waterways, oceans, mountains and farmlands.</p>
+                </div>
+                <p class="question-text">Paragraph 2 mainly tells us that ______</p>
+                <div class="options">
+                    <div class="option">A. helium balloons can fly very far away</div>
+                    <div class="option">B. releasing balloons can produce rubbish</div>
+                    <div class="option">C. balloons are very important in our daily life</div>
+                    <div class="option">D. balloons can have a bad influence on a wide area</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-9">
+                    <div class="correct-answer">✅ 正确答案：D</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>段落主旨大意题</p>
+                        <p>第二段的核心是讲气球释放后会飘到几百公里外，对环境和野生动物造成巨大危害。它们可以飞到水道、海洋、山脉、农田等各地。<strong>have a bad influence on a wide area</strong>（在广阔区域产生不良影响）最能概括这一段的主要意思。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- A. 只是段落中的一个细节（飞得远），不是主旨</p>
+                        <p>- B. 文中没有明确提到 produce rubbish，范围太窄</p>
+                        <p>- C. 与段落内容完全无关</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易只看到细节信息（飞得远）而忽略段落的整体主旨。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第10题：阅读理解第5题 -->
+    <div class="slide">
+        <div class="question-type">阅读理解</div>
+        <div class="question-number">第5题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文定位</h4>
+                    <p>①Balloons are a symbol of celebration... but they can bring about some serious problems.</p>
+                    <p>②After balloons are released... causing great harm to the environment and wildlife.</p>
+                    <p>③...two types of balloons... latex... Mylar... both cause pollution.</p>
+                    <p>④All of these materials... add to plastic waste... injury or death of animals.</p>
+                    <p>⑤So, don't release balloons any more so as to reduce the pollution and protect animals.</p>
+                </div>
+                <p class="question-text">What's the best title for this passage?</p>
+                <div class="options">
+                    <div class="option">A. Create a new world.</div>
+                    <div class="option">B. Protect sea animals.</div>
+                    <div class="option">C. No more balloon releases.</div>
+                    <div class="option">D. Different kinds of balloons.</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-10')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-10">
+                    <div class="correct-answer">✅ 正确答案：C</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>文章主旨大意题（最佳标题）</p>
+                        <p>文章结构是"总-分-总"：①段总起（气球带来严重问题）→ ②段讲飘得远危害大 → ③段讲两种气球都造成污染 → ④段讲具体危害 → ⑤段总结号召（不要再释放气球）。<strong>No more balloon releases</strong>（不要再释放气球）完美概括了文章的核心观点和写作目的。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- A. 太宽泛，与文章内容不符</p>
+                        <p>- B. 只涉及海洋动物，范围太窄，文章还提到了鸟类和环境</p>
+                        <p>- D. 只在第③段提到，不能概括全文主旨</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易选择片面的选项，做标题题要记住：标题必须能够概括全文，而不是只概括某一段内容。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第11题：短文填空第6题 -->
+    <div class="slide">
+        <div class="question-type">短文填空</div>
+        <div class="question-number">第6题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>The god asked him to sit on the ground. Then he told the prince the whole story with a smile. "You can give your stepmother the gold <span class="fill-blank">6</span> of some useless objects."</p>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-11')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-11">
+                    <div class="correct-answer">✅ 正确答案：instead</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>固定短语搭配</p>
+                        <p><strong>instead of</strong> 是固定短语，意为"代替，而不是"。句意为"你可以把金子给你的继母，而不是那些没用的东西"。</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易只想到 instead 而忽略后面的 of，或者写成 in place of（虽然意思相近，但这里需要填一个词）。注意 instead of 是初中阶段必须掌握的核心短语。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第12题：短文填空第9题 -->
+    <div class="slide">
+        <div class="question-type">短文填空</div>
+        <div class="question-number">第9题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>"You look a little bit stupid and weak, but you are brave enough." The god <span class="fill-blank">9</span> (excite) the prince. He decided to be a brave man.</p>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-12')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-12">
+                    <div class="correct-answer">✅ 正确答案：excited</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>动词时态及词性转换</p>
+                        <p>- 首先，excite 在这里作动词，意为"使兴奋，使激动"</p>
+                        <p>- 整个故事讲述的是过去发生的事情，需要用一般过去时</p>
+                        <p>- excite 的过去式是 <strong>excited</strong></p>
+                        <p>句意为"神让王子振奋了起来，他决定成为一个勇敢的人"。</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易写成 exciting（现在分词/形容词），混淆了动词和形容词用法。这里需要的是谓语动词的过去式，而不是形容词。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第13题：短文填空第10题 -->
+    <div class="slide">
+        <div class="question-type">短文填空</div>
+        <div class="question-number">第10题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>He shot his stepmother with a magic stick. As soon as he met Claudia, he got married <span class="fill-blank">10</span> her. The couple lived a happy life at last.</p>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-13')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-13">
+                    <div class="correct-answer">✅ 正确答案：to</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>介词固定搭配</p>
+                        <p><strong>get married to sb.</strong> 是固定搭配，意为"与某人结婚"。注意这里的介词必须用 <strong>to</strong>，不能用 with。</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生非常容易受中文影响写成 with，这是一个高频错误。要牢记：marry sb. / be married to sb. / get married to sb. 都不用 with。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第14题：单项选择第4题（even though） -->
+    <div class="slide">
+        <div class="question-type">单项选择</div>
+        <div class="question-number">第4题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <p class="question-text">—What does Yu Gong Moves a Mountain tell us?<br>—It tells us we should never give up <span class="fill-blank">4</span> there are difficulties in front of us.</p>
+                <div class="options">
+                    <div class="option">A. but</div>
+                    <div class="option">B. however</div>
+                    <div class="option">C. even though</div>
+                    <div class="option">D. unless</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-14')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-14">
+                    <div class="correct-answer">✅ 正确答案：C</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>连词辨析（让步状语从句）</p>
+                        <p><strong>even though</strong> 意为"即使，尽管"，引导让步状语从句。句意为"《愚公移山》告诉我们什么道理？——它告诉我们即使面前有困难，我们也永远不应该放弃"。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- A. but: 但是，表转折，连接并列句，不能放在句中这个位置引导从句</p>
+                        <p>- B. however: 然而，表转折，通常用逗号隔开，作副词使用，不能引导从句</p>
+                        <p>- D. unless: 除非，如果不，引导条件状语从句，逻辑不符（"除非有困难否则不放弃"不符合愚公移山的精神）</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易混淆 even though 和 unless 的逻辑关系，注意根据句意判断是"让步"还是"条件"。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第15题：单项选择第10题（比较级最高级） -->
+    <div class="slide">
+        <div class="question-type">单项选择</div>
+        <div class="question-number">第10题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <p class="question-text">He is the <span class="fill-blank">10</span> of the two boys, but he isn't <span class="fill-blank">10</span> in his class.</p>
+                <div class="options">
+                    <div class="option">A. strong; strongest</div>
+                    <div class="option">B. stronger; strongest</div>
+                    <div class="option">C. strongest; the strongest</div>
+                    <div class="option">D. stronger; the strongest</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-15')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-15">
+                    <div class="correct-answer">✅ 正确答案：D</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>形容词比较级和最高级的特殊用法</p>
+                        <p>- 第一空：<strong>the + 比较级 + of the two</strong> 是固定结构，表示"两者中更……的那一个"，所以填 <strong>stronger</strong></p>
+                        <p>- 第二空：<strong>in his class</strong> 表示三者以上的范围，需要用最高级，且形容词最高级前必须加 <strong>the</strong>，所以填 <strong>the strongest</strong></p>
+                        <p>句意为"他是两个男孩中更强壮的那个，但他不是班上最强壮的"。</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>1. 不知道 "the + 比较级 + of the two" 这个特殊结构，看到 the 就直接选最高级</p>
+                        <p>2. 忘记形容词最高级前面必须加定冠词 the</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第16题：完形填空蚂蚁研究第5题 -->
+    <div class="slide">
+        <div class="question-type">完形填空（蚂蚁研究）</div>
+        <div class="question-number">第5题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>He found that though ants live underground for a long time, they can still find out whether other ants come from the same nest by looking at, smelling and touching them. To test his <span class="fill-blank">5</span>, Huang made a nest with about 100 ants, using a plastic bottle.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. skill</div>
+                    <div class="option">B. talent</div>
+                    <div class="option">C. discovery</div>
+                    <div class="option">D. wish</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-16')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-16">
+                    <div class="correct-answer">✅ 正确答案：C</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>名词辨析 + 上下文逻辑</p>
+                        <p>前文提到黄一凡"发现了（has discovered）蚂蚁行为背后的许多秘密"，这里是说为了验证他的<strong>发现（discovery）</strong>，他做了实验。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- A. skill: 技能，B. talent: 天赋，都指人的能力，不是发现的内容</p>
+                        <p>- D. wish: 愿望，不符合语境（他不是验证愿望，而是验证科学发现）</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易忽略前文的 discovered 这个线索词，做题要注意上下文呼应。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第17题：完形填空蚂蚁研究第6题 -->
+    <div class="slide">
+        <div class="question-type">完形填空（蚂蚁研究）</div>
+        <div class="question-number">第6题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>He took one ant out and painted its abdomen blue. Then he put the painted ant back into the nest and <span class="fill-blank">6</span> to see what would happen to it.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. failed</div>
+                    <div class="option">B. waited</div>
+                    <div class="option">C. forgot</div>
+                    <div class="option">D. regretted</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-17')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-17">
+                    <div class="correct-answer">✅ 正确答案：B</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>动词辨析 + 语境理解</p>
+                        <p>做实验的逻辑是：把染色的蚂蚁放回巢穴，然后<strong>等待（waited）</strong>观察会发生什么。这是科学实验的常规步骤。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- A. failed: 失败</p>
+                        <p>- C. forgot: 忘记</p>
+                        <p>- D. regretted: 后悔</p>
+                        <p>这三个词都不符合做科学实验的积极态度和正常流程。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第18题：完形填空蚂蚁研究第7题 -->
+    <div class="slide">
+        <div class="question-type">完形填空（蚂蚁研究）</div>
+        <div class="question-number">第7题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>"After the ant which was painted blue goes into the nest, the other ants try to attack and <span class="fill-blank">7</span> it out of the nest with difficulty," Huang said.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. pull</div>
+                    <div class="option">B. steal</div>
+                    <div class="option">C. follow</div>
+                    <div class="option">D. hang</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-18')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-18">
+                    <div class="correct-answer">✅ 正确答案：A</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>动词辨析 + 固定搭配</p>
+                        <p><strong>pull...out of</strong> 是固定搭配，意为"把……从……拉出来"。句意为"其他蚂蚁试图攻击它，并费力地把它拉出巢穴"。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- B. steal: 偷，不符合语境</p>
+                        <p>- C. follow: 跟随，follow out 意为"贯彻执行"，意思不符</p>
+                        <p>- D. hang: 悬挂，hang out 意为"闲逛"，意思不符</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生对动词短语搭配掌握不牢，只看单个动词不看后面的介词。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第19题：完形填空蚂蚁研究第8题 -->
+    <div class="slide">
+        <div class="question-type">完形填空（蚂蚁研究）</div>
+        <div class="question-number">第8题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>He found that though ants live underground for a long time, they can still find out whether other ants come from the same nest by looking at, smelling and touching them. ... "But when the ants discover the painted ant belongs to the same nest by using their sense of <span class="fill-blank">8</span>, they stop attacking."</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. direction</div>
+                    <div class="option">B. taste</div>
+                    <div class="option">C. smell</div>
+                    <div class="option">D. safety</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-19')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-19">
+                    <div class="correct-answer">✅ 正确答案：C</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>名词辨析 + 前文呼应</p>
+                        <p>前面明确提到蚂蚁识别同伴的方式是 <strong>by looking at, smelling and touching them</strong>（通过看、闻和触摸），这里说的是其中的<strong>嗅觉（sense of smell）</strong>。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- A. direction: 方向</p>
+                        <p>- B. taste: 味觉</p>
+                        <p>- D. safety: 安全</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生做题时不善于寻找前文的线索，完形填空很多答案都在前文有明确提示，要学会前后呼应。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第20题：完形填空蚂蚁研究第12题 -->
+    <div class="slide">
+        <div class="question-type">完形填空（蚂蚁研究）</div>
+        <div class="question-number">第12题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>Huang's achievements don't depend on luck but on his great <span class="fill-blank">12</span>.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. health</div>
+                    <div class="option">B. support</div>
+                    <div class="option">C. effort</div>
+                    <div class="option">D. kindness</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-20')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-20">
+                    <div class="correct-answer">✅ 正确答案：C</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>名词辨析 + 主旨理解</p>
+                        <p>这句话是全文的主旨总结："黄一凡的成就不是靠运气，而是靠他巨大的<strong>努力（effort）</strong>"。后文提到他从10岁开始研究蚂蚁，养了约1000只蚂蚁，即使别人觉得无聊他也坚持，这些都是努力的体现。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- A. health: 健康，与成就无关</p>
+                        <p>- B. support: 支持，文中没有提到别人的支持</p>
+                        <p>- D. kindness: 善良，与科学成就无关</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>完形填空中的主旨句要结合全文内容来判断，不能只看单个句子。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第21题：完形填空蚂蚁研究第13题 -->
+    <div class="slide">
+        <div class="question-type">完形填空（蚂蚁研究）</div>
+        <div class="question-number">第13题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>Huang has <span class="fill-blank">13</span> about 1,000 ants since he was ten, using his knowledge of the needed temperature and light.</p>
+                </div>
+                <div class="options">
+                    <div class="option">A. raised</div>
+                    <div class="option">B. led</div>
+                    <div class="option">C. met</div>
+                    <div class="option">D. surprised</div>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-21')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-21">
+                    <div class="correct-answer">✅ 正确答案：A</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>动词辨析（一词多义）</p>
+                        <p><strong>raise</strong> 在这里意为"饲养，养育"，句意为"黄一凡从10岁起已经饲养了约1000只蚂蚁"。做实验需要饲养蚂蚁来观察，这符合科学研究的语境。</p>
+                        <h4>⚠️ 干扰项分析</h4>
+                        <p>- B. led: 领导，带领</p>
+                        <p>- C. met: 遇见（只是遇见无法做长期实验）</p>
+                        <p>- D. surprised: 使惊讶</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生只知道 raise 有"举起"的意思，不知道它还有"饲养"的意思，这是一词多义考点。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第22题：短文填空中国地理第1题 -->
+    <div class="slide">
+        <div class="question-type">短文填空（中国地理）</div>
+        <div class="question-number">第1题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>As far as I know, China, with 9,600,000 square kilometers, has the <span class="fill-blank">1</span> (large) population in Asia.</p>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-22')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-22">
+                    <div class="correct-answer">✅ 正确答案：largest</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>形容词最高级</p>
+                        <p>句中的范围是 <strong>in Asia</strong>（在亚洲），表示三者以上的比较，需要用最高级。<strong>the largest population</strong> 意为"最多的人口"。</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易忽略表示范围的介词短语，直接用原级或比较级。记住：看到 `in + 范围` 通常用最高级。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第23题：短文填空中国地理第4题 -->
+    <div class="slide">
+        <div class="question-type">短文填空（中国地理）</div>
+        <div class="question-number">第4题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>To protect the wild animals, our government has built many nature reserves. The excitement of touring attracts many foreign <span class="fill-blank">4</span> (tour) to visit China every year.</p>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-23')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-23">
+                    <div class="correct-answer">✅ 正确答案：tourists</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>词性转换（动词→名词复数）</p>
+                        <p>- 首先，tour 在这里需要转换成表示人的名词 <strong>tourist</strong>（游客）</p>
+                        <p>- 其次，前面有 <strong>many</strong>，需要用复数形式 <strong>tourists</strong></p>
+                        <p>句意为"旅游的乐趣每年吸引许多外国游客来中国参观"。</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易只想到转换成 tourist 而忘记加 s，many 后面必须跟可数名词复数。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第24题：短文填空中国地理第6题 -->
+    <div class="slide">
+        <div class="question-type">短文填空（中国地理）</div>
+        <div class="question-number">第6题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>It's more than 6,000 kilometers long and wide enough at the top for five horses or ten men to walk side by side. It's very steep and <span class="fill-blank">6</span> (amaze). Be careful not to fall over on the Great Wall.</p>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-24')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-24">
+                    <div class="correct-answer">✅ 正确答案：amazing</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>词性转换（动词→形容词）+ -ing/-ed形容词辨析</p>
+                        <p>- amaze 的形容词形式有两个：amazing（令人惊叹的，修饰物）和 amazed（感到惊叹的，修饰人）</p>
+                        <p>- 这里的主语是 It，指代 the Great Wall，是物，所以用 <strong>amazing</strong></p>
+                        <p>句意为"长城非常陡峭，令人惊叹"。</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生容易混淆 amazing 和 amazed 的用法，记住：-ing 形容词修饰物，"令人……的"；-ed 形容词修饰人，"感到……的"。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第25题：短文填空中国地理第9题 -->
+    <div class="slide">
+        <div class="question-type">短文填空（中国地理）</div>
+        <div class="question-number">第9题</div>
+        <div class="content-wrapper">
+            <div class="question-card">
+                <div class="context-box">
+                    <h4>📖 原文语境</h4>
+                    <p>Many climbers want to challenge themselves in the face of difficulties, even though it's hard to take <span class="fill-blank">9</span> air near the top in the freezing weather conditions.</p>
+                </div>
+                <button class="answer-toggle" onclick="toggleAnswer('answer-25')">
+                    <span>📖 查看答案与解析</span>
+                    <span>▼</span>
+                </button>
+                <div class="answer-section" id="answer-25">
+                    <div class="correct-answer">✅ 正确答案：in</div>
+                    <div class="analysis">
+                        <h4>📝 考点分析</h4>
+                        <p>固定短语搭配</p>
+                        <p><strong>take in</strong> 是固定短语，意为"吸入，吞入"。<strong>take in air</strong> 意为"呼吸空气"。句意为"即使在严寒天气条件下，山顶附近很难呼吸到空气，许多登山者仍想挑战自我"。</p>
+                        <h4>⚠️ 常见错因</h4>
+                        <p>学生对 take 的短语搭配掌握不牢。take 的常见短语还有：take off（起飞/脱掉）、take up（开始从事）、take after（像）等。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 25</div>
+
+    <!-- 导航按钮 -->
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>← 上一题</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 25;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.title = '封面';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.title = '第' + i + '题';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

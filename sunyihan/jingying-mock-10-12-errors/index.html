@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>孙溢浛竞赢模拟10-12错题</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基础变量 */
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --card-bg: #0f3460;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 幻灯片容器 */
+        .slide {
+            height: 100vh;
+            height: 100dvh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+        }
+        .slide.active { display: flex; }
+
+        /* 封面页 */
+        .cover {
+            text-align: center;
+        }
+        .cover h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .cover p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .cover button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            background: var(--success);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .cover button:hover {
+            transform: scale(1.05);
+            background: var(--accent-light);
+        }
+
+        /* 题目卡片 */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .question-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            margin-bottom: 1.5rem;
+        }
+
+        /* 完形填空上下文 */
+        .context-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .context-box h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+        .context-box p {
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+        .context-box table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+        }
+        .context-box th, .context-box td {
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.5rem;
+            text-align: center;
+        }
+
+        /* 题目文本 */
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.8;
+        }
+
+        /* 选项 */
+        .options {
+            margin-bottom: 1.5rem;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 答案按钮（放在答案区域外面！） */
+        .answer-toggle {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3fcf7f);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .answer-toggle:hover {
+            transform: scale(1.02);
+        }
+
+        /* 答案区域（初始隐藏） */
+        .answer-section {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+        }
+        .answer-section.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.5rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
+
+        .correct-answer {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .analysis h4 {
+            color: var(--accent-light);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .analysis p {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        /* 导航 */
+        .navigation {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .navigation button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .navigation button:hover:not(:disabled) {
+            background: var(--accent-light);
+            transform: scale(1.05);
+        }
+
+        .navigation button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 圆点导航 */
+        :root {
+            --dot-inactive: rgba(255,255,255,0.3);
+            --dot-active: var(--accent);
+        }
+        .dot-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--dot-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-light);
+        }
+        .dot.active {
+            width: 16px;
+            height: 16px;
+            background: var(--dot-active);
+        }
+        .dot.cover-dot {
+            background: var(--success);
+        }
+
+        /* 进度显示 */
+        .progress {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 封面页 -->
+    <div class="slide active">
+        <div class="cover">
+            <h1>📚 孙溢浛<br>竞赢模拟错题复习</h1>
+            <p>共 9 道错题</p>
+            <button onclick="goToSlide(1)">开始复习</button>
+        </div>
+    </div>
+
+    <!-- 第1题 第5题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 5 题</div>
+            <p class="question-text">( )5. My family ____ Nanhu Park three times, and we plan to go there again this weekend.</p>
+            <div class="options">
+                <div class="option">A. visit</div>
+                <div class="option">B. visits</div>
+                <div class="option">C. has visited</div>
+                <div class="option">D. have visited</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-1')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-1">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点</h4>
+                    <p>集合名词的主谓一致 + 现在完成时</p>
+                    <h4>📋 解析</h4>
+                    <p>本题考查集合名词family的主谓一致用法。当family指"家庭"这个整体单位时，谓语动词用单数；当指全家人（多个个体）时，谓语用复数。</p>
+                    <p>本句中，后半句用"we plan to go ..."（我们计划再去），这里的we指的就是my family，说明前面主语强调的是"我的家人们"（多个个体），因此谓语动词用复数have visited。</p>
+                    <p>错因分析：这道题容易误选C。错误原因是只记住了family作整体用单数，但没注意到语境中已经暗示是多个个体（we指代family）。</p>
+                    <p>干扰项分析：A和B时态不对，本句表示"已经去过三次"，需要用现在完成时。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题 第42题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 42 题</div>
+            <div class="context-box">
+                <p>Even though AI can copy human language really well now, time spent with real robots often feels "strange" —this is called the "uncanny valley" (恐怖谷效应).</p>
+            </div>
+            <p class="question-text">根据短文内容，判断句子正(T)、误(F)。<br><br>( )42. The "uncanny valley" means time spent with real robots often feels strange.</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-2')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-2">
+                <div class="correct-answer">✅ 正确答案：T</div>
+                <div class="analysis">
+                    <h4>📝 考点</h4>
+                    <p>阅读理解细节定位</p>
+                    <h4>📋 解析</h4>
+                    <p>原文明确说：time spent with real robots often feels "strange" —this is called the "uncanny valley"，题目内容与原文完全一致，因此判断为正确。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3题 第60题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 60 题</div>
+            <p class="question-text">Second, new technologies make it 60. ____ (easily) to provide better services.</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-3')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-3">
+                <div class="correct-answer">✅ 正确答案：easy</div>
+                <div class="analysis">
+                    <h4>📝 考点</h4>
+                    <p>固定句型 + 词性转换</p>
+                    <h4>📋 解析</h4>
+                    <p>本题考查"make it + 形容词 + to do sth."固定结构，it是形式宾语，真正的宾语是后面的不定式，形容词作宾语补足语。</p>
+                    <p>括号给出的easily是副词，需要转换为形容词easy。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第4题 第15题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 15 题</div>
+            <div class="context-box">
+                <p>Eighth graders Ouyang Panxi and Liao Yuhan 14. ____ together on their story. "At first, 15. ____ really stood out to me," Ouyang said. "But then I 16. ____ a smart jump rope and some weather-monitoring devices.</p>
+            </div>
+            <div class="options">
+                <div class="option">( )15. A. something</div>
+                <div class="option">B. anything</div>
+                <div class="option">C. nothing</div>
+                <div class="option">D. everything</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-4')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-4">
+                <div class="correct-answer">✅ 正确答案：C</div>
+                <div class="analysis">
+                    <h4>📝 考点</h4>
+                    <p>不定代词词义辨析 + 语境理解</p>
+                    <h4>📋 解析</h4>
+                    <p>本题需要通过but的转折关系来判断。后半句说"但是后来我发现了智能跳绳..."，说明一开始"没有什么东西特别吸引我"，nothing符合语境。</p>
+                    <p>but连接转折关系，前半句是否定意义，后半句是肯定意义，这样逻辑才通顺。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第5题 第17题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 17 题</div>
+            <div class="context-box">
+                <p>"But then I 16. ____ a smart jump rope and some weather-monitoring devices. I 17. ____ that the role of technology in our sports day would make a(n) 18. ____ angle for our story."</p>
+            </div>
+            <div class="options">
+                <div class="option">( )17. A. understood</div>
+                <div class="option">B. forgot</div>
+                <div class="option">C. helped</div>
+                <div class="option">D. thought</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-5')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-5">
+                <div class="correct-answer">✅ 正确答案：D</div>
+                <div class="analysis">
+                    <h4>📝 考点</h4>
+                    <p>动词词义辨析 + 语境推理</p>
+                    <h4>📋 解析</h4>
+                    <p>上文说发现了智能跳绳和气象监测设备，这里表达的是作者的想法——"我认为科技在运动会中的作用会成为我们报道一个有趣角度"，thought符合句意。</p>
+                    <p>understood强调对已有事物的理解，这里是形成一个新的观点，所以thought正确。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第6题 第29题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 29 题</div>
+            <div class="context-box">
+                <h4>📖 设施统计表</h4>
+                <table>
+                    <tr><th>Park Name</th><th>Playgrounds</th><th>Benches</th><th>Fitness Equipment</th><th>Restrooms</th></tr>
+                    <tr><td>Central Park</td><td>8</td><td>15</td><td>10</td><td>4</td></tr>
+                    <tr><td>Riverside Park</td><td>5</td><td>12</td><td>8</td><td>3</td></tr>
+                    <tr><td>Mountain Park</td><td>6</td><td>10</td><td>12</td><td>2</td></tr>
+                    <tr><td>Star Park</td><td>7</td><td>18</td><td>7</td><td>5</td></tr>
+                </table>
+                <br>
+                <p>Mountain Park, though with abundant fitness equipment, is less satisfying due to the limited number of restrooms.</p>
+            </div>
+            <p class="question-text">根据所给内容，选择最佳答案。<br><br>( )29. Why is Mountain Park less satisfying according to the passage?</p>
+            <div class="options">
+                <div class="option">A. Because it has no playgrounds.</div>
+                <div class="option">B. Because it doesn't have too many restrooms.</div>
+                <div class="option">C. Because its location is inconvenient.</div>
+                <div class="option">D. Because it has little fitness equipment.</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-6')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-6">
+                <div class="correct-answer">✅ 正确答案：B</div>
+                <div class="analysis">
+                    <h4>📝 考点</h4>
+                    <p>阅读理解细节查找</p>
+                    <h4>📋 解析</h4>
+                    <p>原文明确说: Mountain Park, though with abundant fitness equipment, is less satisfying due to the limited number of restrooms.</p>
+                    <p>limited number of restrooms 意思就是"洗手间数量有限"，对应B选项doesn't have too many restrooms。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第7题 第62题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 62 题</div>
+            <p class="question-text">A Norway spruce 61. ____ (become) last year's tree. It 62. ____ (weigh) 11 tons and stood about 23 meters tall.</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-7')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-7">
+                <div class="correct-answer">✅ 正确答案：weighed</div>
+                <div class="analysis">
+                    <h4>📝 考点</h4>
+                    <p>动词时态</p>
+                    <h4>📋 解析</h4>
+                    <p>本句描述的是去年的树的情况，整段话都在讲述过去的事情，应该用一般过去时。weigh的过去式是weighed。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第8题 第64题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 64 题</div>
+            <p class="question-text">The lighting ceremony was 63. ____ Dec. 3, and after the Christmas season, the tree 64. ____ (start) a new life. People used it to make homes for poor 65. ____ (family).</p>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-8')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-8">
+                <div class="correct-answer">✅ 正确答案：started</div>
+                <div class="analysis">
+                    <h4>📝 考点</h4>
+                    <p>动词时态</p>
+                    <h4>📋 解析</h4>
+                    <p>本段描述过去发生的事情，整个段落都使用一般过去时，因此start要用过去式started。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题 第39题 -->
+    <div class="slide">
+        <div class="question-card">
+            <div class="question-number">第 39 题</div>
+            <div class="context-box">
+                <p>The old woman smiled and said, "I know what he's trying to do. He wants me to eat an orange. So, it's not really like I'm giving him more oranges—his kindness makes up for it."</p>
+            </div>
+            <p class="question-text">( )39. What does the underlined phrase "makes up for" mean in Chinese in the passage?</p>
+            <div class="options">
+                <div class="option">A. 弥补</div>
+                <div class="option">B. 组成</div>
+                <div class="option">C. 编造</div>
+                <div class="option">D. 占据</div>
+            </div>
+            <button class="answer-toggle" onclick="toggleAnswer('answer-9')">
+                <span>📖 查看答案与解析</span>
+                <span>▼</span>
+            </button>
+            <div class="answer-section" id="answer-9">
+                <div class="correct-answer">✅ 正确答案：A</div>
+                <div class="analysis">
+                    <h4>📝 考点</h4>
+                    <p>词义猜测（短语语义推断）</p>
+                    <h4>📋 解析</h4>
+                    <p>根据上文语境，男人故意说橘子不好，让老太太尝尝橘子，这样老太太就能吃到橘子了。男人多拿了一个橘子让老太太吃，他的善举"弥补"了多给的这一个橘子，所以"makes up for"意思是"弥补"。</p>
+                    <p>从逻辑上看，老太太认为男人多拿一个橘子，但他的善意弥补了这一点，所以A符合语境。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度显示 -->
+    <div class="progress" id="progressText">封面 / 9</div>
+
+    <!-- 导航 -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="prevSlide()">← 上一题</button>
+        <button id="nextBtn" onclick="nextSlide()">下一题 →</button>
+    </div>
+
+    <!-- 圆点导航 -->
+    <div class="dot-navigation" id="dotNav"></div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 9;
+
+        // 创建圆点导航
+        function createDotNavigation() {
+            const dotNav = document.getElementById('dotNav');
+            // 封面圆点
+            const coverDot = document.createElement('div');
+            coverDot.className = 'dot cover-dot active';
+            coverDot.onclick = () => goToSlide(0);
+            dotNav.appendChild(coverDot);
+            // 每道题一个圆点
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(i);
+                dotNav.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        createDotNavigation();
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            currentSlide = index;
+
+            // 更新导航按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // 更新进度
+            document.getElementById('progressText').textContent =
+                currentSlide === 0 ? `封面 / ${totalSlides}` : `${currentSlide} / ${totalSlides}`;
+
+            // 更新圆点
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // 滚动到顶部确保题目可见
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('show');
+            const button = event.target.closest('.answer-toggle');
+            const span = button.querySelector('span:last-child');
+            if (section.classList.contains('show')) {
+                span.textContent = '▲';
+            } else {
+                span.textContent = '▼';
+            }
+        }
+
+        // 键盘导航（左右箭头）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // 触摸滑动支持（移动端）
+        let touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>
