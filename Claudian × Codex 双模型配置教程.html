@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claudian 配置教程 - Claude Code + Codex 双模型实战</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.85;
+            color: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 50px 20px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.35);
+            padding: 60px 70px;
+        }
+
+        .header-banner {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(90deg, #667eea, #764ba2, #f093fb) border-box;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .header-subtitle {
+            color: #718096;
+            font-size: 1.05em;
+        }
+
+        .meta-info {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin-bottom: 35px;
+            font-size: 0.95em;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            color: #4a5568;
+        }
+
+        .meta-info span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .meta-info span::before {
+            content: "📌";
+        }
+
+        h2 {
+            font-size: 1.55em;
+            color: #2d3748;
+            margin-top: 50px;
+            margin-bottom: 25px;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+            border-left: 5px solid #38b2ac;
+            border-radius: 0 10px 10px 0;
+        }
+
+        h3 {
+            font-size: 1.25em;
+            color: #5a67d8;
+            margin-top: 35px;
+            margin-bottom: 18px;
+            padding-left: 12px;
+            border-left: 4px solid #5a67d8;
+        }
+
+        p {
+            margin-bottom: 18px;
+            font-size: 1.03em;
+            text-align: justify;
+        }
+
+        strong {
+            color: #e53e3e;
+            font-weight: 600;
+        }
+
+        .intro-highlight {
+            background: linear-gradient(135deg, #fef5f5 0%, #fff5f5 100%);
+            border: 2px solid #fc8181;
+            padding: 25px 30px;
+            border-radius: 14px;
+            margin: 30px 0;
+        }
+
+        .overview-list {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            padding: 25px 30px;
+            border-radius: 14px;
+            margin: 25px 0;
+        }
+
+        .overview-list .item {
+            padding: 8px 0;
+            font-size: 1.05em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .overview-list .item::before {
+            content: "✅";
+        }
+
+        .checklist {
+            background: #f7fafc;
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .checklist-item {
+            padding: 10px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .checklist-item ul {
+            margin: 10px 0 0 30px;
+        }
+
+        .checklist-item li {
+            padding: 5px 0;
+        }
+
+        .code-block {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            color: #e2e8f0;
+            padding: 22px 28px;
+            margin: 22px 0;
+            border-radius: 12px;
+            font-family: "SF Mono", Monaco, "Courier New", monospace;
+            font-size: 0.95em;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            display: block;
+            margin: 4px 0;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fffaf0 0%, #feebc8 100%);
+            border-left: 5px solid #ed8936;
+            padding: 18px 22px;
+            border-radius: 0 10px 10px 0;
+            margin: 22px 0;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+            border-left: 5px solid #4299e1;
+            padding: 18px 22px;
+            border-radius: 0 10px 10px 0;
+            margin: 22px 0;
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 14px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+
+        .solution-box {
+            background: linear-gradient(135deg, #faf5ff 0%, #e9d8fd 100%);
+            border: 2px solid #9f7aea;
+            padding: 25px 30px;
+            border-radius: 14px;
+            margin: 25px 0;
+        }
+
+        .solution-box h4 {
+            color: #6b46c1;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .conclusion {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 35px 40px;
+            border-radius: 16px;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .conclusion p {
+            text-align: center;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .conclusion strong {
+            color: #fef5f5;
+        }
+
+        a {
+            color: #5a67d8;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        ul {
+            margin-left: 25px;
+            margin-bottom: 18px;
+        }
+
+        li {
+            padding: 6px 0;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 35px 25px;
+            }
+
+            h1 {
+                font-size: 1.7em;
+            }
+
+            body {
+                padding: 25px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-banner">
+            <h1>Claudian 配置教程<br>Claude Code + Codex 双模型实战</h1>
+            <p class="header-subtitle">10 分钟完成双模型配置 · 支持一键切换 · 零成本方案完整教程</p>
+        </div>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-05-12-578E0823-4C47-4144-8646-B120DA1C3338.png" alt="Claudian 教程封面" />
+        </div>
+
+        <div class="intro-highlight">
+            <p><strong>已安装 Claudian，但还只使用 Claude Code 单一模型？</strong></p>
+            <p>目前网上缺乏完整的双模型配置教程，本文将为你补齐这一空白。按照教程配置完成后，你的 Obsidian 将能够同时支持 Claude 和 Codex 两大 AI 引擎，只需在对话框左下角点击即可自由切换。</p>
+            <p>此外，文末特别附带了<strong>零成本使用方案</strong>，教你如何在<strong>无需官方订阅、无需绑定信用卡</strong>的情况下，让 Claude Code 正常运行。</p>
+        </div>
+
+        <p>本文采用全图文分步讲解，操作简单清晰，只需约 10 分钟即可完成双模型配置。</p>
+
+        <h3>本文配置流程概览</h3>
+        <div class="overview-list">
+            <div class="item">① 环境准备 — 约 1 分钟</div>
+            <div class="item">② 安装 Claudian 插件 — 约 3 分钟</div>
+            <div class="item">③ 配置 Claude Code 通道 — 约 3 分钟</div>
+            <div class="item">④ ★ 配置 Codex 通道（本文核心内容）— 约 3 分钟</div>
+            <div class="item">⑤ 双模型切换验证 — 即时完成</div>
+            <div class="item">⭐ 可选进阶：零成本方案让 Claude Code 免费运行（约 5 分钟）</div>
+        </div>
+
+        <h2>一、前置环境准备</h2>
+
+        <p>在开始配置之前，请确保已完成以下准备工作：</p>
+
+        <div class="checklist">
+            <div class="checklist-item">
+                <span>✅</span>
+                <span><strong>Obsidian</strong> 已安装（版本要求 v1.4.5+）</span>
+            </div>
+            <div class="checklist-item">
+                <span>✅</span>
+                <span><strong>Node.js</strong> 已安装（用于执行 npm 命令）</span>
+            </div>
+            <div class="checklist-item">
+                <span>✅</span>
+                <span><strong>ChatGPT 账号</strong>（用于 Codex 登录授权）</span>
+            </div>
+            <div class="checklist-item">
+                <span>✅</span>
+                <span><strong>Claude Code 的 AI 服务来源</strong>，三选一：
+                    <ul>
+                        <li>① 官方 Claude / Anthropic 订阅</li>
+                        <li>② 第三方 API 中转或聚合平台的 API Key</li>
+                        <li>③ 零成本方案：使用免费 Ling 模型（详见本文番外章节）</li>
+                    </ul>
+                </span>
+            </div>
+            <div class="checklist-item">
+                <span>✅</span>
+                <span><strong>可用的终端程序</strong>（Mac 使用 Terminal，Windows 使用 PowerShell）</span>
+            </div>
+        </div>
+
+        <p>以下 1.1 和 1.2 小节专为不熟悉 Node.js 和终端操作的用户准备，有经验的开发者可直接跳转到第二节。</p>
+
+        <h3>1.1 Node.js 安装指南（新手专用 · 资深用户可跳过）</h3>
+
+        <p>Node.js 是后续执行 npm install 命令的必要环境。<strong>若未安装，执行命令时会出现 "command not found: npm" 错误。</strong></p>
+
+        <p><strong>Mac 系统</strong>：在终端执行 <code>brew install node</code>（若未安装 Homebrew，请先访问 <a href="https://brew.sh/" target="_blank">brew.sh</a> 完成安装）</p>
+
+        <p><strong>Windows 系统</strong>：访问 <a href="https://nodejs.org/" target="_blank">nodejs.org</a> 下载 LTS 版本的 Windows Installer (.msi) 安装包，双击运行安装程序，<strong>安装完成后请重启计算机</strong>。</p>
+
+        <p><strong>验证安装是否成功</strong></p>
+
+        <p>打开终端，依次执行以下命令：</p>
+
+        <div class="code-block">
+            <code>node -v</code>
+            <code>npm -v</code>
+        </div>
+
+        <p>若两个命令均能正常显示版本号（例如 v20.11.0、10.2.4），则表示安装成功。</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_NvvebQAAfxiQ?format=jpg&name=large" alt="Node.js 版本验证" />
+        </div>
+
+        <div class="warning-box">
+            ⚠️ <strong>若出现 "command not found" 错误</strong>：99% 的情况是未重启终端，Windows 用户请确认是否已重启计算机。请重启后再次尝试。
+        </div>
+
+        <h3>1.2 终端使用入门（新手专用 · 资深用户可跳过）</h3>
+
+        <p><strong>Mac 系统</strong>：按下 <strong>⌘ + 空格键</strong> 打开 Spotlight 搜索 → 输入 Terminal → 按回车键。显示的黑底白字窗口即为终端。</p>
+
+        <p><strong>Windows 系统</strong>：按下 <strong>Win 键</strong> → 输入 PowerShell → 按回车键。建议使用 PowerShell 而非传统的 CMD，其稳定性更佳。</p>
+
+        <div class="tip-box">
+            💡 <strong>如何将命令粘贴到终端</strong>：Mac 使用 ⌘V，Windows PowerShell 使用 Ctrl+V，PowerShell 同样支持右键粘贴。
+        </div>
+
+        <h2>二、Claudian 插件安装</h2>
+
+        <p>由于 Claudian 尚未上架 Obsidian 官方插件市场，需要通过 <strong>BRAT</strong> 插件管理工具进行安装。</p>
+
+        <p>本章节分为两种场景，请根据实际情况选择。</p>
+
+        <h3>🔄 已安装 Claudian 的用户：请先更新至最新版本</h3>
+
+        <div class="warning-box">
+            ⚠️ <strong>重要提示</strong>：Codex 支持是 Claudian 在后续版本中新增的功能，旧版本无法看到 Codex 配置标签页，也找不到相关选项。若您已在较早版本安装了 Claudian，<strong>此步骤为必须操作</strong>，只有更新到最新版本才能使用 Codex 功能。
+        </div>
+
+        <p>更新操作可在 BRAT 中一键完成：</p>
+
+        <p>打开 Obsidian 设置 → 左侧菜单滚动到底部，找到 <strong>BRAT</strong> 并点击 → 右侧滚动至「<strong>Beta plugin list</strong>」区域 → 找到 <strong>YishenTu/claudian</strong> 条目 → 点击右侧的 <strong>🔄 刷新图标</strong>（圆形箭头按钮），BRAT 将自动拉取最新版本并覆盖安装。</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_N8ovboAAecd5?format=jpg&name=large" alt="更新 Claudian" />
+        </div>
+
+        <p>更新完成后<strong>请重启 Obsidian</strong>，然后直接跳转到第三节配置 Claude Code，无需阅读以下全新安装流程。</p>
+
+        <div class="tip-box">
+            💡 <strong>如何确认版本更新是否成功</strong>：Claudian 的 Codex 功能支持始于 v2.0.x 版本。更新后可前往「第三方插件 → 已安装插件」查看 Claudian 的版本号进行确认。
+        </div>
+
+        <h3>🆕 首次安装用户：Claudian 完整安装流程</h3>
+
+        <p>以下为五步安装流程，每步均配有截图说明，请按顺序操作。</p>
+
+        <h4><span class="step-number">1</span>打开 Obsidian 设置界面</h4>
+
+        <p>启动 Obsidian，查看窗口<strong>左下角</strong>，找到<strong>齿轮图标 ⚙️</strong> 并点击。弹出的面板即为设置界面。</p>
+
+        <h4><span class="step-number">2</span>关闭「安全模式」</h4>
+
+        <p>在设置面板左侧菜单中向下滚动 → 找到「<strong>第三方插件</strong>」选项并点击进入。</p>
+
+        <p>页面顶部即为「<strong>安全模式</strong>」选项，<strong>默认处于开启状态</strong>。启用安全模式时，Obsidian 禁止安装任何第三方插件。请点击右侧开关将其关闭，在弹出的确认对话框中点击确认。</p>
+
+        <p>关闭安全模式后，下方的「<strong>社区插件市场</strong>」将变为可用状态，右侧的「<strong>浏览</strong>」按钮即为插件市场入口。</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_OMchbEAAuwEG?format=jpg&name=large" alt="关闭安全模式" />
+        </div>
+
+        <h4><span class="step-number">3</span>安装 BRAT 插件</h4>
+
+        <p>点击「<strong>浏览</strong>」按钮进入插件市场。</p>
+
+        <p>在搜索框中输入 <code>brat</code>，第一个搜索结果即为目标插件。插件名称为 <strong>BRAT</strong>，作者为 <strong>TfTHacker</strong>，下载量超过 68 万，请确认信息无误后再进行安装。</p>
+
+        <p>点击进入插件详情页 → 点击右侧的「<strong>安装</strong>」按钮 → 安装完成后按钮将变为「<strong>启用</strong>」，请再次点击启用插件。</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_OWEwaEAAb2qC?format=jpg&name=large" alt="安装 BRAT 插件" />
+        </div>
+
+        <h4><span class="step-number">4</span>通过 BRAT 添加 Claudian 插件</h4>
+
+        <p>返回设置主页面，左侧菜单<strong>滚动至底部</strong>，在「第三方插件」分类下将显示所有已安装的插件列表，<strong>找到 BRAT 并点击进入</strong>。</p>
+
+        <div class="warning-box">
+            ⚠️ <strong>注意</strong>：BRAT 的设置界面为英文 UI，与 Obsidian 主设置的中文界面不同。无需担心，按照以下四步操作即可。
+        </div>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_OcsbagAA8rnP?format=jpg&name=large" alt="BRAT 设置界面" />
+        </div>
+
+        <p>❶ 在左侧菜单底部找到 <strong>BRAT</strong> 并点击进入<br>
+        ❷ 在右侧页面滚动至「<strong>Beta plugin list</strong>」区域，点击紫色按钮「<strong>Add beta plugin</strong>」</p>
+
+        <p>此时将弹出 "Github repository for beta plugin" 对话框，请继续按以下步骤操作。</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_OgVtaYAA7oJ6?format=jpg&name=large" alt="添加 Beta 插件" />
+        </div>
+
+        <p>❸ 在 Repository 输入框中<strong>完整粘贴以下地址</strong>：</p>
+
+        <div class="code-block">
+            <code>https://github.com/YishenTu/claudian</code>
+        </div>
+
+        <p>❹ 点击紫色按钮「<strong>Add plugin</strong>」→ 等待数秒。屏幕将显示绿色提示信息，表示 Claudian 已自动安装并启用。</p>
+
+        <h4><span class="step-number">5</span>验证 Claudian 已成功启用</h4>
+
+        <p>返回「<strong>第三方插件</strong>」主页面（注意：是上方的总开关页面，而非下方分类中的 BRAT 设置），滚动至「<strong>已安装插件</strong>」区域，确认已安装的 <strong>Claudian</strong> 右侧开关处于点亮状态，即表示安装并启用成功。</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_Oke4awAAukXc?format=jpg&name=large" alt="验证 Claudian 启用" />
+        </div>
+
+        <p>Claudian 官方功能说明："将 Claude Code 作为 AI 协作工具嵌入您的知识库。您的知识库将成为 Claude 的工作目录，赋予其完整的智能体能力：文件读写、搜索、终端命令执行以及多步骤工作流。"</p>
+
+        <p>启用成功后，请查看 Obsidian<strong>最左侧的侧边栏</strong>（图标列），应会新增一个 🤖 机器人图标，这就是 Claudian 对话面板的入口。</p>
+
+        <div class="warning-box">
+            ⚠️ <strong>若未看到 🤖 图标</strong>：请完全退出 Obsidian（Mac 使用 ⌘Q，Windows 关闭窗口）后重新启动。
+        </div>
+
+        <p>至此，Claudian 插件框架已安装完成。<strong>但此时尚无法进行对话，因为还未配置 AI 模型引擎。</strong></p>
+
+        <p>以下两节将分别讲解如何配置 Claude Code 和 Codex 通道。</p>
+
+        <h2>三、通道配置一：Claude Code 设置</h2>
+
+        <p>Claude Code 是 Anthropic 官方推出的命令行工具，作为 Claudian 运行 Claude（Sonnet / Opus）模型的底层引擎。</p>
+
+        <h3>Step 1：安装 Claude Code 命令行工具</h3>
+
+        <p>打开终端（若不清楚如何打开，请参考 1.2 小节），执行以下命令：</p>
+
+        <div class="code-block">
+            <code>npm install -g @anthropic-ai/claude-code</code>
+        </div>
+
+        <p>安装过程将持续一段时间，当光标重新回到 $ 提示符时即表示安装完成。</p>
+
+        <h3>Step 2：Claude Code 登录与使用配置</h3>
+
+        <p>根据您拥有的资源，Claude Code 的 AI 模型接入分为三种方式。<strong>请选择适合您的方案，Step 3、4、5 对所有方案均通用。</strong></p>
+
+        <div class="solution-box">
+            <h4>✅ 方案 A：拥有官方 Claude / Anthropic 订阅</h4>
+            <p>在终端直接执行：</p>
+            <div class="code-block">
+                <code>claude</code>
+            </div>
+            <p>首次启动将弹出登录引导：浏览器将自动打开 Claude 官方网站 → 使用您的账号登录 → 完成授权 → 自动跳转回终端，看到欢迎界面即表示登录成功。登录凭证将保存在本地 ~/.claude/ 目录下，后续调用可直接复用。</p>
+            <div class="tip-box">
+                💡 <strong>若浏览器未自动打开</strong>：终端将输出一行授权链接，请复制到浏览器中手动打开即可。
+            </div>
+            <p>完成后按 Ctrl+C 或输入 /exit 退出 CLI 交互界面，继续执行 Step 3。</p>
+        </div>
+
+        <div class="solution-box">
+            <h4>✅ 方案 B：使用第三方 API 中转 / 聚合平台</h4>
+            <p>若您已拥有第三方中转或聚合平台的 API Key，请<strong>按照对应平台的官方文档</strong>配置 ANTHROPIC_BASE_URL 和 ANTHROPIC_API_KEY 环境变量。由于各平台的配置字段略有差异，请以平台官方文档为准，<strong>本文不做详细展开</strong>。配置完成后直接进入 Step 3。</p>
+        </div>
+
+        <div class="solution-box">
+            <h4>⭐ 方案 C：暂无任何订阅？请参考本文末尾的「番外」章节</h4>
+            <p>若您既无官方订阅，也不打算使用中转服务，无需担心。</p>
+            <p>本文末尾的「<strong>番外：零成本方案 — 使用免费 Ling 模型运行 Claude Code</strong>」章节，将详细讲解如何通过 OpenRouter 平台提供的免费模型 <strong>Ling-2.6-1T</strong>，配合 CC Switch 工具一键切换 API 提供商，<strong>实现零成本、无需信用卡，仅需 5 分钟即可让 Claude Code 正常运行</strong>。</p>
+            <p>该国产开源模型访问稳定，足以满足日常编程辅助和写作需求。</p>
+            <p><strong>对于预算有限、暂时未订阅服务或希望先进行试用的用户，推荐选择此方案</strong>：请直接滚动到番外章节完成配置后，再返回 Step 3 继续操作，无需执行本 Step 2 的内容。</p>
+        </div>
+
+        <div class="warning-box">
+            ⚠️ <strong>若出现 "command not found: claude" 错误</strong>：说明 Step 1 的 CLI 安装未成功，或新安装的 CLI 尚未加入当前终端的 PATH 环境变量。<strong>请关闭终端窗口后重新打开再试</strong>。
+        </div>
+
+        <h3>Step 3：获取 CLI 可执行文件路径</h3>
+
+        <p>在终端执行：</p>
+
+        <div class="code-block">
+            <code>where claude</code>
+        </div>
+
+        <p>命令将输出一行路径：</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_OzRcasAALxn7?format=jpg&name=large" alt="获取 CLI 路径" />
+        </div>
+
+        <p>您的输出路径可能与示例不同，这是正常现象，<strong>请完整复制这一行路径</strong>，稍后需要粘贴到 Claudian 设置中。</p>
+
+        <div class="tip-box">
+            💡 <strong>若命令无输出</strong>：请重启终端后再次尝试；Linux 系统若 where 命令无法找到，请改用 which claude。
+        </div>
+
+        <h3>Step 4：配置 Claudian 设置</h3>
+
+        <p>返回 Obsidian → 点击左下角齿轮 ⚙️ 图标 → 左侧菜单滚动到底部找到 <strong>Claudian</strong> 并点击进入。</p>
+
+        <p>进入 Claudian 设置界面后，建议先将语言切换为中文，然后<strong>注意顶部有三个标签页</strong>：「<strong>通用</strong>」「<strong>Claude</strong>」「<strong>Codex</strong>」。<strong>请先切换到「Claude」标签页</strong>。</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_TdIzbwAA9Y-p?format=jpg&name=large" alt="Claudian 设置界面" />
+        </div>
+
+        <p>在<strong>「设置」区域的第一栏「Claude CLI 路径」</strong>中，将 Step 3 中复制的路径<strong>完整粘贴进去</strong>。</p>
+
+        <p>页面下方还有「安全」「模型」「命令与技能」等区域，<strong>全部保持默认设置即可</strong>。以下选项仅针对特定用户需要调整：</p>
+
+        <ul>
+            <li><strong>「加载用户 Claude 设置」</strong>：已在终端配置过 ~/.claude/settings.json 的用户可开启</li>
+            <li><strong>「模型」区域</strong>：<strong>Max / Team / Enterprise 套餐用户</strong>可根据需要调整 1M 上下文或自定义模型，普通用户请全部忽略</li>
+        </ul>
+
+        <h3>Step 5：★ 功能验证</h3>
+
+        <p>返回 Obsidian 主界面 → 点击左侧 🤖 图标打开 Claudian 主面板 → 发送测试消息如「<strong>你好</strong>」。</p>
+
+        <p>若收到 AI 回复，则表示 <strong>Claude Code 通道配置成功</strong>。</p>
+
+        <h2>番外：零成本方案 — 使用免费 Ling 模型运行 Claude Code</h2>
+
+        <p>完成主流程配置后，Claude Code 默认将根据您的 Claude / Anthropic 订阅进行计费。若您希望<strong>先零成本试用</strong>，或预算有限、暂时未订阅服务，可选择此方案：通过 <strong>OpenRouter</strong> 平台的免费模型 <strong>Ling-2.6-1T</strong>，配合 <strong>CC Switch</strong> 工具一键切换 API 提供商。Claude Code 本身保持不变，<strong>底层使用的是免费的 Token 额度</strong>。</p>
+
+        <div class="tip-box">
+            💡 <strong>关于 CC Switch</strong>：这是一款跨平台桌面应用，专门用于管理 Claude Code、Codex、Gemini CLI、OpenCode、OpenClaw 等 AI 编程工具的 API 提供商。其优势在于<strong>无需手动编辑配置文件，所有操作均可通过可视化界面完成</strong>。
+        </div>
+
+        <h3>Step 1：在 OpenRouter 获取 API Key</h3>
+
+        <p>访问 <a href="https://openrouter.ai/" target="_blank">openrouter.ai</a> → 使用 Google 账号或邮箱注册 → 进入 <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a> 页面 → 点击「<strong>Create Key</strong>」。</p>
+
+        <p>在弹出的对话框中，<strong>仅需填写 Name 字段</strong>（可任意命名，例如 Obsidian Use Key，便于后续识别），下方的 Credit limit、Reset limit every、Expiration 等选项全部保持默认即可。点击「<strong>Create</strong>」→ <strong>完整复制生成的 API Key</strong>。</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_PI5naEAAAp5t?format=jpg&name=large" alt="OpenRouter API Key" />
+        </div>
+
+        <div class="warning-box">
+            ⚠️ API Key 仅显示一次，请妥善保存。若遗失需要重新生成。
+        </div>
+
+        <h3>Step 2：查找免费模型 Ling-2.6-1T 并复制模型 ID</h3>
+
+        <p>❶ 在 OpenRouter 顶部菜单进入 <strong>Models</strong> 页面<br>
+        ❷ 在搜索框输入 <code>ling</code><br>
+        ❸ 第一个搜索结果即为 <strong>inclusionAI: Ling-2.6-1T (free)</strong>（标记为 <strong>Free</strong>，输入输出均不计费）<br>
+        ❹ 点击模型名称右侧的<strong>复制图标</strong>，复制得到的模型 ID 为：</p>
+
+        <div class="code-block">
+            <code>inclusionai/ling-2.6-1t:free</code>
+        </div>
+
+        <div class="tip-box">
+            💡 OpenRouter 平台提供多款免费模型，Ling-2.6-1T 是其中表现较为出色的一款。即使免费期结束，根据当前公开的定价，其使用成本也属于非常经济的档位。
+        </div>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_PM00a0AAFQol?format=jpg&name=large" alt="Ling-2.6-1T 模型" />
+        </div>
+
+        <h3>Step 3：安装 CC Switch</h3>
+
+        <p><strong>Mac 系统</strong>：在终端依次执行以下命令：</p>
+
+        <div class="code-block">
+            <code>brew tap farion1231/ccswitch</code>
+            <code>brew install --cask cc-switch</code>
+        </div>
+
+        <p><strong>Windows 系统</strong>：访问 <a href="https://github.com/farion1231/cc-switch/releases" target="_blank">CC Switch Releases</a> 下载 .msi 安装包，双击运行安装。</p>
+
+        <h3>Step 4：在 CC Switch 中添加 OpenRouter 提供商</h3>
+
+        <p>打开 CC Switch → 顶部标签页选择「<strong>Claude 供应商</strong>」→ 点击「<strong>添加新供应商</strong>」（CC Switch 内置 50+ 提供商预设）。</p>
+
+        <p>❶ <strong>在预设列表中选择 OpenRouter</strong>（位于第二行靠右位置），选择后上方的「<strong>供应商名称</strong>」和「<strong>实际地址</strong>」（https://openrouter.ai）将自动填充，无需手动修改。</p>
+
+        <p>❷ <strong>在 API Key 字段</strong> → 粘贴上一步复制的 OpenRouter Key。</p>
+
+        <p>❸ <strong>将模型名称 inclusionai/ling-2.6-1t:free 填入以下 5 个字段中</strong>（每个字段均填入相同的模型名称）：</p>
+
+        <ul>
+            <li><strong>主模型</strong></li>
+            <li><strong>推理模型 (Thinking)</strong></li>
+            <li><strong>Haiku 默认模型</strong></li>
+            <li><strong>Sonnet 默认模型</strong></li>
+            <li><strong>Opus 默认模型</strong></li>
+        </ul>
+
+        <div class="warning-box">
+            ⚠️ <strong>此步骤为关键配置</strong>：CC Switch 将 Claude Code 内部使用的所有模型角色都映射到底层提供商进行处理，因此 Haiku、Sonnet、Opus 三个档位必须全部指向 Ling 模型。缺少任何一个，对应档位的调用都将失败。
+        </div>
+
+        <p>❹ 点击右下角的蓝色「<strong>添加</strong>」按钮。</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_PV_FbMAACL0x?format=jpg&name=large" alt="CC Switch 配置 OpenRouter" />
+        </div>
+
+        <h3>Step 5：启用 OpenRouter 提供商</h3>
+
+        <p>返回 CC Switch 主界面，在刚添加的 <strong>OpenRouter</strong> 提供商卡片右侧，有蓝色的「<strong>▶ 启用</strong>」按钮，<strong>请点击启用</strong>。</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_PdWRacAEau0A?format=jpg&name=large" alt="启用 OpenRouter" />
+        </div>
+
+        <div class="tip-box">
+            💡 <strong>Claude Code 切换提供商后无需重启</strong>，配置将立即生效。也可以通过系统托盘右键菜单直接进行切换。
+        </div>
+
+        <h3>Step 6：★ 零成本方案验证</h3>
+
+        <p>返回 Claudian 主面板 → 选择 Claude 组的任意模型（Opus / Sonnet / Haiku 均可，实际底层都将调用 Ling 模型）→ 发送测试消息如「<strong>你好</strong>」。</p>
+
+        <p>若收到 AI 回复，则表示<strong>零成本通道配置成功</strong>。此时您正在使用的是 Ling-2.6-1T 模型，<strong>完全不会产生任何费用</strong>。</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_PgambgAA8_v6?format=jpg&name=large" alt="零成本方案验证" />
+        </div>
+
+        <h2>四、通道配置二：Codex 设置（本文核心内容）</h2>
+
+        <p>无论您选择的是官方订阅的主线路，还是零成本的番外方案，至此 Claude Code 应已可正常使用。若您仅需使用 Claude 模型，配置工作可到此结束。</p>
+
+        <p>但 Claudian 还支持另一种强大的配置方式：<strong>额外添加一条 Codex 通道，实现两个模型的随时切换</strong>。这部分功能在官方 README 中几乎没有说明，网上也难以找到完整的配置教程。以下为经过实际验证可成功运行的完整流程。</p>
+
+        <h3>Step 1：安装 Codex 命令行工具</h3>
+
+        <p>在终端执行：</p>
+
+        <div class="code-block">
+            <code>npm install -g @openai/codex</code>
+        </div>
+
+        <div class="tip-box">
+            💡 <strong>若已安装 OpenAI 的 Codex 桌面应用</strong>：也可以直接向其发送指令「<strong>帮我安装 codex cli</strong>」，它将自动为您执行上述命令，适合不愿接触命令行的用户。
+        </div>
+
+        <h3>Step 2：通过 ChatGPT 进行登录授权</h3>
+
+        <div class="tip-box">
+            💡 这是 Codex CLI 与 Claude Code 在使用体验上最显著的区别：<strong>Codex 使用 ChatGPT 官方授权机制</strong>，无需单独申请 OpenAI API Key，只要拥有 ChatGPT 账号即可使用。
+        </div>
+
+        <p>与上一节流程相同，请先完成 CLI 登录再配置 Claudian。在终端执行：</p>
+
+        <div class="code-block">
+            <code>codex login</code>
+        </div>
+
+        <p>进入交互界面后，选择「<strong>Sign in with ChatGPT</strong>」。</p>
+
+        <p>系统将自动打开浏览器 → 使用您的 ChatGPT 账号登录 → 完成授权 → 跳转回终端，看到 "Sign in successful" 提示即表示登录成功。</p>
+
+        <h3>Step 3：获取 Codex CLI 可执行文件路径</h3>
+
+        <p>在终端执行：</p>
+
+        <div class="code-block">
+            <code>where codex</code>
+        </div>
+
+        <p>命令将输出一行路径：</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_Pnysa8AAME39?format=jpg&name=large" alt="Codex CLI 路径" />
+        </div>
+
+        <p>示例路径为 /Users/rongshi/.local/bin/codex，与 Claude 类似，您看到的具体路径可能不同，这是正常现象，<strong>完整复制该路径即可</strong>。</p>
+
+        <h3>Step 4：配置 Claudian Codex 设置（关键步骤）</h3>
+
+        <p>返回 Obsidian → 进入 Claudian 设置界面 → 顶部标签页<strong>切换到「Codex」</strong>。</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_PyjKbQAAs1Iz?format=jpg&name=large" alt="Codex 设置界面" />
+        </div>
+
+        <p>此步骤<strong>必须完成以下两个操作，缺少任意一个，Codex 都不会出现在模型切换菜单中</strong>：</p>
+
+        <p>❶ <strong>打开「Enable Codex provider」开关</strong></p>
+
+        <div class="warning-box">
+            ⚠️ 这是 Codex 通道的总开关，<strong>默认处于关闭状态</strong>。只有打开此开关，Codex 模型才会出现在 Claudian 的模型选择器中。这一步是绝大多数网上教程都未提及的关键"踩坑点"。若最终切换菜单中看不到 Codex 选项，99% 的原因是此开关未打开。
+        </div>
+
+        <p>❷ <strong>在「Codex CLI path」字段</strong>，将 Step 3 中复制的 codex 路径<strong>完整粘贴进去</strong>。</p>
+
+        <h3>Step 5：★ Codex 通道验证</h3>
+
+        <p>返回 Claudian 主面板 → <strong>切换到 Codex 模型</strong> → 发送测试消息如「<strong>你好</strong>」。</p>
+
+        <p>若收到 AI 回复，则表示<strong>Codex 通道配置成功</strong>。</p>
+
+        <div class="warning-box">
+            ⚠️ <strong>若切换菜单中看不到 Codex 选项</strong>：<br>
+            1️⃣ 检查 Step 4 中的 Enable Codex provider 开关是否已打开<br>
+            2️⃣ 完全关闭 Obsidian 后重新启动<br>
+            3️⃣ 在 Claudian 中新建一个对话框即可
+        </div>
+
+        <h2>五、双模型切换：左下角一键选择</h2>
+
+        <p>两条通道均配置完成后，切换入口位于 <strong>Claudian 对话框左下角的模型选择器</strong>。点击将弹出下拉菜单，其中<strong>分为两组</strong>：</p>
+
+        <div class="image-container">
+            <img src="https://pbs.twimg.com/media/HG_QFBDbIAEGR4h?format=jpg&name=large" alt="双模型切换" />
+        </div>
+
+        <ul>
+            <li><strong>CLAUDE 组</strong>：Opus / Sonnet / Haiku</li>
+            <li><strong>CODEX 组</strong>：GPT-5.5 / GPT-5.4 Mini</li>
+        </ul>
+
+        <div class="warning-box">
+            ⚠️ <strong>若下拉菜单中仅显示 CLAUDE 组，看不到 CODEX 组</strong>：<br>
+            1️⃣ 检查 Step 4 ❶ 中的 Enable Codex provider 开关是否已打开<br>
+            2️⃣ 完全关闭 Obsidian 后重新启动<br>
+            3️⃣ 在 Claudian 中新建一个对话框即可
+        </div>
+
+        <div class="conclusion">
+            <p>🎉 <strong>配置完成总结</strong></p>
+            <p>至此，您的 Obsidian 已同时成功配置 Claude 和 Codex 两条 AI 通道，可根据实际需求自由切换使用。</p>
+            <p><strong>Codex 配置部分在全网范围内鲜有完整教程覆盖，这也是本文最具价值的核心内容。</strong></p>
+            <p>建议收藏本文，日后如需向同事或朋友推荐双模型配置，可直接分享此教程。</p>
+        </div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+</body>
+</html>

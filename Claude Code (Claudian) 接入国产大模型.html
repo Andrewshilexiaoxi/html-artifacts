@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code 接入国产大模型：AI 秒变超能助理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 50px 60px;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            line-height: 1.4;
+        }
+
+        h2 {
+            font-size: 1.6em;
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        h3 {
+            font-size: 1.25em;
+            color: #5a67d8;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin-bottom: 18px;
+            font-size: 1.05em;
+            text-align: justify;
+        }
+
+        strong {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .image-container img {
+            max-width: 75%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.02);
+        }
+
+        .code-block {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px 25px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+            font-family: "SF Mono", Monaco, "Courier New", monospace;
+            font-size: 0.95em;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            display: block;
+            margin: 5px 0;
+            color: #2d3748;
+        }
+
+        .links-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .links-section a {
+            display: block;
+            color: #667eea;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: all 0.3s ease;
+            word-break: break-all;
+        }
+
+        .links-section a:hover {
+            color: #764ba2;
+            padding-left: 10px;
+        }
+
+        .meta-info {
+            background: #f8f9fa;
+            padding: 20px 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+            color: #6c757d;
+        }
+
+        .meta-info span {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+            border: 2px solid #fc8181;
+            padding: 20px 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .highlight-box p {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 25px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .image-container img {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Claude Code 接入国产大模型：AI 秒变超能助理</h1>
+
+        <div class="meta-info">
+            <span>📅 创建时间：2026-02-17</span>
+            <span>📌 状态：已整理</span>
+        </div>
+
+        <p>最近 Claude Code 爆火，但真正在一线用它提升效率的人都知道，官方原生的 Anthropic 接口有三大痛点：网络门槛高、API 费用贵、还动不动就封号。</p>
+
+        <p>但其实破局的方法很简单：<strong>把 Claude Code 的框架，直接接入咱们国产的高性价比大模型</strong>（比如字节的 Seed 2.0 模型）。</p>
+
+        <h2>为什么要用 Claude Code？</h2>
+
+        <p>很多人可能会质疑：接入国产模型，那底层不还是那个模型的能力吗，有必要非得用 Claude Code 吗？</p>
+
+        <p>这就是典型的"聊天机器人"思维。<strong>Claude Code 的可怕之处，不在于提升模型的智商，而是赋予了模型"行动能力"。</strong></p>
+
+        <p>我们直接做个残酷的对比测试。同样接入 Seed 2.0 模型，在普通的 Copilot 聊天框里，我问它："这周我都做了什么？" 你看，它的回答全是大话、空话。这不怪它，因为它被关在笼子里，根本接触不到你的本地数据。</p>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-02-17-%E6%88%AA%E5%B1%8F2026-02-17%2019.12.08.png" alt="Copilot 聊天对比" />
+        </div>
+
+        <p>现在，我们切换到 Claude Code 的终端环境，问完全一样的问题。注意看它的运行过程——它不再是傻乎乎地直接生成文字，而是开始"自主工作"了！它分析了问题后，自动调用系统命令，直接去搜索我电脑里"日记"和"周记"的文件夹目录，在读取了里面的文件后，精准提炼出了一份属于我的专属周报！</p>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-02-17-%E6%88%AA%E5%B1%8F2026-02-17%2019.14.54.png" alt="Claude Code 终端演示" />
+        </div>
+
+        <p>发现了吗？这就叫降维打击。Claude Code 就像给老虎插上了翅膀，它让原本只会"陪聊"的大模型，长出了能读写你本地文件的"手和眼睛"，真正变成了一个能干活的私人助理。</p>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-05-12-061726.png" alt="Claude Code 能力展示" />
+        </div>
+
+        <h2>接入步骤：5 分钟搞定</h2>
+
+        <p>既然在 Claude Code 的框架下，模型已经打破了物理限制，那如果再配上各种专属的 Skills（技能），它就能完成更复杂的连环任务。接下来我就实操演示：怎么给这只"插上翅膀的老虎"，换上一颗国内高性价比的"心脏"——直接接入字节最新首发的 Seed 2.0 大模型。</p>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-02-17-112209.jpg" alt="Seed 2.0 大模型" />
+        </div>
+
+        <h3>第一步：安装 API 切换工具</h3>
+
+        <p>我们需要安装一个 API 切换工具，比如 GitHub 上的 CC Switch。你现在用的是 Claude Code，只需要把网页链接丢给它，在命令行里敲一句："帮我下载并配置这个网页里的工具"。剩下的，它会自动读取、解析、下载、安装。你连手都不用动，全程丝滑得可怕。</p>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-02-17-112354.png" alt="CC Switch 安装" />
+        </div>
+
+        <h3>第二步：配置 API Key</h3>
+
+        <p>打开装好的 CC Switch，在模型列表里选中对应模型，填入我们获取到的火山引擎 API Key。</p>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-02-17-1.jpg" alt="CC Switch 配置 1" />
+        </div>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-02-17-113607.jpg" alt="CC Switch 配置 2" />
+        </div>
+
+        <h3>第三步：开通 Coding Plan 套餐</h3>
+
+        <p>用 AI 执行复杂任务，最怕什么？怕 Token 像流水一样跑没！有时候一个任务要拆解执行五六分钟，如果按量计费，你看着后台肯定心里没底。所以，我强烈建议在火山方舟里开通 Coding Plan 套餐。它是包月的，首月只要 8 块 9 毛 1。有了这个价格护城河，你就可以彻底放飞自我了。</p>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-02-17-113818.jpg" alt="Coding Plan 套餐" />
+        </div>
+
+        <h3>第四步：绑定本地接口（Obsidian 版）</h3>
+
+        <p>如果你对黑漆漆的命令行还是有抵触，喜欢更清爽的界面。没关系，我们回到大家都熟悉的 Obsidian。配合 Claudian 插件，我们在自定义变量里敲入这几行命令，绑定好刚才的本地接口。注意看，现在模型已经成功切换到了 Seed 2.0。</p>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-02-17-114044.jpg" alt="Obsidian 配置" />
+        </div>
+
+        <h2>实战演示：AI 秒变英语老师</h2>
+
+        <p>Seed 2.0 是一个强大的多模态模型，它是长了"眼睛"的。作为一名英语老师，我日常最头痛的就是处理各种纸质和图片资料。现在，我直接截取一篇高中英语课文的图片，传到这里，下达指令："使用相关 Skill，解析这篇课文，并将结果存放在 Obsidian 的根目录下。"</p>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-02-17-114228.jpg" alt="英语课文解析演示" />
+        </div>
+
+        <p>接下来就是见证效率的时刻。如果你提前设置了跳过人工确认的指令，你就可以直接双手离开键盘，看着它像一个隐形助理一样，静静地、全自动地拆解任务。任务跑完，我们来看最终生成的文件：逐句的精准翻译、核心短语提取、语法结构剖析，应有尽有，排版干干净净。</p>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-02-17-114334.jpg" alt="解析结果 1" />
+        </div>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-02-17-114448.jpg" alt="解析结果 2" />
+        </div>
+
+        <h2>应用场景：文科生也能驾驭</h2>
+
+        <p>除了备课，像是批量修改学生作文、提炼小红书爆款文案和标签、甚至自动生成公众号的排版代码，对它来说都是降维打击。谁说命令行只是程序员的专属？文科生用好它，照样能把工作效率拉爆。</p>
+
+        <div class="image-container">
+            <img src="http://shilexiaoxi-1307323315.cos.ap-beijing.myqcloud.com/2026-02-17-114546.jpg" alt="应用场景展示" />
+        </div>
+
+        <h2>总结</h2>
+
+        <p>Claude Code 的强大之处在于它赋予了 AI 模型"行动能力"，让原本只会"陪聊"的大模型变成了能干活的私人助理。而接入国产高性价比大模型，则解决了网络门槛高、API 费用贵、封号风险大等痛点。</p>
+
+        <p>现在，你只需要按照我刚才演示的步骤，就能拥有一个跑在国产大模型上的超能助理，随你怎么折腾！</p>
+
+        <div class="links-section">
+            <h3>🔗 相关资源链接</h3>
+            <a href="https://github.com/YishenTu/claudian" target="_blank">Obsidian 中 Claudian 插件的下载地址</a>
+            <a href="https://www.volcengine.com/activity/codingplan" target="_blank">火山方舟 Coding Plan 订阅地址</a>
+            <a href="https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey" target="_blank">火山方舟 API Key 获取地址</a>
+            <a href="https://github.com/farion1231/cc-switch/releases/tag/v3.10.3" target="_blank">CC Switch 安装地址</a>
+
+            <div class="code-block" style="margin-top: 20px;">
+                <strong>Obsidian 中填入自定义变量，格式为：</strong><br><br>
+                <code>ANTHROPIC_BASE_URL="https://ark.cn-beijing.volces.com/api/coding"</code>
+                <code>ANTHROPIC_API_KEY="你自己的火山方舟上的api key"</code>
+                <code>ANTHROPIC_MODEL="ark-code-latest"</code>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
